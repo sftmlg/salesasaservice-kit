@@ -44,6 +44,21 @@ describe("documented mutation policy equals the typed source", () => {
     expect(reference).toContain("Neither is on the MCP allowlist");
   });
 
+  it("states the same allowlist count in the README and the API reference as MCP_ALLOWED_MUTATIONS holds (a count left behind after a name was added or dropped is the bug)", () => {
+    const count = String(MCP_ALLOWED_MUTATIONS.length);
+    expect(readme.match(/only the (\d+) allowlisted/)?.[1]).toBe(count);
+    expect(reference.match(/These (\d+) mutations are accepted over MCP/)?.[1]).toBe(count);
+  });
+
+  it("does not claim that a further edit corrects every allowlisted mutation while the inbox read marks have no catalogued undo (a blanket reversibility claim was the bug)", () => {
+    expect(reference).not.toMatch(/a further edit corrects it/);
+    expect(readme).not.toMatch(/a further edit corrects/);
+    for (const text of [section(reference, "### MCP allowlist"), readme]) {
+      expect(text).toMatch(/read marks/i);
+      expect(text).toMatch(/no catalogued undo/);
+    }
+  });
+
   it("the README points to the allowlist section instead of carrying its own list (a second list would drift)", () => {
     expect(readme).toContain("docs/api-reference.md#mcp-allowlist");
     expect(

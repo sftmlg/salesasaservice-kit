@@ -197,14 +197,11 @@ Regenerate the catalogue with `saas-kit refresh` and the two documentation files
 
 ### MCP allowlist
 
-These 14 mutations are accepted over MCP, each with `confirm=true`. Each one creates or edits a working record of the account (logo, activities, tasks, inbox read marks, companies, contacts), and a further edit corrects it. None deletes anything, and none publishes, sends, signs, pays or consents:
+These 14 mutations are accepted over MCP, each with `confirm=true`. None deletes anything, and none publishes, sends, signs, pays or consents. They are not all corrected the same way:
 
-- `profile.startLogoUpload`, `profile.completeLogoUpload`, `profile.cancelLogoUpload`
-- `activities.create`, `activities.update`
-- `activities.createTask`, `activities.updateTask`, `activities.updateTaskStatus`
-- `inbox.acknowledge`, `inbox.acknowledgeProductProposalFailure`
-- `companies.create`, `companies.update`
-- `contacts.create`, `contacts.update`
+- Record edits (`activities.create`, `activities.update`, `activities.createTask`, `activities.updateTask`, `activities.updateTaskStatus`, `companies.create`, `companies.update`, `contacts.create`, `contacts.update`): a later `update` corrects the record. The activity and task updates are in the catalogue; the companies and contacts mutations are not.
+- Logo upload (`profile.startLogoUpload`, `profile.completeLogoUpload`, `profile.cancelLogoUpload`): the cancel undoes a staged upload. A completed upload has no catalogued undo over MCP, because the logo delete is refused.
+- Read marks (`inbox.acknowledge`, `inbox.acknowledgeProductProposalFailure`): they mark an inbox item as read, with no catalogued undo.
 
 The list is one typed constant, `MCP_ALLOWED_MUTATIONS` in `packages/saas-kit/src/legal-acts.ts`, and a test fails if this section differs from it. Names are matched exactly: a case variant or a name with whitespace is not on the list. The companies and contacts mutations are allowlisted by name but are not in the bundled catalogue.
 
