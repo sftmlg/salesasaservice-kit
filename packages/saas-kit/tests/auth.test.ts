@@ -81,6 +81,15 @@ describe("auth flow", () => {
     },
   );
 
+  it("the public http method only reads: a tRPC mutation path called through it is still a GET (writes go through mutate and its confirm guard)", async () => {
+    const { fetch, calls } = fakeFetch(() => "{}");
+    await new SaasClient({ baseUrl: "https://x.test", fetch }).http(
+      "/api/trpc/workspaceUsers.remove?batch=1",
+    );
+    expect(calls.map((call) => call.method)).toEqual(["GET"]);
+    expect(calls[0]?.body).toBeUndefined();
+  });
+
   it("follows a same-origin verification link by path and query", async () => {
     const { fetch, calls } = fakeFetch(() => ({ status: 302, location: "/de" }));
     await new SaasClient({ baseUrl: "https://x.test", fetch }).verifyEmail(

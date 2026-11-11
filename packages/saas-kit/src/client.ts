@@ -48,7 +48,11 @@ export class SaasClient {
     this.store = options.store ?? new MemorySessionStore();
   }
 
-  async http(
+  async http(path: string, init: { accept?: string; auth?: boolean } = {}): Promise<HttpResult> {
+    return this.send(path, init);
+  }
+
+  private async send(
     path: string,
     init: { method?: "GET" | "POST"; body?: string; accept?: string; auth?: boolean } = {},
   ): Promise<HttpResult> {
@@ -73,7 +77,7 @@ export class SaasClient {
   }
 
   async signUp(input: { name: string; email: string; password: string; acceptTerms: true }): Promise<void> {
-    const res = await this.http("/api/auth/sign-up/email", {
+    const res = await this.send("/api/auth/sign-up/email", {
       method: "POST",
       body: JSON.stringify({ ...input, callbackURL: "/de" }),
       auth: false,
@@ -87,7 +91,7 @@ export class SaasClient {
   }
 
   async signIn(credentials: Credentials): Promise<SessionInfo> {
-    const res = await this.http("/api/auth/sign-in/email", {
+    const res = await this.send("/api/auth/sign-in/email", {
       method: "POST",
       body: JSON.stringify(credentials),
       auth: false,
@@ -149,7 +153,7 @@ export class SaasClient {
   async mutate(procedure: string, input: unknown, options: { confirm: boolean }): Promise<unknown> {
     assertConfirmed(options.confirm, `mutation ${procedure}`);
     const { path, body } = mutationRequest(procedure, input);
-    const res = await this.http(path, { method: "POST", body });
+    const res = await this.send(path, { method: "POST", body });
     return unwrapEnvelope(res.status, res.text);
   }
 }
