@@ -1,5 +1,5 @@
 {
-  "measured": "2026-11-10",
+  "measured": "2026-11-11",
   "procedures": {
     "activities.create": {
       "kind": "mutation",
@@ -15,7 +15,7 @@
     },
     "activities.list": {
       "kind": "query",
-      "observed": "PRECONDITION_FAILED"
+      "observed": "BAD_REQUEST"
     },
     "activities.update": {
       "kind": "mutation",
@@ -35,27 +35,27 @@
     },
     "commission.getDashboard": {
       "kind": "query",
-      "observed": "PRECONDITION_FAILED"
+      "observed": "FORBIDDEN"
     },
     "commission.getFinancialProfile": {
       "kind": "query",
-      "observed": "PRECONDITION_FAILED"
+      "observed": "BAD_REQUEST"
     },
     "commission.getHistory": {
       "kind": "query",
-      "observed": "PRECONDITION_FAILED"
+      "observed": "FORBIDDEN"
     },
     "commission.listInvoices": {
       "kind": "query",
-      "observed": "PRECONDITION_FAILED"
+      "observed": "BAD_REQUEST"
     },
     "commission.listPayouts": {
       "kind": "query",
-      "observed": "PRECONDITION_FAILED"
+      "observed": "FORBIDDEN"
     },
     "commission.listPositions": {
       "kind": "query",
-      "observed": "PRECONDITION_FAILED"
+      "observed": "FORBIDDEN"
     },
     "commission.quotePayout": {
       "kind": "mutation",
@@ -99,7 +99,7 @@
     },
     "inbox.listActive": {
       "kind": "query",
-      "observed": "PRECONDITION_FAILED"
+      "observed": "BAD_REQUEST"
     },
     "inbox.listFinancial": {
       "kind": "query",
@@ -107,7 +107,7 @@
     },
     "inbox.listProductProposalFailures": {
       "kind": "query",
-      "observed": "PRECONDITION_FAILED"
+      "observed": "BAD_REQUEST"
     },
     "listingDefaults.save": {
       "kind": "mutation",
@@ -133,33 +133,29 @@
       "kind": "mutation",
       "observed": "METHOD_NOT_SUPPORTED"
     },
-    "offerTemplates.create": {
-      "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
-    },
     "offers.completeSignedUpload": {
       "kind": "mutation",
       "observed": "METHOD_NOT_SUPPORTED"
     },
     "offers.getCertificateDownloadUrl": {
       "kind": "query",
-      "observed": "PRECONDITION_FAILED"
+      "observed": "BAD_REQUEST"
     },
     "offers.getDownloadUrl": {
       "kind": "query",
-      "observed": "PRECONDITION_FAILED"
+      "observed": "BAD_REQUEST"
     },
     "offers.getSendRecipients": {
       "kind": "query",
-      "observed": "PRECONDITION_FAILED"
+      "observed": "BAD_REQUEST"
     },
     "offers.getSignedDownloadUrl": {
       "kind": "query",
-      "observed": "PRECONDITION_FAILED"
+      "observed": "BAD_REQUEST"
     },
     "offers.listByOpportunity": {
       "kind": "query",
-      "observed": "PRECONDITION_FAILED"
+      "observed": "BAD_REQUEST"
     },
     "offers.reissueLink": {
       "kind": "mutation",
@@ -177,6 +173,14 @@
       "kind": "mutation",
       "observed": "METHOD_NOT_SUPPORTED"
     },
+    "offerTemplates.create": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "onboarding.createWorkspace": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
     "opportunities.acceptClose": {
       "kind": "mutation",
       "observed": "METHOD_NOT_SUPPORTED"
@@ -187,19 +191,19 @@
     },
     "opportunities.getRequestSnapshot": {
       "kind": "query",
-      "observed": "PRECONDITION_FAILED"
+      "observed": "BAD_REQUEST"
     },
     "opportunities.getSalesAgentDetail": {
       "kind": "query",
-      "observed": "PRECONDITION_FAILED"
+      "observed": "FORBIDDEN"
     },
     "opportunities.listMessages": {
       "kind": "query",
-      "observed": "PRECONDITION_FAILED"
+      "observed": "BAD_REQUEST"
     },
     "opportunities.listRequestHistory": {
       "kind": "query",
-      "observed": "PRECONDITION_FAILED"
+      "observed": "BAD_REQUEST"
     },
     "opportunities.rejectClose": {
       "kind": "mutation",
@@ -215,11 +219,11 @@
     },
     "opportunities.searchStagingCompanies": {
       "kind": "query",
-      "observed": "PRECONDITION_FAILED"
+      "observed": "FORBIDDEN"
     },
     "opportunities.searchStagingContacts": {
       "kind": "query",
-      "observed": "PRECONDITION_FAILED"
+      "observed": "FORBIDDEN"
     },
     "opportunities.updateStaging": {
       "kind": "mutation",
@@ -287,7 +291,7 @@
     },
     "subscriptions.getStatus": {
       "kind": "query",
-      "observed": "PRECONDITION_FAILED"
+      "observed": "BAD_REQUEST"
     },
     "subscriptions.reactivate": {
       "kind": "mutation",

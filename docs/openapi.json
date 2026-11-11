@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Sales as a Service tRPC API (unofficial)",
-    "version": "2026-11-10",
+    "version": "2026-11-11",
     "description": "Unofficial description of the tRPC endpoints the salesasaservice.at web app calls. Derived from the client bundles and read-only probes; not published or endorsed by the platform. An account without a finished onboarding gets PRECONDITION_FAILED from workspace procedures; one with a workspace gets the procedure's own answer."
   },
   "servers": [
@@ -311,7 +311,7 @@
           "activities"
         ],
         "summary": "query activities.list",
-        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -564,7 +564,7 @@
           "commission"
         ],
         "summary": "query commission.getDashboard",
-        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "description": "Observed server answer to a GET with null input: FORBIDDEN. Input schema not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -609,7 +609,7 @@
           "commission"
         ],
         "summary": "query commission.getFinancialProfile",
-        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -654,7 +654,7 @@
           "commission"
         ],
         "summary": "query commission.getHistory",
-        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "description": "Observed server answer to a GET with null input: FORBIDDEN. Input schema not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -699,7 +699,7 @@
           "commission"
         ],
         "summary": "query commission.listInvoices",
-        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -744,7 +744,7 @@
           "commission"
         ],
         "summary": "query commission.listPayouts",
-        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "description": "Observed server answer to a GET with null input: FORBIDDEN. Input schema not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -789,7 +789,7 @@
           "commission"
         ],
         "summary": "query commission.listPositions",
-        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "description": "Observed server answer to a GET with null input: FORBIDDEN. Input schema not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -1354,7 +1354,7 @@
           "inbox"
         ],
         "summary": "query inbox.listActive",
-        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -1444,7 +1444,7 @@
           "inbox"
         ],
         "summary": "query inbox.listProductProposalFailures",
-        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -1794,58 +1794,6 @@
         }
       }
     },
-    "/api/trpc/offerTemplates.create": {
-      "post": {
-        "operationId": "offerTemplates_create",
-        "tags": [
-          "offerTemplates"
-        ],
-        "summary": "mutation offerTemplates.create",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
-        "security": [
-          {
-            "sessionCookie": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "tRPC batch result",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BatchResult"
-                }
-              }
-            }
-          },
-          "default": {
-            "description": "tRPC error envelope",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BatchError"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/batch"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BatchInput"
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/trpc/offers.completeSignedUpload": {
       "post": {
         "operationId": "offers_completeSignedUpload",
@@ -1905,7 +1853,7 @@
           "offers"
         ],
         "summary": "query offers.getCertificateDownloadUrl",
-        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -1950,7 +1898,7 @@
           "offers"
         ],
         "summary": "query offers.getDownloadUrl",
-        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -1995,7 +1943,7 @@
           "offers"
         ],
         "summary": "query offers.getSendRecipients",
-        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2040,7 +1988,7 @@
           "offers"
         ],
         "summary": "query offers.getSignedDownloadUrl",
-        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2085,7 +2033,7 @@
           "offers"
         ],
         "summary": "query offers.listByOpportunity",
-        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2331,6 +2279,110 @@
         }
       }
     },
+    "/api/trpc/offerTemplates.create": {
+      "post": {
+        "operationId": "offerTemplates_create",
+        "tags": [
+          "offerTemplates"
+        ],
+        "summary": "mutation offerTemplates.create",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/onboarding.createWorkspace": {
+      "post": {
+        "operationId": "onboarding_createWorkspace",
+        "tags": [
+          "onboarding"
+        ],
+        "summary": "mutation onboarding.createWorkspace",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/trpc/opportunities.acceptClose": {
       "post": {
         "operationId": "opportunities_acceptClose",
@@ -2442,7 +2494,7 @@
           "opportunities"
         ],
         "summary": "query opportunities.getRequestSnapshot",
-        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2487,7 +2539,7 @@
           "opportunities"
         ],
         "summary": "query opportunities.getSalesAgentDetail",
-        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "description": "Observed server answer to a GET with null input: FORBIDDEN. Input schema not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2532,7 +2584,7 @@
           "opportunities"
         ],
         "summary": "query opportunities.listMessages",
-        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2577,7 +2629,7 @@
           "opportunities"
         ],
         "summary": "query opportunities.listRequestHistory",
-        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2778,7 +2830,7 @@
           "opportunities"
         ],
         "summary": "query opportunities.searchStagingCompanies",
-        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "description": "Observed server answer to a GET with null input: FORBIDDEN. Input schema not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2823,7 +2875,7 @@
           "opportunities"
         ],
         "summary": "query opportunities.searchStagingContacts",
-        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "description": "Observed server answer to a GET with null input: FORBIDDEN. Input schema not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3700,7 +3752,7 @@
           "subscriptions"
         ],
         "summary": "query subscriptions.getStatus",
-        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
         "security": [
           {
             "sessionCookie": []
