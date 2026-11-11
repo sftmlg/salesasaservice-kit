@@ -68,7 +68,7 @@ describe("generated documentation", () => {
   });
 });
 
-describe("unprobed catalogue entries", () => {
+describe("products page catalogue entries", () => {
   const productsPage = [
     "listings.create",
     "products.create",
@@ -84,9 +84,23 @@ describe("unprobed catalogue entries", () => {
     "questionCatalogs.getCatalogForProduct",
   ];
 
-  it("catalogues every name that only the products page references as unprobed (get-refused without a probe would claim a measurement nobody made)", () => {
-    const missing = productsPage.filter((name) => catalogue.procedures[name]?.confirmedBy !== "unprobed");
-    expect(missing).toEqual([]);
+  it("has probed every name that only the products page references (an unprobed entry left after a signed-in refresh means the refresh did not run)", () => {
+    const stillUnprobed = productsPage.filter(
+      (name) =>
+        catalogue.procedures[name]?.confirmedBy !== "get-refused" &&
+        catalogue.procedures[name]?.confirmedBy !== "get-answered",
+    );
+    expect(stillUnprobed).toEqual([]);
+  });
+
+  it("confirms the eleven mutations by a refused GET and the query by an answered GET (the kind comes from the platform answer, not from the name)", () => {
+    const confirmation = Object.fromEntries(
+      productsPage.map((name) => [name, catalogue.procedures[name]?.confirmedBy]),
+    );
+    expect(confirmation["questionCatalogs.getCatalogForProduct"]).toBe("get-answered");
+    expect(productsPage.filter((name) => confirmation[name] === "get-refused")).toHaveLength(
+      productsPage.length - 1,
+    );
   });
 
   it("marks the one read as a query and the rest as mutations (a write catalogued as query would be sent as a GET)", () => {

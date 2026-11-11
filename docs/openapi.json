@@ -1593,7 +1593,7 @@
           "listings"
         ],
         "summary": "mutation listings.create",
-        "description": "Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name. Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3024,7 +3024,7 @@
           "productProposals"
         ],
         "summary": "mutation productProposals.accept",
-        "description": "Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name. Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3128,7 +3128,7 @@
           "products"
         ],
         "summary": "mutation products.completeImageUpload",
-        "description": "Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name. Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3180,7 +3180,7 @@
           "products"
         ],
         "summary": "mutation products.create",
-        "description": "Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name. Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3284,7 +3284,7 @@
           "products"
         ],
         "summary": "mutation products.extractFromText",
-        "description": "Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name. Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3336,7 +3336,7 @@
           "products"
         ],
         "summary": "mutation products.extractPricing",
-        "description": "Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name. Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3388,7 +3388,7 @@
           "products"
         ],
         "summary": "mutation products.generateShortDescription",
-        "description": "Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name. Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3440,7 +3440,7 @@
           "products"
         ],
         "summary": "mutation products.inspectWebsite",
-        "description": "Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name. Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3492,7 +3492,7 @@
           "products"
         ],
         "summary": "mutation products.startImageUpload",
-        "description": "Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name. Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3544,7 +3544,7 @@
           "products"
         ],
         "summary": "mutation products.suggestClassification",
-        "description": "Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name. Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3596,7 +3596,7 @@
           "products"
         ],
         "summary": "mutation products.update",
-        "description": "Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name. Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -4005,6 +4005,110 @@
         }
       }
     },
+    "/api/trpc/questionCatalogs.activateCatalog": {
+      "post": {
+        "operationId": "questionCatalogs_activateCatalog",
+        "tags": [
+          "questionCatalogs"
+        ],
+        "summary": "mutation questionCatalogs.activateCatalog",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/questionCatalogs.generateCatalog": {
+      "post": {
+        "operationId": "questionCatalogs_generateCatalog",
+        "tags": [
+          "questionCatalogs"
+        ],
+        "summary": "mutation questionCatalogs.generateCatalog",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/trpc/questionCatalogs.getCatalogForProduct": {
       "get": {
         "operationId": "questionCatalogs_getCatalogForProduct",
@@ -4012,7 +4116,7 @@
           "questionCatalogs"
         ],
         "summary": "query questionCatalogs.getCatalogForProduct",
-        "description": "Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name. Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -4050,6 +4154,207 @@
         ]
       }
     },
+    "/api/trpc/questionCatalogs.getGenerationBudget": {
+      "get": {
+        "operationId": "questionCatalogs_getGenerationBudget",
+        "tags": [
+          "questionCatalogs"
+        ],
+        "summary": "query questionCatalogs.getGenerationBudget",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          },
+          {
+            "$ref": "#/components/parameters/input"
+          }
+        ]
+      }
+    },
+    "/api/trpc/questionCatalogs.invalidateQualifications": {
+      "post": {
+        "operationId": "questionCatalogs_invalidateQualifications",
+        "tags": [
+          "questionCatalogs"
+        ],
+        "summary": "mutation questionCatalogs.invalidateQualifications",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/questionCatalogs.regenerateQuestion": {
+      "post": {
+        "operationId": "questionCatalogs_regenerateQuestion",
+        "tags": [
+          "questionCatalogs"
+        ],
+        "summary": "mutation questionCatalogs.regenerateQuestion",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/questionCatalogs.replyToInterview": {
+      "post": {
+        "operationId": "questionCatalogs_replyToInterview",
+        "tags": [
+          "questionCatalogs"
+        ],
+        "summary": "mutation questionCatalogs.replyToInterview",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/trpc/questionCatalogs.startAttempt": {
       "post": {
         "operationId": "questionCatalogs_startAttempt",
@@ -4057,6 +4362,58 @@
           "questionCatalogs"
         ],
         "summary": "mutation questionCatalogs.startAttempt",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/questionCatalogs.startInterview": {
+      "post": {
+        "operationId": "questionCatalogs_startInterview",
+        "tags": [
+          "questionCatalogs"
+        ],
+        "summary": "mutation questionCatalogs.startInterview",
         "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
