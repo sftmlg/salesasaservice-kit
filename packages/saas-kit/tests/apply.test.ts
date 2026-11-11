@@ -1,8 +1,11 @@
-import { readFileSync } from "node:fs";
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { describe, expect, it } from "vitest";
 import { type ApplyFlags, NOT_COMPARED, parseApplyInput, runApply } from "../src/apply.js";
 import { SaasClient } from "../src/client.js";
 import { ConfigError, ConfirmationRequiredError, LegalActRefusedError, SaasError } from "../src/errors.js";
+import { buildServer } from "../src/server.js";
+import { fakeFetch, okReply } from "./helpers.js";
 import { FakePlatform, listing, priceLabel, product } from "./products-page-fixture.js";
 
 const DRY: ApplyFlags = { confirm: false, legalAct: false, publish: false };
@@ -61,12 +64,28 @@ describe("apply guards", () => {
     expect(platform.requests).toEqual([]);
   });
 
-  it("is not reachable over MCP: no tool, no import in the server or the tool table (apply publishes in the account holder's name)", () => {
-    for (const name of ["server.ts", "tools.ts", "mcp-server.ts"]) {
-      const source = readFileSync(new URL(`../src/${name}`, import.meta.url), "utf8");
-      expect(source, name).not.toMatch(/apply|runApply/i);
-    }
-  });
+  it.each(["products.create", "products.update", "listings.create", "listings.update", "listings.publish"])(
+    "is not reachable over MCP: the mutation tool refuses %s even with confirm=true and sends nothing (apply publishes in the account holder's name)",
+    async (procedure) => {
+      const { fetch, calls } = fakeFetch(() => okReply({ id: "x" }));
+      const server = buildServer({
+        client: new SaasClient({ baseUrl: "https://x.test", fetch }),
+        config: { baseUrl: "https://x.test", sessionFile: undefined, credentials: undefined },
+        catalogue: { measured: "d", procedures: {} },
+      });
+      const [clientSide, serverSide] = InMemoryTransport.createLinkedPair();
+      const mcp = new Client({ name: "test", version: "0" });
+      await Promise.all([server.connect(serverSide), mcp.connect(clientSide)]);
+      const result = await mcp.callTool({
+        name: "mutation",
+        arguments: { procedure, input: {}, confirm: true },
+      });
+      const first = Array.isArray(result.content) ? result.content[0] : undefined;
+      expect(result.isError).toBe(true);
+      expect(first && "text" in first ? first.text : "").toContain("LEGAL_ACT_REFUSED");
+      expect(calls).toEqual([]);
+    },
+  );
 });
 
 describe("apply input", () => {
