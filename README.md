@@ -18,13 +18,13 @@ We built this kit because the marketplace has no public API, and working with it
 
 One package, `packages/saas-kit`, with a library and two executables.
 
-| Part                               | What it does                                                                                            |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| Client (`SaasClient`)              | better-auth sign-up, sign-in and email verification, cookie jar, tRPC query and mutation, session store |
-| Discovery                          | crawls the signed-in app, extracts procedure names, probes them with `GET` only                         |
-| OpenAPI                            | generates the OpenAPI 3.1 file and the catalogue page from the bundled catalogue                        |
-| MCP server (`saas-kit-mcp`, stdio) | exposes the platform as tools                                                                           |
-| CLI (`saas-kit`)                   | `docs` renders the documentation files, `refresh` re-discovers procedures with a live session           |
+| Part                               | What it does                                                                                                                                               |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Client (`SaasClient`)              | better-auth sign-up, sign-in and email verification, cookie jar, tRPC query and mutation, session store                                                    |
+| Discovery                          | crawls the signed-in app, extracts procedure names, probes them with `GET` only                                                                            |
+| OpenAPI                            | generates the OpenAPI 3.1 file and the catalogue page from the bundled catalogue                                                                           |
+| MCP server (`saas-kit-mcp`, stdio) | exposes the platform as tools                                                                                                                              |
+| CLI (`saas-kit`)                   | `status`, `login`, `discover`, `list`, `probe` (GET every catalogued procedure, prints the answer codes), `query`, `mutation --confirm`, `docs`, `refresh` |
 
 ### Setup
 
