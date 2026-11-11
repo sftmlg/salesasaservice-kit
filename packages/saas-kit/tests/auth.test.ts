@@ -53,6 +53,16 @@ describe("auth flow", () => {
     expect(calls).toHaveLength(0);
   });
 
+  it.each(["@evil.test/x", ".evil.test", "evil", ""])(
+    "refuses the path %j (base URL plus a path without a leading slash can change the host and carry the session cookie there)",
+    async (path) => {
+      const { fetch, calls } = fakeFetch(() => "");
+      const client = new SaasClient({ baseUrl: "https://x.test", fetch });
+      await expect(client.http(path)).rejects.toMatchObject({ code: "BAD_PATH" });
+      expect(calls).toHaveLength(0);
+    },
+  );
+
   it("follows a same-origin verification link by path and query", async () => {
     const { fetch, calls } = fakeFetch(() => ({ status: 302, location: "/de" }));
     await new SaasClient({ baseUrl: "https://x.test", fetch }).verifyEmail(

@@ -42,6 +42,9 @@ export class SaasClient {
     path: string,
     init: { method?: "GET" | "POST"; body?: string; accept?: string; auth?: boolean } = {},
   ): Promise<HttpResult> {
+    if (!path.startsWith("/")) {
+      throw new SaasError(`path "${path}" must start with "/" to stay on ${this.baseUrl}`, "BAD_PATH");
+    }
     const headers: Record<string, string> = {
       "user-agent": USER_AGENT,
       accept: init.accept ?? "application/json",
