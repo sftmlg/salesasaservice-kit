@@ -1,12 +1,3 @@
-export type TrpcErrorCode =
-  | "NOT_FOUND"
-  | "PRECONDITION_FAILED"
-  | "UNAUTHORIZED"
-  | "FORBIDDEN"
-  | "BAD_REQUEST"
-  | "METHOD_NOT_SUPPORTED"
-  | (string & {});
-
 export class SaasError extends Error {
   constructor(
     message: string,

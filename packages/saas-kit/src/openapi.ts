@@ -161,6 +161,7 @@ function components(): Record<string, unknown> {
                         "NOT_FOUND",
                         "PRECONDITION_FAILED",
                         "UNAUTHORIZED",
+                        "FORBIDDEN",
                         "BAD_REQUEST",
                         "METHOD_NOT_SUPPORTED",
                       ],

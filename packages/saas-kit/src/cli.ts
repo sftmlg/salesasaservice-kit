@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { CATALOGUE_FILE, loadCatalogue } from "./catalogue-data.js";
 import { renderCatalogue } from "./catalogue-doc.js";
-import { loadConfig } from "./config.js";
+import { DEFAULT_BASE_URL, loadConfig } from "./config.js";
 import { buildCatalogue, discover } from "./discovery.js";
 import { createClient, ensureSession } from "./kit.js";
 import { buildOpenApi } from "./openapi.js";
@@ -26,13 +26,12 @@ function write(file: string, content: string): void {
 
 async function main(): Promise<number> {
   const [command, ...args] = process.argv.slice(2);
-  const config = loadConfig();
   if (command === "docs") {
     const [openapiFile, catalogueFile] = args;
     if (!openapiFile || !catalogueFile) return usage();
     const catalogue = loadCatalogue();
-    write(openapiFile, `${JSON.stringify(buildOpenApi(catalogue, config.baseUrl), null, 2)}\n`);
-    write(catalogueFile, `${renderCatalogue(catalogue)}`);
+    write(openapiFile, `${JSON.stringify(buildOpenApi(catalogue, DEFAULT_BASE_URL), null, 2)}\n`);
+    write(catalogueFile, renderCatalogue(catalogue));
     return 0;
   }
   if (command === "refresh") {
@@ -40,6 +39,7 @@ async function main(): Promise<number> {
       args,
       options: { path: { type: "string", multiple: true }, procedure: { type: "string", multiple: true } },
     });
+    const config = loadConfig();
     const client = createClient(config);
     await ensureSession(client, config);
     const found = await discover(client, ["/de", ...(values.path ?? [])]);
