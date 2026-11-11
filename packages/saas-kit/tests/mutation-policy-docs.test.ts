@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { loadCatalogue } from "../src/catalogue-data.js";
 import { isLegalAct, MCP_ALLOWED_MUTATIONS } from "../src/legal-acts.js";
@@ -80,6 +80,30 @@ describe("documented mutation policy equals the typed source", () => {
         /\b(create\w*|created records?)\b[^.;]*\b(is|are|can be) (undone|removed|deleted|reverted|corrected)/i,
       );
     }
+  });
+
+  it("never describes the allowlist as reversible, undoable, harmless or safe in src, docs or README, and the MCP tool description and refusal message say a write lasts (the allowlist was called reversible while created records stay and read marks have no undo)", () => {
+    const srcDir = new URL("packages/saas-kit/src/", root);
+    const files = readdirSync(srcDir, { recursive: true, encoding: "utf8" })
+      .filter((file) => file.endsWith(".ts"))
+      .map((file) => [`src/${file}`, readFileSync(new URL(file, srcDir), "utf8")] as const);
+    const docs = [
+      ["docs/api-reference.md", reference],
+      ["README.md", readme],
+      ["AGENTS.md", readFileSync(new URL("AGENTS.md", root), "utf8")],
+      ["docs/openapi.json", readFileSync(new URL("docs/openapi.json", root), "utf8")],
+      ["docs/procedure-catalogue.md", readFileSync(new URL("docs/procedure-catalogue.md", root), "utf8")],
+    ] as const;
+    const banned = /\breversible\b|\bundoable\b|\bharmless\b|safe to call|\brevertible\b/i;
+    expect([...files, ...docs].filter(([, text]) => banned.test(text)).map(([name]) => name)).toEqual([]);
+    const server = files.find(([name]) => name === "src/server.ts")?.[1] ?? "";
+    const confirm = files.find(([name]) => name === "src/confirm.ts")?.[1] ?? "";
+    expect(server).toMatch(/A write lasts: created records stay in the account/);
+    expect(server).toMatch(/read marks have no undo/);
+    expect(confirm).toMatch(/created records stay in the account and read marks have no undo/);
+    expect(section(reference, "### MCP allowlist")).toMatch(
+      /A write lasts: created records stay in the account/,
+    );
   });
 
   it("the README points to the allowlist section instead of carrying its own list (a second list would drift)", () => {

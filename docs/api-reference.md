@@ -195,11 +195,11 @@ Regenerate the catalogue with `saas-kit refresh` and the two documentation files
 
 ## Mutation policy
 
-`confirm=true` is set by whoever calls the tool, and an agent reads text that the platform or a counterparty controls (messages, names, offer text). That text can steer an agent into a write in the account holder's name, so `confirm` cannot prove that a person decided. The kit therefore accepts over MCP only an allowlist of reviewed, reversible working mutations, and treats every other mutation as needing a second opt-in.
+`confirm=true` is set by whoever calls the tool, and an agent reads text that the platform or a counterparty controls (messages, names, offer text). That text can steer an agent into a write in the account holder's name, so `confirm` cannot prove that a person decided. The kit therefore accepts over MCP only an allowlist of reviewed working mutations (record edits and read marks), and treats every other mutation as needing a second opt-in.
 
 ### MCP allowlist
 
-These 14 mutations are accepted over MCP, each with `confirm=true`. None deletes anything, and none publishes, sends, signs, pays or consents. They are not all corrected the same way:
+These 14 mutations are accepted over MCP, each with `confirm=true`. None deletes anything, and none publishes, sends, signs, pays or consents. A write lasts: created records stay in the account, a completed logo upload has no undo and read marks have no undo. The groups differ:
 
 - Record edits (`activities.create`, `activities.update`, `activities.createTask`, `activities.updateTask`, `activities.updateTaskStatus`, `companies.create`, `companies.update`, `contacts.create`, `contacts.update`): an update overwrites the content of a record. A record made by one of the four create mutations stays in the account, because no delete is reachable over MCP. The activity and task updates are in the catalogue; no `companies.*` or `contacts.*` correction path is observed in it.
 - Logo upload (`profile.startLogoUpload`, `profile.completeLogoUpload`, `profile.cancelLogoUpload`): the cancel undoes a staged upload. A completed upload has no catalogued undo over MCP, because the logo delete is refused.

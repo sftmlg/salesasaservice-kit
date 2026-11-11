@@ -47,7 +47,7 @@ export function buildServer(deps: ToolDeps): McpServer {
   );
   server.tool(
     "mutation",
-    "Call a tRPC mutation. WRITES on the platform: confirm must be true, and only after the account holder approved the exact input. Only the reviewed, reversible working mutations on the allowlist are accepted; every other name (publishing, accepting, rejecting, signing, sending, paying, subscribing, consenting, removing users, submitting, or unknown) is refused here and needs the CLI with --legal-act.",
+    "Call a tRPC mutation. WRITES on the platform: confirm must be true, and only after the account holder approved the exact input. Only the reviewed working mutations on the allowlist are accepted: record edits and read marks. A write lasts: created records stay in the account, a completed logo upload has no undo and read marks have no undo. Nothing on the allowlist publishes, sends, signs, pays or consents. Every other name (publishing, accepting, rejecting, signing, sending, paying, subscribing, consenting, removing users, submitting, or unknown) is refused here and needs the CLI with --legal-act.",
     {
       procedure,
       input: z.unknown().optional().describe("JSON input"),
