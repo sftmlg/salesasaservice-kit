@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { z } from "zod";
 import { ConfigError } from "./errors.js";
+import { parseSecretJson } from "./secret-json.js";
 
 const credentialsSchema = z.object({ email: z.string().min(1), password: z.string().min(1) });
 
@@ -49,17 +50,21 @@ export function loadConfig(env: Env = process.env): KitConfig {
   };
 }
 
+function readCredentialsFile(file: string): string {
+  try {
+    return readFileSync(file, "utf8");
+  } catch (cause) {
+    throw new ConfigError("cannot read SAAS_CREDENTIALS_FILE", { code: "CONFIG", cause });
+  }
+}
+
 function loadCredentials(env: Env): Credentials | undefined {
   if (env.SAAS_CREDENTIALS_FILE) {
-    let raw: unknown;
-    try {
-      raw = JSON.parse(readFileSync(env.SAAS_CREDENTIALS_FILE, "utf8"));
-    } catch (cause) {
-      throw new ConfigError(
-        `cannot read SAAS_CREDENTIALS_FILE: ${cause instanceof Error ? cause.message : String(cause)}`,
-        { code: "CONFIG", cause },
-      );
-    }
+    const raw = parseSecretJson(
+      readCredentialsFile(env.SAAS_CREDENTIALS_FILE),
+      "the credentials file",
+      "CONFIG",
+    );
     const parsed = credentialsSchema.safeParse(raw);
     if (!parsed.success) {
       throw new ConfigError("SAAS_CREDENTIALS_FILE must contain email and password", { code: "CONFIG" });

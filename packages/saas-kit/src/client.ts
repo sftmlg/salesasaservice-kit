@@ -140,9 +140,10 @@ export class SaasClient {
         code: "SESSION_HTTP",
         httpStatus: res.status,
       });
-    const parsed = sessionSchema.safeParse(parseJson(res.text));
+    const body = parseJson(res.text);
+    const parsed = sessionSchema.safeParse(body);
     if (!parsed.success) {
-      throw new UnexpectedResponseError(`get-session answered an unknown shape: ${res.text.slice(0, 200)}`, {
+      throw new UnexpectedResponseError(`get-session answered an unknown shape: ${describeShape(body)}`, {
         code: "SESSION_SHAPE",
         httpStatus: res.status,
       });
@@ -174,4 +175,16 @@ function parseJson(text: string): unknown {
   } catch {
     return undefined;
   }
+}
+
+function describeShape(value: unknown, depth = 3): string {
+  if (value === undefined) return "not JSON";
+  if (value === null) return "null";
+  if (Array.isArray(value)) return "array";
+  if (typeof value !== "object") return typeof value;
+  if (depth === 0) return "object";
+  const fields = Object.keys(value)
+    .slice(0, 20)
+    .map((key) => `${key}: ${describeShape(Reflect.get(value, key), depth - 1)}`);
+  return `{${fields.join(", ")}}`;
 }
