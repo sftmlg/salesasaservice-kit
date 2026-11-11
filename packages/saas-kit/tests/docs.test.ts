@@ -88,3 +88,15 @@ describe("catalogue file", () => {
     expect(() => loadCatalogue(pathToFileURL(file))).toThrow();
   });
 });
+
+describe("api reference", () => {
+  it("names only procedures that exist in the catalogue (a documented schema for a misspelled or removed procedure misleads callers)", () => {
+    const text = readFileSync(new URL("api-reference.md", root), "utf8");
+    const routers = new Set(Object.values(catalogue.procedures).map((entry) => entry.router));
+    const mentioned = [...text.matchAll(/`([a-zA-Z]+\.[a-zA-Z]+)`/g)]
+      .map((match) => match[1] ?? "")
+      .filter((name) => routers.has(name.split(".")[0] ?? ""));
+    expect(mentioned.length).toBeGreaterThan(10);
+    expect(mentioned.filter((name) => !(name in catalogue.procedures))).toEqual([]);
+  });
+});
