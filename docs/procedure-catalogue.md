@@ -1,6 +1,6 @@
 # Procedure catalogue
 
-Generated from `docs/procedures.json` (measured 2026-11-10). Do not edit by hand; run `saas-kit docs`.
+Generated from `packages/saas-kit/data/procedures.json` (measured 2026-11-10). Do not edit by hand; run `saas-kit docs`.
 
 77 procedures confirmed by a read-only GET that did not answer `NOT_FOUND`.
 

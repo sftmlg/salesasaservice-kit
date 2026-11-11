@@ -71,12 +71,13 @@ Failure is an array with one item holding an `error`; the HTTP status is repeate
 | `NOT_FOUND`            | 404  | Unknown procedure name. Cheap to use for checking whether a name is real.          |
 | `METHOD_NOT_SUPPORTED` | 405  | The procedure exists but is a mutation; a `GET` is refused and nothing is written. |
 | `PRECONDITION_FAILED`  | 412  | The procedure exists but the account has not finished onboarding.                  |
+| `FORBIDDEN`            | 403  | The procedure exists but the account lacks the role or permission.                 |
 | `UNAUTHORIZED`         | 401  | No valid session.                                                                  |
 | `BAD_REQUEST`          | 400  | Input did not validate.                                                            |
 
 ## Onboarding gate
 
-Workspace procedures answer `PRECONDITION_FAILED` ("Onboarding state does not allow this operation") until the account has completed: company profile with legal details, verification (automatic when a VAT id is given, otherwise an identity document), and the platform contract including a declaration of signing authority. Most of these steps are legal acts of the account holder and cannot be done by the kit.
+For an account that has not finished onboarding, workspace procedures answer `PRECONDITION_FAILED` ("Onboarding state does not allow this operation") until it has completed: company profile with legal details, verification (automatic when a VAT id is given, otherwise an identity document), and the platform contract including a declaration of signing authority. Most of these steps are legal acts of the account holder and cannot be done by the kit. Once the account has a business-partner workspace the gated queries answer with their own result or error (`BAD_REQUEST` for the null probe input, `FORBIDDEN` for a missing role) instead. Two mutations belong to this flow: `onboarding.createWorkspace` (input `type`, `legalName`, `website`, `websiteConfirmed`, `proposeProducts`) creates the workspace, and `verification.startWorkspaceVerification` (void input) starts its verification. Both are legal acts of the account holder; the kit lists them but only sends them through the confirm guard.
 
 ## Input schemas
 

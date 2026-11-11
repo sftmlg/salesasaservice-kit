@@ -42,7 +42,7 @@ export function buildOpenApi(catalogue: Catalogue, baseUrl: string): Record<stri
       title: "Sales as a Service tRPC API (unofficial)",
       version: catalogue.measured,
       description:
-        "Unofficial description of the tRPC endpoints the salesasaservice.at web app calls. Derived from the client bundles and read-only probes; not published or endorsed by the platform. Workspace procedures answer PRECONDITION_FAILED until onboarding is complete.",
+        "Unofficial description of the tRPC endpoints the salesasaservice.at web app calls. Derived from the client bundles and read-only probes; not published or endorsed by the platform. An account without a finished onboarding gets PRECONDITION_FAILED from workspace procedures; one with a workspace gets the procedure's own answer.",
     },
     servers: [{ url: baseUrl }],
     paths: { ...authPaths(), ...paths },

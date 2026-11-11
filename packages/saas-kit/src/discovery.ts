@@ -109,19 +109,25 @@ export async function probeProcedure(client: SaasClient, procedure: string): Pro
   return errorCodeOf(res.status, res.text);
 }
 
+export function kindFromProbe(observed: string): ProcedureKind {
+  return observed === "METHOD_NOT_SUPPORTED" ? "mutation" : "query";
+}
+
 export async function buildCatalogue(
   client: SaasClient,
   discovered: Record<string, ProcedureKind>,
   today = new Date(),
+  supplied: readonly string[] = [],
 ): Promise<{ catalogue: Catalogue; notFound: string[] }> {
   const procedures: Record<string, ProcedureEntry> = {};
   const notFound: string[] = [];
-  for (const [name, kind] of Object.entries(discovered).sort(([left], [right]) =>
+  const names = [...new Set([...Object.keys(discovered), ...supplied])].sort((left, right) =>
     left.localeCompare(right),
-  )) {
+  );
+  for (const name of names) {
     const observed = await probeProcedure(client, name);
     if (observed === "NOT_FOUND") notFound.push(name);
-    else procedures[name] = { kind, observed };
+    else procedures[name] = { kind: discovered[name] ?? kindFromProbe(observed), observed };
   }
   return { catalogue: { measured: today.toISOString().slice(0, 10), procedures }, notFound };
 }

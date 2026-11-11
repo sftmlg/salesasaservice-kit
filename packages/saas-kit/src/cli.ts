@@ -2,6 +2,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { parseArgs } from "node:util";
 import { CATALOGUE_FILE, loadCatalogue } from "./catalogue-data.js";
 import { renderCatalogue } from "./catalogue-doc.js";
 import { loadConfig } from "./config.js";
@@ -12,7 +13,9 @@ import { buildOpenApi } from "./openapi.js";
 const USAGE = `saas-kit <command>
 
   docs <openapi.json> <catalogue.md>   render the OpenAPI file and the catalogue page from the bundled catalogue
-  refresh [--path /de/x]...            discover procedures with a live session, probe them read-only, rewrite the bundled catalogue
+  refresh [--path /de/x]... [--procedure router.name]...
+                                       discover procedures with a live session, probe them read-only, rewrite the bundled catalogue;
+                                       --procedure adds a name the crawl cannot reach (a GET probe still has to confirm it)
 
 Environment: SAAS_BASE_URL, SAAS_SESSION_FILE, SAAS_CREDENTIALS_FILE or SAAS_EMAIL and SAAS_PASSWORD`;
 
@@ -33,11 +36,19 @@ async function main(): Promise<number> {
     return 0;
   }
   if (command === "refresh") {
-    const paths = args.flatMap((arg, index) => (args[index - 1] === "--path" ? [arg] : []));
+    const { values } = parseArgs({
+      args,
+      options: { path: { type: "string", multiple: true }, procedure: { type: "string", multiple: true } },
+    });
     const client = createClient(config);
     await ensureSession(client, config);
-    const found = await discover(client, ["/de", ...paths]);
-    const { catalogue, notFound } = await buildCatalogue(client, found.procedures);
+    const found = await discover(client, ["/de", ...(values.path ?? [])]);
+    const { catalogue, notFound } = await buildCatalogue(
+      client,
+      found.procedures,
+      new Date(),
+      values.procedure ?? [],
+    );
     write(fileURLToPath(CATALOGUE_FILE), `${JSON.stringify(catalogue, null, 2)}\n`);
     console.log(JSON.stringify({ confirmed: Object.keys(catalogue.procedures).length, notFound }, null, 2));
     return 0;

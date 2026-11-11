@@ -68,6 +68,25 @@ describe("catalogue building", () => {
     });
   });
 
+  it("catalogues a supplied name by its probe: a refused GET is a mutation, an answer is a query, an unknown name is dropped", async () => {
+    const { fetch } = fakeFetch((req) => {
+      if (req.url.includes("a.write")) return { status: 405, body: trpcError("METHOD_NOT_SUPPORTED", 405) };
+      if (req.url.includes("a.read")) return okReply(1);
+      return { status: 404, body: trpcError("NOT_FOUND", 404) };
+    });
+    const { catalogue, notFound } = await buildCatalogue(
+      new SaasClient({ baseUrl: "https://x.test", fetch }),
+      {},
+      new Date("2026-11-11T10:00:00Z"),
+      ["a.write", "a.read", "a.typo"],
+    );
+    expect(catalogue.procedures).toEqual({
+      "a.read": { kind: "query", observed: "OK" },
+      "a.write": { kind: "mutation", observed: "METHOD_NOT_SUPPORTED" },
+    });
+    expect(notFound).toEqual(["a.typo"]);
+  });
+
   it("probes with GET only, so discovery can never write", async () => {
     const { fetch, calls } = fakeFetch(() => okReply(1));
     await buildCatalogue(new SaasClient({ baseUrl: "https://x.test", fetch }), { "a.b": "mutation" });
