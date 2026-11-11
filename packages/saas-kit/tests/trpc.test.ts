@@ -17,9 +17,9 @@ describe("request envelope", () => {
     expect(JSON.parse(url.searchParams.get("input") ?? "")).toEqual({ 0: { page: 2 } });
   });
 
-  it("sends null, not undefined, when a query has no input (JSON.stringify drops undefined and the batch key vanishes)", () => {
+  it('sends {} without a 0 key for a query without input (subscriptions.getStatus answers expected void to {"0":null})', () => {
     const url = new URL(queryPath("subscriptions.getStatus"), "https://x.test");
-    expect(url.searchParams.get("input")).toBe('{"0":null}');
+    expect(url.searchParams.get("input")).toBe("{}");
   });
 
   it("percent-encodes the input so braces and quotes survive the URL", () => {

@@ -18,7 +18,10 @@ export function assertProcedureName(name: string): void {
 
 export function queryPath(procedure: string, input?: unknown): string {
   assertProcedureName(procedure);
-  const params = new URLSearchParams({ batch: "1", input: JSON.stringify({ 0: input ?? null }) });
+  const params = new URLSearchParams({
+    batch: "1",
+    input: JSON.stringify(input === undefined ? {} : { 0: input }),
+  });
   return `/api/trpc/${procedure}?${params}`;
 }
 

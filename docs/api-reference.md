@@ -40,7 +40,7 @@ content-type: application/json
 {"0":<json or null>}
 ```
 
-The `input` query value is URL-encoded JSON. For a query without input send `null`; an omitted key is not equivalent. A mutation without input (void input) takes the body `{}` with no `0` key; `{"0":null}` is a different request.
+The `input` query value is URL-encoded JSON. A procedure without input (void input, for example the query `subscriptions.getStatus` or the mutation `verification.startWorkspaceVerification`) takes `input={}` or the body `{}`, with no `0` key; `{"0":null}` is a different request and is answered with `expected void, received null`. Send `{"0":null}` only for a procedure whose input is nullable.
 
 ## Response and error envelope
 
