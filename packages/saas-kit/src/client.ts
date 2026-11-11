@@ -1,3 +1,4 @@
+import { z } from "zod";
 import type { Credentials } from "./config.js";
 import { DEFAULT_BASE_URL } from "./config.js";
 import { assertConfirmed } from "./confirm.js";
@@ -20,10 +21,19 @@ export interface HttpResult {
   text: string;
 }
 
-export interface SessionInfo {
-  user: { id?: string; email?: string; name?: string; emailVerified?: boolean };
-  session: { expiresAt?: string };
-}
+const sessionSchema = z
+  .object({
+    user: z.object({
+      id: z.string().optional(),
+      email: z.string().optional(),
+      name: z.string().optional(),
+      emailVerified: z.boolean().optional(),
+    }),
+    session: z.object({ expiresAt: z.string().optional() }).default({}),
+  })
+  .nullable();
+
+export type SessionInfo = NonNullable<z.infer<typeof sessionSchema>>;
 
 const USER_AGENT = "salesasaservice-kit/0.1 (+unofficial headless client)";
 
@@ -122,9 +132,15 @@ export class SaasClient {
         "SESSION_HTTP",
         res.status,
       );
-    const parsed = parseJson(res.text) as Partial<SessionInfo> | null;
-    if (!parsed?.user) return null;
-    return { user: parsed.user, session: parsed.session ?? {} };
+    const parsed = sessionSchema.safeParse(parseJson(res.text));
+    if (!parsed.success) {
+      throw new UnexpectedResponseError(
+        `get-session answered an unknown shape: ${res.text.slice(0, 200)}`,
+        "SESSION_SHAPE",
+        res.status,
+      );
+    }
+    return parsed.data;
   }
 
   async query(procedure: string, input?: unknown): Promise<unknown> {
@@ -144,6 +160,6 @@ function parseJson(text: string): unknown {
   try {
     return JSON.parse(text);
   } catch {
-    return null;
+    return undefined;
   }
 }

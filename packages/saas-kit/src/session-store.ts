@@ -1,6 +1,10 @@
 import { chmodSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
+import { z } from "zod";
 import type { CookieJar } from "./cookies.js";
+import { ConfigError } from "./errors.js";
+
+const sessionFileSchema = z.object({ cookies: z.record(z.string()).default({}) });
 
 export interface SessionStore {
   load(): CookieJar;
@@ -22,8 +26,18 @@ export class FileSessionStore implements SessionStore {
 
   load(): CookieJar {
     if (!existsSync(this.file)) return {};
-    const parsed = JSON.parse(readFileSync(this.file, "utf8")) as { cookies?: CookieJar };
-    return parsed.cookies ?? {};
+    let raw: unknown;
+    try {
+      raw = JSON.parse(readFileSync(this.file, "utf8"));
+    } catch (cause) {
+      throw new ConfigError(
+        `cannot read the session file: ${cause instanceof Error ? cause.message : String(cause)}`,
+        "SESSION_FILE",
+      );
+    }
+    const parsed = sessionFileSchema.safeParse(raw);
+    if (!parsed.success) throw new ConfigError("the session file must hold a cookies object", "SESSION_FILE");
+    return parsed.data.cookies;
   }
 
   save(jar: CookieJar): void {

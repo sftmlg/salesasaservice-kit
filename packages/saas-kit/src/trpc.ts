@@ -1,3 +1,4 @@
+import { z } from "zod";
 import {
   MethodNotSupportedError,
   NotSignedInError,
@@ -29,9 +30,21 @@ export function mutationRequest(procedure: string, input?: unknown): { path: str
   };
 }
 
-interface ErrorItem {
-  error?: { message?: string; data?: { code?: string; httpStatus?: number } };
-  result?: { data?: unknown };
+const itemSchema = z.object({
+  error: z
+    .object({
+      message: z.string().optional(),
+      data: z.object({ code: z.string().optional(), httpStatus: z.number().optional() }).optional(),
+    })
+    .optional(),
+  result: z.object({ data: z.unknown() }).optional(),
+});
+
+type EnvelopeItem = z.infer<typeof itemSchema>;
+
+function firstItem(parsed: unknown): EnvelopeItem | undefined {
+  const parsedItem = itemSchema.safeParse(Array.isArray(parsed) ? parsed[0] : parsed);
+  return parsedItem.success ? parsedItem.data : undefined;
 }
 
 export function unwrapEnvelope(status: number, text: string): unknown {
@@ -45,8 +58,8 @@ export function unwrapEnvelope(status: number, text: string): unknown {
       status,
     );
   }
-  const item = (Array.isArray(parsed) ? parsed[0] : parsed) as ErrorItem | undefined;
-  if (!item || typeof item !== "object") {
+  const item = firstItem(parsed);
+  if (!item) {
     throw new UnexpectedResponseError(`empty tRPC envelope (HTTP ${status})`, "EMPTY_ENVELOPE", status);
   }
   if (item.error) throw mapTrpcError(item.error, status);
@@ -60,7 +73,7 @@ export function unwrapEnvelope(status: number, text: string): unknown {
   return item.result.data;
 }
 
-export function mapTrpcError(error: NonNullable<ErrorItem["error"]>, status: number): SaasError {
+export function mapTrpcError(error: NonNullable<EnvelopeItem["error"]>, status: number): SaasError {
   const code = error.data?.code ?? "UNKNOWN";
   const httpStatus = error.data?.httpStatus ?? status;
   const message = error.message ?? code;
@@ -80,8 +93,7 @@ export function mapTrpcError(error: NonNullable<ErrorItem["error"]>, status: num
 
 export function errorCodeOf(status: number, text: string): string {
   try {
-    const parsed = JSON.parse(text) as ErrorItem | ErrorItem[];
-    const item = Array.isArray(parsed) ? parsed[0] : parsed;
+    const item = firstItem(JSON.parse(text));
     if (item?.error) return item.error.data?.code ?? "UNKNOWN";
     if (item?.result) return "OK";
   } catch {

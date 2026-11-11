@@ -1,10 +1,10 @@
 import { readFileSync } from "node:fs";
+import { z } from "zod";
 import { ConfigError } from "./errors.js";
 
-export interface Credentials {
-  email: string;
-  password: string;
-}
+const credentialsSchema = z.object({ email: z.string().min(1), password: z.string().min(1) });
+
+export type Credentials = z.infer<typeof credentialsSchema>;
 
 export interface KitConfig {
   baseUrl: string;
@@ -26,19 +26,20 @@ export function loadConfig(env: Env = process.env): KitConfig {
 
 function loadCredentials(env: Env): Credentials | undefined {
   if (env.SAAS_CREDENTIALS_FILE) {
-    let parsed: Partial<Credentials>;
+    let raw: unknown;
     try {
-      parsed = JSON.parse(readFileSync(env.SAAS_CREDENTIALS_FILE, "utf8")) as Partial<Credentials>;
+      raw = JSON.parse(readFileSync(env.SAAS_CREDENTIALS_FILE, "utf8"));
     } catch (cause) {
       throw new ConfigError(
         `cannot read SAAS_CREDENTIALS_FILE: ${cause instanceof Error ? cause.message : String(cause)}`,
         "CONFIG",
       );
     }
-    if (!parsed.email || !parsed.password) {
+    const parsed = credentialsSchema.safeParse(raw);
+    if (!parsed.success) {
       throw new ConfigError("SAAS_CREDENTIALS_FILE must contain email and password", "CONFIG");
     }
-    return { email: parsed.email, password: parsed.password };
+    return parsed.data;
   }
   if (env.SAAS_EMAIL && env.SAAS_PASSWORD) return { email: env.SAAS_EMAIL, password: env.SAAS_PASSWORD };
   return undefined;

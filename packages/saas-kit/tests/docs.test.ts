@@ -1,4 +1,7 @@
-import { readFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { pathToFileURL } from "node:url";
 import { describe, expect, it } from "vitest";
 import { loadCatalogue } from "../src/catalogue-data.js";
 import { renderCatalogue } from "../src/catalogue-doc.js";
@@ -45,6 +48,15 @@ describe("generated documentation", () => {
     expect(md).toContain("## a");
     expect(md).toContain("## b");
     expect(md).toContain("| `b.m` | POST | `PRECONDITION_FAILED` |");
+  });
+
+  it("refuses a catalogue file with an unknown procedure kind (generated docs would silently map it to GET)", () => {
+    const file = join(mkdtempSync(join(tmpdir(), "saas-")), "procedures.json");
+    writeFileSync(
+      file,
+      JSON.stringify({ measured: "d", procedures: { "a.b": { kind: "patch", observed: "OK" } } }),
+    );
+    expect(() => loadCatalogue(pathToFileURL(file))).toThrow();
   });
 
   it("does not leak any credential-looking or personal data into the bundled catalogue", () => {

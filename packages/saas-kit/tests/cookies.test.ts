@@ -1,9 +1,10 @@
-import { mkdtempSync, statSync } from "node:fs";
+import { mkdtempSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { SaasClient } from "../src/client.js";
 import { applySetCookies, cookieHeader } from "../src/cookies.js";
+import { ConfigError } from "../src/errors.js";
 import { FileSessionStore } from "../src/session-store.js";
 import { fakeFetch, ok } from "./helpers.js";
 
@@ -90,6 +91,15 @@ describe("file session store", () => {
     expect(statSync(file).mode & 0o777).toBe(0o600);
     expect(store.load()).toEqual({ s: "1" });
   });
+
+  it.each(["{not json", '{"cookies":{"s":1}}', '{"cookies":[]}'])(
+    "reports the unreadable session file %j as a config error instead of a raw parse error or a jar of wrong types",
+    (content) => {
+      const file = join(mkdtempSync(join(tmpdir(), "saas-")), "session.json");
+      writeFileSync(file, content);
+      expect(() => new FileSessionStore(file).load()).toThrow(ConfigError);
+    },
+  );
 
   it("loads an empty jar when the file does not exist yet (first run must not throw)", () => {
     expect(new FileSessionStore(join(mkdtempSync(join(tmpdir(), "saas-")), "none.json")).load()).toEqual({});

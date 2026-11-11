@@ -32,6 +32,24 @@ describe("auth flow", () => {
     );
   });
 
+  it.each(["<html>login</html>", "[]", '{"user":"x"}'])(
+    "getSession throws on the unknown body %j instead of reporting signed out (a login page must not look like logout)",
+    async (body) => {
+      const { fetch } = fakeFetch(() => body);
+      await expect(new SaasClient({ baseUrl: "https://x.test", fetch }).getSession()).rejects.toMatchObject({
+        code: "SESSION_SHAPE",
+      });
+    },
+  );
+
+  it("getSession returns the user and the expiry of a signed-in answer", async () => {
+    const { fetch } = fakeFetch(() => '{"user":{"email":"a@b.c"},"session":{"expiresAt":"2026-12-01"}}');
+    expect(await new SaasClient({ baseUrl: "https://x.test", fetch }).getSession()).toEqual({
+      user: { email: "a@b.c" },
+      session: { expiresAt: "2026-12-01" },
+    });
+  });
+
   it("sign-up sends acceptTerms and no cookie", async () => {
     const { fetch, calls } = fakeFetch(() => "{}");
     await new SaasClient({ baseUrl: "https://x.test", fetch }).signUp({

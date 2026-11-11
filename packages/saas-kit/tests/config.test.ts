@@ -31,6 +31,12 @@ describe("config", () => {
     expect(() => loadConfig({ SAAS_CREDENTIALS_FILE: file })).toThrow(ConfigError);
   });
 
+  it("rejects a credentials file whose password is not a string (a number must not be sent as a login)", () => {
+    const file = join(dir, "c4.json");
+    writeFileSync(file, JSON.stringify({ email: "a@b.c", password: 12345 }));
+    expect(() => loadConfig({ SAAS_CREDENTIALS_FILE: file })).toThrow(ConfigError);
+  });
+
   it("reports a missing credentials file as a config error naming the variable", () => {
     expect(() => loadConfig({ SAAS_CREDENTIALS_FILE: join(dir, "missing.json") })).toThrow(
       /SAAS_CREDENTIALS_FILE/,

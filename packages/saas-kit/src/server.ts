@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+import { SaasError } from "./errors.js";
 import { type ToolDeps, tools } from "./tools.js";
 
 async function run<T>(fn: () => Promise<T>) {
@@ -7,7 +8,7 @@ async function run<T>(fn: () => Promise<T>) {
     const value = await fn();
     return { content: [{ type: "text" as const, text: JSON.stringify(value ?? null, null, 2) }] };
   } catch (error) {
-    const code = (error as { code?: string }).code;
+    const code = error instanceof SaasError ? error.code : undefined;
     const message = error instanceof Error ? error.message : String(error);
     return {
       isError: true,
