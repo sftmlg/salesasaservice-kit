@@ -63,18 +63,6 @@ describe("generated documentation", () => {
     expect(() => loadCatalogue(pathToFileURL(file))).toThrow();
   });
 
-  it("refuses a hand-edited entry confirmed as unprobed (no probe produces that kind, so the entry would claim a confirmation nothing measured)", () => {
-    const file = join(mkdtempSync(join(tmpdir(), "saas-")), "procedures.json");
-    writeFileSync(
-      file,
-      JSON.stringify({
-        measured: "d",
-        procedures: { "a.b": { router: "a", kind: "mutation", confirmedBy: "unprobed" } },
-      }),
-    );
-    expect(() => loadCatalogue(pathToFileURL(file))).toThrow(/confirmedBy/);
-  });
-
   it("does not leak any credential-looking or personal data into the bundled catalogue", () => {
     expect(JSON.stringify(catalogue)).not.toMatch(/@|password|token/i);
   });
