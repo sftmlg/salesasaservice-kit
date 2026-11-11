@@ -50,8 +50,37 @@ export function extractRoutes(source: string): string[] {
   return [...localized, ...unprefixed];
 }
 
+const STATIC_PREFIX = "/_next/static/";
+const MAX_DECODE_ROUNDS = 5;
+
+function fullyDecoded(path: string): string | undefined {
+  let current = path;
+  for (let round = 0; round < MAX_DECODE_ROUNDS; round++) {
+    let next: string;
+    try {
+      next = decodeURIComponent(current);
+    } catch {
+      return undefined;
+    }
+    if (next === current) return current;
+    current = next;
+  }
+  return undefined;
+}
+
+function climbs(path: string): boolean {
+  return path.split(/[/\\]/).some((segment) => segment === "." || segment === "..");
+}
+
+export function isStaticChunkPath(chunk: string): boolean {
+  const decoded = fullyDecoded(chunk);
+  if (decoded === undefined || climbs(decoded) || climbs(chunk)) return false;
+  const resolved = new URL(chunk, "http://chunk.invalid");
+  return resolved.origin === "http://chunk.invalid" && resolved.pathname.startsWith(STATIC_PREFIX);
+}
+
 export function extractChunks(html: string): string[] {
-  return [...new Set(html.match(CHUNK_RE) ?? [])].filter((chunk) => !chunk.split("/").includes(".."));
+  return [...new Set(html.match(CHUNK_RE) ?? [])].filter(isStaticChunkPath);
 }
 
 export interface DiscoveryResult {

@@ -96,6 +96,41 @@ describe("discovery scope", () => {
     await discover(saas, ["/de"]);
     expect(calls.every((call) => !call.url.includes("/api/"))).toBe(true);
   });
+
+  it.each([
+    "/_next/static/%2e%2e/%2e%2e/api/auth/sign-out.js",
+    "/_next/static/%2E%2E/%2E%2E/api/auth/sign-out.js",
+    "/_next/static/%2e./%2E./api/auth/sign-out.js",
+    "/_next/static/.%2e/.%2E/api/auth/sign-out.js",
+    "/_next/static/%252e%252e/%252e%252e/api/auth/sign-out.js",
+    "/_next/static/%25252e%25252e/%25252e%25252e/api/auth/sign-out.js",
+    "/_next/static/%2e%2e%2f%2e%2e%2fapi/auth/sign-out.js",
+    "/_next/static/..%2f..%2fapi/auth/sign-out.js",
+    "/_next/static/..%5c..%5capi/auth/sign-out.js",
+    "/_next/static/%2e%2e%5c%2e%2e%5capi/auth/sign-out.js",
+    "/_next/static/a/%2e%2e/%2e%2e/api/auth/sign-out.js",
+  ])(
+    "does not fetch the encoded dot-segment chunk link %j (page text could trigger a signed-in GET outside /_next/static)",
+    async (link) => {
+      expect(extractChunks(`<script src="${link}"></script>`)).toEqual([]);
+      const { client: saas, calls } = client((req) =>
+        req.url.endsWith("/de") ? `<script src="${link}"></script>` : "",
+      );
+      await discover(saas, ["/de"]);
+      expect(calls.map((call) => new URL(call.url).pathname)).toEqual(["/de"]);
+    },
+  );
+
+  it.each([
+    "/_next/static/chunks/app-1a2b.js",
+    "/_next/static/chunks/pages/%5Bid%5D-9f.js",
+    "/_next/static/chunks/a%2db.js",
+  ])(
+    "still fetches the legitimate chunk %j (the filter must not block the bundles discovery reads)",
+    (link) => {
+      expect(extractChunks(`<script src="${link}"></script>`)).toEqual([link]);
+    },
+  );
 });
 
 describe("catalogue building", () => {
