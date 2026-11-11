@@ -99,4 +99,14 @@ describe("api reference", () => {
     expect(mentioned.length).toBeGreaterThan(10);
     expect(mentioned.filter((name) => !(name in catalogue.procedures))).toEqual([]);
   });
+
+  it.each([
+    ["a date of a call", /\b20\d\d-\d\d-\d\d\b/],
+    ["the account owner", /account owner/i],
+    ["an empty result of one account", /`\[\]`|"items":\[\]/],
+    ["the role of the probing account", /has: [a-z_]+/],
+  ])("describes platform behaviour, not the state of one account (found %s)", (_label, pattern) => {
+    const text = readFileSync(new URL("api-reference.md", root), "utf8");
+    expect(text).not.toMatch(pattern);
+  });
 });
