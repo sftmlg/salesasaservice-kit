@@ -146,6 +146,12 @@
       "kind": "mutation",
       "confirmedBy": "get-refused"
     },
+    "listings.create": {
+      "router": "listings",
+      "kind": "mutation",
+      "confirmedBy": "unprobed",
+      "note": "Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name."
+    },
     "listings.deleteDraft": {
       "router": "listings",
       "kind": "mutation",
@@ -287,15 +293,75 @@
       "kind": "mutation",
       "confirmedBy": "get-refused"
     },
+    "productProposals.accept": {
+      "router": "productProposals",
+      "kind": "mutation",
+      "confirmedBy": "unprobed",
+      "note": "Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name."
+    },
     "productProposals.delete": {
       "router": "productProposals",
       "kind": "mutation",
       "confirmedBy": "get-refused"
     },
+    "products.completeImageUpload": {
+      "router": "products",
+      "kind": "mutation",
+      "confirmedBy": "unprobed",
+      "note": "Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name."
+    },
+    "products.create": {
+      "router": "products",
+      "kind": "mutation",
+      "confirmedBy": "unprobed",
+      "note": "Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name."
+    },
     "products.delete": {
       "router": "products",
       "kind": "mutation",
       "confirmedBy": "get-refused"
+    },
+    "products.extractFromText": {
+      "router": "products",
+      "kind": "mutation",
+      "confirmedBy": "unprobed",
+      "note": "Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name."
+    },
+    "products.extractPricing": {
+      "router": "products",
+      "kind": "mutation",
+      "confirmedBy": "unprobed",
+      "note": "Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name."
+    },
+    "products.generateShortDescription": {
+      "router": "products",
+      "kind": "mutation",
+      "confirmedBy": "unprobed",
+      "note": "Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name."
+    },
+    "products.inspectWebsite": {
+      "router": "products",
+      "kind": "mutation",
+      "confirmedBy": "unprobed",
+      "note": "Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name."
+    },
+    "products.startImageUpload": {
+      "router": "products",
+      "kind": "mutation",
+      "confirmedBy": "unprobed",
+      "note": "Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name."
+    },
+    "products.suggestClassification": {
+      "router": "products",
+      "kind": "mutation",
+      "confirmedBy": "unprobed",
+      "note": "Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name."
+    },
+    "products.update": {
+      "router": "products",
+      "kind": "mutation",
+      "confirmedBy": "unprobed",
+      "note": "Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name."
     },
     "profile.cancelLogoUpload": {
       "router": "profile",
@@ -331,6 +397,12 @@
       "router": "profile",
       "kind": "mutation",
       "confirmedBy": "get-refused"
+    },
+    "questionCatalogs.getCatalogForProduct": {
+      "router": "questionCatalogs",
+      "kind": "query",
+      "confirmedBy": "unprobed",
+      "note": "Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name."
     },
     "questionCatalogs.startAttempt": {
       "router": "questionCatalogs",

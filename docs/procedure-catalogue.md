@@ -2,7 +2,7 @@
 
 Generated from `packages/saas-kit/data/procedures.json` (measured 2026-11-11). Do not edit by hand; run `saas-kit docs`.
 
-78 procedures confirmed by a read-only GET that did not answer `NOT_FOUND`. The catalogue holds only what is true for every account; what a GET answers for one account on one day is runtime output of `saas-kit probe`, explained under "How the catalogue was confirmed" in [api-reference.md](api-reference.md).
+90 procedures, 78 confirmed by a read-only GET that did not answer `NOT_FOUND` and 12 named by a page of the app but not yet probed. The catalogue holds only what is true for every account; what a GET answers for one account on one day is runtime output of `saas-kit probe`, explained under "How the catalogue was confirmed" in [api-reference.md](api-reference.md).
 
 ## activities
 
@@ -67,6 +67,7 @@ Generated from `packages/saas-kit/data/procedures.json` (measured 2026-11-11). D
 | Procedure | Method | Confirmed by | Note |
 | --- | --- | --- | --- |
 | `listings.commit` | POST | a GET is refused (405), so it is a mutation |  |
+| `listings.create` | POST | named by a page of the app, not yet probed | Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name. |
 | `listings.deleteDraft` | POST | a GET is refused (405), so it is a mutation |  |
 | `listings.publish` | POST | a GET is refused (405), so it is a mutation |  |
 | `listings.unpublish` | POST | a GET is refused (405), so it is a mutation |  |
@@ -120,13 +121,23 @@ Generated from `packages/saas-kit/data/procedures.json` (measured 2026-11-11). D
 
 | Procedure | Method | Confirmed by | Note |
 | --- | --- | --- | --- |
+| `productProposals.accept` | POST | named by a page of the app, not yet probed | Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name. |
 | `productProposals.delete` | POST | a GET is refused (405), so it is a mutation |  |
 
 ## products
 
 | Procedure | Method | Confirmed by | Note |
 | --- | --- | --- | --- |
+| `products.completeImageUpload` | POST | named by a page of the app, not yet probed | Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name. |
+| `products.create` | POST | named by a page of the app, not yet probed | Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name. |
 | `products.delete` | POST | a GET is refused (405), so it is a mutation |  |
+| `products.extractFromText` | POST | named by a page of the app, not yet probed | Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name. |
+| `products.extractPricing` | POST | named by a page of the app, not yet probed | Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name. |
+| `products.generateShortDescription` | POST | named by a page of the app, not yet probed | Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name. |
+| `products.inspectWebsite` | POST | named by a page of the app, not yet probed | Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name. |
+| `products.startImageUpload` | POST | named by a page of the app, not yet probed | Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name. |
+| `products.suggestClassification` | POST | named by a page of the app, not yet probed | Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name. |
+| `products.update` | POST | named by a page of the app, not yet probed | Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name. |
 
 ## profile
 
@@ -144,6 +155,7 @@ Generated from `packages/saas-kit/data/procedures.json` (measured 2026-11-11). D
 
 | Procedure | Method | Confirmed by | Note |
 | --- | --- | --- | --- |
+| `questionCatalogs.getCatalogForProduct` | GET | named by a page of the app, not yet probed | Named only by the page /de/business-partner/products-services; not yet probed, and the kind is inferred from the name. |
 | `questionCatalogs.startAttempt` | POST | a GET is refused (405), so it is a mutation |  |
 | `questionCatalogs.submitAttempt` | POST | a GET is refused (405), so it is a mutation |  |
 

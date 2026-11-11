@@ -4,7 +4,7 @@ import { errorCodeOf, queryPath } from "./trpc.js";
 
 export type ProcedureKind = "query" | "mutation";
 
-export type Confirmation = "get-refused" | "get-answered";
+export type Confirmation = "get-refused" | "get-answered" | "unprobed";
 
 export interface ProcedureEntry {
   router: string;
@@ -24,6 +24,12 @@ const ROUTE_RE = /["'`](\/(?:de|en)\/[a-z0-9\-/[\]]*)["'`]/g;
 const APP_ROUTE_RE = /(?:href|pathname|push|replace)[:(]\s*["'`](\/[a-z][a-z0-9\-/[\]]*)["'`]/g;
 const CHUNK_RE = /\/_next\/static\/[^"'\\\s)]+\.js/g;
 const APP_PAGE_RE = /^\/(?:de|en)(?:\/[A-Za-z0-9_[\]-]+)*\/?$/;
+
+export const DEFAULT_CRAWL_PATHS: readonly string[] = ["/de", "/de/business-partner/products-services"];
+
+export function crawlStartPaths(extra: readonly string[] = []): string[] {
+  return [...new Set([...DEFAULT_CRAWL_PATHS, ...extra])];
+}
 
 export function isAppPage(path: string): boolean {
   return APP_PAGE_RE.test(path);

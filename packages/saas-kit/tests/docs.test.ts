@@ -68,6 +68,47 @@ describe("generated documentation", () => {
   });
 });
 
+describe("unprobed catalogue entries", () => {
+  const productsPage = [
+    "listings.create",
+    "products.create",
+    "products.update",
+    "products.completeImageUpload",
+    "products.startImageUpload",
+    "products.extractFromText",
+    "products.extractPricing",
+    "products.generateShortDescription",
+    "products.inspectWebsite",
+    "products.suggestClassification",
+    "productProposals.accept",
+    "questionCatalogs.getCatalogForProduct",
+  ];
+
+  it("catalogues every name that only the products page references as unprobed (get-refused without a probe would claim a measurement nobody made)", () => {
+    const missing = productsPage.filter((name) => catalogue.procedures[name]?.confirmedBy !== "unprobed");
+    expect(missing).toEqual([]);
+  });
+
+  it("marks the one read as a query and the rest as mutations (a write catalogued as query would be sent as a GET)", () => {
+    const kinds = Object.fromEntries(productsPage.map((name) => [name, catalogue.procedures[name]?.kind]));
+    expect(kinds["questionCatalogs.getCatalogForProduct"]).toBe("query");
+    expect(productsPage.filter((name) => kinds[name] === "mutation")).toHaveLength(productsPage.length - 1);
+  });
+
+  it("renders an unprobed entry as not yet probed and counts it apart from probed ones (the header must not call it confirmed)", () => {
+    const page = renderCatalogue({
+      measured: "d",
+      procedures: {
+        "a.q": proc("a", "query"),
+        "a.n": { router: "a", kind: "mutation", confirmedBy: "unprobed" },
+      },
+    });
+    expect(page).toContain("| `a.n` | POST | named by a page of the app, not yet probed |");
+    expect(page).toContain("2 procedures, 1 confirmed by a read-only GET");
+    expect(page).toContain("1 named by a page of the app but not yet probed");
+  });
+});
+
 describe("catalogue file", () => {
   it("refuses an entry that carries a probe answer (a per-account result would be shipped as a fact for every user)", () => {
     const file = join(mkdtempSync(join(tmpdir(), "saas-")), "procedures.json");

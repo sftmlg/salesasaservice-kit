@@ -9,7 +9,7 @@ const catalogueSchema: z.ZodType<Catalogue> = z.object({
     z.strictObject({
       router: z.string(),
       kind: z.enum(["query", "mutation"]),
-      confirmedBy: z.enum(["get-refused", "get-answered"]),
+      confirmedBy: z.enum(["get-refused", "get-answered", "unprobed"]),
       note: z.exactOptional(z.string()),
     }),
   ),

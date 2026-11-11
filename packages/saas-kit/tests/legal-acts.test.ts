@@ -115,6 +115,33 @@ describe("mutation allowlist", () => {
     },
   );
 
+  it.each([
+    "products.create",
+    "products.update",
+    "listings.create",
+    "productProposals.accept",
+    "products.startImageUpload",
+    "products.completeImageUpload",
+    "products.extractFromText",
+    "products.extractPricing",
+    "products.generateShortDescription",
+    "products.inspectWebsite",
+    "products.suggestClassification",
+  ])(
+    "keeps %s a legal act (it puts an entry in front of sales agents in the account holder's name, or its behaviour is not observed and an unobserved write stays refused)",
+    async (name) => {
+      expect(isMcpAllowedMutation(name)).toBe(false);
+      const { mcp, calls } = await connectServer();
+      const result = await mcp.callTool({
+        name: "mutation",
+        arguments: { procedure: name, confirm: true, legalAct: true },
+      });
+      expect(result.isError).toBe(true);
+      expect(JSON.stringify(result.content)).toContain("LEGAL_ACT_REFUSED");
+      expect(calls).toHaveLength(0);
+    },
+  );
+
   it("allows no name that deletes or acknowledges a financial item (an allowlist described as reversible must hold no delete)", () => {
     expect(MCP_ALLOWED_MUTATIONS.filter((name) => /delete|remove|financial/i.test(name))).toEqual([]);
   });

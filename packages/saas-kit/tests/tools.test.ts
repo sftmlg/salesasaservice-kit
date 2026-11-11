@@ -62,6 +62,12 @@ describe("tool handlers", () => {
     expect(calls).toHaveLength(0);
   });
 
+  it("discover tool without paths still crawls the products page (names only that page references stayed out of the catalogue)", async () => {
+    const { deps: toolDeps, calls } = deps(() => "<html></html>");
+    await tools.discover(toolDeps, {});
+    expect(calls.map((call) => call.url)).toContain("https://x.test/de/business-partner/products-services");
+  });
+
   it("list_procedures filters by router and kind", async () => {
     const { deps: toolDeps } = deps(() => "");
     const result = await tools.listProcedures(toolDeps, { router: "listings", kind: "mutation" });
