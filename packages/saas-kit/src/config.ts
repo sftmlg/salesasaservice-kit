@@ -22,9 +22,29 @@ interface Env {
   readonly SAAS_PASSWORD?: string | undefined;
 }
 
+const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "[::1]"]);
+
+function parseBaseUrl(value: string): string {
+  const trimmed = value.replace(/\/+$/, "");
+  let url: URL;
+  try {
+    url = new URL(trimmed);
+  } catch {
+    throw new ConfigError(`SAAS_BASE_URL is not a URL: ${trimmed}`, "CONFIG");
+  }
+  const secure = url.protocol === "https:" || (url.protocol === "http:" && LOCAL_HOSTS.has(url.hostname));
+  if (!secure || url.pathname !== "/") {
+    throw new ConfigError(
+      "SAAS_BASE_URL must be an https origin without a path (http only for localhost)",
+      "CONFIG",
+    );
+  }
+  return url.origin;
+}
+
 export function loadConfig(env: Env = process.env): KitConfig {
   return {
-    baseUrl: (env.SAAS_BASE_URL ?? DEFAULT_BASE_URL).replace(/\/+$/, ""),
+    baseUrl: parseBaseUrl(env.SAAS_BASE_URL ?? DEFAULT_BASE_URL),
     sessionFile: env.SAAS_SESSION_FILE,
     credentials: loadCredentials(env),
   };

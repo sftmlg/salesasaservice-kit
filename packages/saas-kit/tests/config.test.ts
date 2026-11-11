@@ -49,6 +49,17 @@ describe("config", () => {
     expect(cfg.baseUrl).toBe("https://x.test");
   });
 
+  it.each(["http://www.example.test", "https://x.test/app", "not a url", "ftp://x.test"])(
+    "rejects the base URL %j (the session cookie must not travel in clear text or to an unexpected prefix)",
+    (baseUrl) => {
+      expect(() => loadConfig({ SAAS_BASE_URL: baseUrl })).toThrow(ConfigError);
+    },
+  );
+
+  it("allows http for a local test server", () => {
+    expect(loadConfig({ SAAS_BASE_URL: "http://localhost:3000" }).baseUrl).toBe("http://localhost:3000");
+  });
+
   it("needs both loose variables (an email alone is not a login)", () => {
     expect(loadConfig({ SAAS_EMAIL: "a@b.c" }).credentials).toBeUndefined();
   });
