@@ -19,7 +19,7 @@ describe("confirm guard", () => {
   it("sends no request at all when the mutation is unconfirmed (guard must sit before the network)", async () => {
     const { fetch, calls } = fakeFetch(() => okReply(null));
     const client = new SaasClient({ baseUrl: "https://x.test", fetch });
-    await expect(client.mutate("listings.update", { id: 1 }, { confirm: false })).rejects.toBeInstanceOf(
+    await expect(client.mutate("contacts.update", { id: 1 }, { confirm: false })).rejects.toBeInstanceOf(
       ConfirmationRequiredError,
     );
     expect(calls).toHaveLength(0);
