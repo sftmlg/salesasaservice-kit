@@ -16,6 +16,7 @@ export interface Catalogue {
 const PROC_RE =
   /\b([a-zA-Z_$][\w$]*)\.([a-zA-Z_$][\w$]*)\.(queryOptions|mutationOptions|infiniteQueryOptions|useQuery|useMutation|useSuspenseQuery|useInfiniteQuery|queryKey|pathFilter)\b/g;
 const ROUTE_RE = /["'`](\/(?:de|en)\/[a-z0-9\-/[\]]*)["'`]/g;
+const APP_ROUTE_RE = /(?:href|pathname|push|replace)[:(]\s*["'`](\/[a-z][a-z0-9\-/[\]]*)["'`]/g;
 const CHUNK_RE = /\/_next\/static\/[^"'\\\s)]+\.js/g;
 
 export function extractProcedures(source: string): Record<string, ProcedureKind> {
@@ -29,7 +30,14 @@ export function extractProcedures(source: string): Record<string, ProcedureKind>
 }
 
 export function extractRoutes(source: string): string[] {
-  return [...source.matchAll(ROUTE_RE)].map((m) => (m[1] ?? "").replace(/\/$/, "") || (m[1] ?? ""));
+  const localized = [...source.matchAll(ROUTE_RE)].map(
+    (m) => (m[1] ?? "").replace(/\/$/, "") || (m[1] ?? ""),
+  );
+  const unprefixed = [...source.matchAll(APP_ROUTE_RE)]
+    .map((m) => m[1] ?? "")
+    .filter((route) => !/^\/(api|_next|de|en)(\/|$)/.test(route))
+    .map((route) => `/de${route.replace(/\/$/, "")}`);
+  return [...localized, ...unprefixed];
 }
 
 export function extractChunks(html: string): string[] {

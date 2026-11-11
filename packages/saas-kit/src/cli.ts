@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { CATALOGUE_FILE, loadCatalogue } from "./catalogue-data.js";
 import { renderCatalogue } from "./catalogue-doc.js";
 import { loadConfig } from "./config.js";
@@ -37,7 +38,7 @@ async function main(): Promise<number> {
     await loginWithConfig(client, config);
     const found = await discover(client, ["/de", ...paths]);
     const { catalogue, notFound } = await buildCatalogue(client, found.procedures);
-    write(CATALOGUE_FILE.pathname, `${JSON.stringify(catalogue, null, 2)}\n`);
+    write(fileURLToPath(CATALOGUE_FILE), `${JSON.stringify(catalogue, null, 2)}\n`);
     console.log(JSON.stringify({ confirmed: Object.keys(catalogue.procedures).length, notFound }, null, 2));
     return 0;
   }

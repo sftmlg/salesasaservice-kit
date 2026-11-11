@@ -8,6 +8,7 @@ export * from "./discovery.js";
 export * from "./errors.js";
 export * from "./kit.js";
 export * from "./openapi.js";
+export * from "./server.js";
 export * from "./session-store.js";
 export * from "./tools.js";
 export * from "./trpc.js";

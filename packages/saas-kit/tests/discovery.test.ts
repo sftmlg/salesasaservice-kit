@@ -74,3 +74,15 @@ describe("catalogue building", () => {
     expect(calls.every((c) => c.method === "GET")).toBe(true);
   });
 });
+
+describe("route extraction", () => {
+  it("prefixes locale-less href routes with /de and skips api and asset paths (otherwise the crawl requests /api/* or 404s)", async () => {
+    const { extractRoutes } = await import("../src/discovery.js");
+    const routes = extractRoutes(
+      'href:"/business-partner/offer-template", push("/api/trpc"), "/de/network/", href:"/_next/x"',
+    );
+    expect(routes).toContain("/de/business-partner/offer-template");
+    expect(routes).toContain("/de/network");
+    expect(routes.some((r) => r.includes("api") || r.includes("_next"))).toBe(false);
+  });
+});
