@@ -164,3 +164,19 @@ describe("api reference", () => {
     expect(text).not.toMatch(pattern);
   });
 });
+
+describe("readme apply section", () => {
+  const readme = readFileSync(new URL("../../../README.md", import.meta.url), "utf8");
+
+  it("states that ids come from the create answers and not from the page (a stale 'read back from the page' line describes code that no longer exists)", () => {
+    expect(readme).not.toMatch(/read back from the page|ids are read back|after re-reading the page/i);
+    expect(readme).toMatch(/products\.create` answer carries the new id/);
+  });
+
+  it("lists the listings.publish input as confirmed and only the listings.create answer id as assumed", () => {
+    const notObserved = readme.split("\n").find((line) => line.startsWith("- Not observed")) ?? "";
+    expect(notObserved).not.toContain("listings.publish");
+    expect(notObserved).not.toContain("answers of the create calls");
+    expect(notObserved).toContain("listings.create");
+  });
+});

@@ -92,10 +92,10 @@ Details: [docs/api-reference.md](docs/api-reference.md#mutation-policy).
 - It reads the catalogue page, matches existing products by title (surrounding spaces ignored; an AI proposal is not a product), and plans per entry: create what is missing, update what differs, leave the rest.
 - Default: a dry run. It prints the plan with `from`/`to` per changed field and sends nothing but that one `GET`.
 - Both `--confirm` and `--legal-act` are required to write; one of them alone is refused before any request. It creates and edits records that sales agents see, so it is a legal act in the account holder's name. There is no MCP tool for it.
-- Order: `products.create` and `products.update`, then (after re-reading the page for the ids of new products) `listings.create` and `listings.update`. `listings.publish` runs only with `--publish`, and only for listings the page does not show as published.
+- Order: `products.create` and `products.update`, then `listings.create` and `listings.update`. The `products.create` answer carries the new id, which is the `productId` of the listing; `listings.publish` takes `{ "id" }` and runs only with `--publish`, and only for listings the page does not show as published. A new listing is published by the id of its `listings.create` answer.
 - It stops at the first failed write and names the steps that were done. Running it again continues, because records are matched by title.
 - Only what the page shows decides whether an update is needed: product `kind`, `pricePerBlockEuros`, `unit`, `billingPeriod`; listing `titleOverride`, `region`, `commissionMode`, `commissionValue`. Every other field you give is sent when the record is written for another reason, but a change in it alone is not detected; the dry run says so.
-- Not observed: the answers of the create calls (the kit does not use them; ids are read back from the page), the input of `listings.publish` (the kit sends `{ "id": <listing id> }` and a different schema surfaces as a platform validation error), the commission label of a fixed commission, and a price with a block size other than 1.
+- Not observed: that the `listings.create` answer carries the new listing id (the kit assumes it like the `products.create` answer; without an id it stops with `NO_ID_IN_ANSWER` and a rerun continues, publishing the listing it finds by title), the commission label of a fixed commission, and a price with a block size other than 1.
 
 ### Library
 

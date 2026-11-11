@@ -205,7 +205,7 @@ describe("apply planning", () => {
 });
 
 describe("apply writes", () => {
-  it("creates the product, then the listing under the id read back from the page (the create answer was never observed, so no id may be taken from it)", async () => {
+  it("creates the product, then the listing under the id from the products.create answer (a listing under a wrong product id would sit on another record)", async () => {
     const { platform, client } = setup();
     const result = await runApply(client, file([entry("a", "Alpha")]), LIVE);
     expect(platform.mutations.map((mutation) => mutation.procedure)).toEqual([
@@ -283,7 +283,7 @@ describe("apply writes", () => {
     expect(platform.listings[0]?.status).toBe("draft");
   });
 
-  it("with --publish publishes the new draft listing by the id read back and skips a listing that is already published", async () => {
+  it("with --publish publishes the new draft listing by the id from its create answer and skips a listing that is already published", async () => {
     const platform = new FakePlatform([product(1, "Alpha")], [listing(1, "Alpha")]);
     await runApply(setup(platform).client, file([entry("a", "Alpha"), entry("b", "Beta")]), {
       ...LIVE,
