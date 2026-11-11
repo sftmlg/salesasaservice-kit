@@ -54,6 +54,14 @@ describe("tool handlers", () => {
     expect(calls[0]?.method).toBe("GET");
   });
 
+  it("discover tool refuses an API path and sends nothing (the MCP discover must not be a general GET on the platform host)", async () => {
+    const { deps: toolDeps, calls } = deps(() => "");
+    await expect(tools.discover(toolDeps, { paths: ["/api/auth/sign-out"] })).rejects.toMatchObject({
+      code: "NOT_AN_APP_PAGE",
+    });
+    expect(calls).toHaveLength(0);
+  });
+
   it("list_procedures filters by router and kind", async () => {
     const { deps: toolDeps } = deps(() => "");
     const result = await tools.listProcedures(toolDeps, { router: "listings", kind: "mutation" });

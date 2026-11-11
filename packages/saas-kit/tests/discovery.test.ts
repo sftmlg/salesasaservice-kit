@@ -51,6 +51,53 @@ describe("discovery crawl", () => {
   });
 });
 
+describe("discovery scope", () => {
+  const client = (reply: Parameters<typeof fakeFetch>[0]) => {
+    const { fetch, calls } = fakeFetch(reply);
+    return { calls, client: new SaasClient({ baseUrl: "https://x.test", fetch }) };
+  };
+
+  it.each([
+    "/api/auth/sign-out",
+    "/api/trpc/listings.publish",
+    "/_next/static/a.js",
+    "/de/../api/auth/sign-out",
+    "/de/./x",
+    "/de%2f..%2fapi",
+    "//evil.test/de",
+    "/dex",
+    "/fr",
+    "/de?next=/api",
+    "/de#x",
+    "/",
+    "",
+  ])(
+    "refuses the start path %j and fetches nothing (discover must not GET an arbitrary path on the platform host)",
+    async (path) => {
+      const { client: saas, calls } = client(() => okReply(null));
+      await expect(discover(saas, [path])).rejects.toMatchObject({ code: "NOT_AN_APP_PAGE" });
+      expect(calls).toHaveLength(0);
+    },
+  );
+
+  it.each(["/de", "/en", "/de/", "/en/network", "/de/business-partner/offer-template"])(
+    "crawls the app page %j (the restriction must not block the pages discovery exists for)",
+    async (path) => {
+      const { client: saas, calls } = client(() => "<html></html>");
+      await discover(saas, [path]);
+      expect(calls.map((call) => call.url)).toContain(`https://x.test${path}`);
+    },
+  );
+
+  it("does not fetch a chunk link that climbs out of /_next/static (a page could name /api/ through ..)", async () => {
+    const { client: saas, calls } = client((req) =>
+      req.url.endsWith("/de") ? '<script src="/_next/static/../../api/auth/sign-out.js"></script>' : "",
+    );
+    await discover(saas, ["/de"]);
+    expect(calls.every((call) => !call.url.includes("/api/"))).toBe(true);
+  });
+});
+
 describe("catalogue building", () => {
   it("drops NOT_FOUND names (bundle noise) and keeps gated and unsupported ones with their state", async () => {
     const { fetch } = fakeFetch((req) => {

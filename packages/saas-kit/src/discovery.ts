@@ -23,6 +23,11 @@ const PROC_RE =
 const ROUTE_RE = /["'`](\/(?:de|en)\/[a-z0-9\-/[\]]*)["'`]/g;
 const APP_ROUTE_RE = /(?:href|pathname|push|replace)[:(]\s*["'`](\/[a-z][a-z0-9\-/[\]]*)["'`]/g;
 const CHUNK_RE = /\/_next\/static\/[^"'\\\s)]+\.js/g;
+const APP_PAGE_RE = /^\/(?:de|en)(?:\/[A-Za-z0-9_[\]-]+)*\/?$/;
+
+export function isAppPage(path: string): boolean {
+  return APP_PAGE_RE.test(path);
+}
 
 export function extractProcedures(source: string): Record<string, ProcedureKind> {
   const found: Record<string, ProcedureKind> = {};
@@ -46,7 +51,7 @@ export function extractRoutes(source: string): string[] {
 }
 
 export function extractChunks(html: string): string[] {
-  return [...new Set(html.match(CHUNK_RE) ?? [])];
+  return [...new Set(html.match(CHUNK_RE) ?? [])].filter((chunk) => !chunk.split("/").includes(".."));
 }
 
 export interface DiscoveryResult {
@@ -81,6 +86,12 @@ export async function discover(
   startPaths: readonly string[] = ["/de"],
   rounds = 3,
 ): Promise<DiscoveryResult> {
+  const refused = startPaths.filter((path) => !isAppPage(path));
+  if (refused.length > 0) {
+    throw new SaasError(`discover crawls app pages under /de or /en only, refused: ${refused.join(", ")}`, {
+      code: "NOT_AN_APP_PAGE",
+    });
+  }
   const state: CrawlState = {
     procedures: {},
     routes: new Set<string>(startPaths),
@@ -89,7 +100,9 @@ export async function discover(
   };
   const seenPages = new Set<string>();
   for (let round = 0; round < rounds; round++) {
-    const todo = [...state.routes].filter((route) => !seenPages.has(route) && !route.includes("["));
+    const todo = [...state.routes].filter(
+      (route) => isAppPage(route) && !seenPages.has(route) && !route.includes("["),
+    );
     if (todo.length === 0) break;
     for (const path of todo) {
       seenPages.add(path);
