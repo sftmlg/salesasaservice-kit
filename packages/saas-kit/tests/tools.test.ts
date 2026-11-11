@@ -70,6 +70,13 @@ describe("tool handlers", () => {
     expect(await tools.sessionStatus(toolDeps)).toEqual({ signedIn: false });
   });
 
+  it("session_status reports the active workspace id (the gated queries need it as workspaceId and the kit hid it)", async () => {
+    const { deps: toolDeps } = deps(
+      () => '{"user":{"email":"a@b.c"},"session":{"expiresAt":"2026-12-01","activeWorkspaceId":"ws_1"}}',
+    );
+    expect(await tools.sessionStatus(toolDeps)).toMatchObject({ signedIn: true, activeWorkspaceId: "ws_1" });
+  });
+
   it("login without configured credentials explains which variables to set (no sign-in with empty strings)", async () => {
     const { deps: toolDeps, calls } = deps(() => "{}");
     await expect(tools.login(toolDeps)).rejects.toBeInstanceOf(NotSignedInError);

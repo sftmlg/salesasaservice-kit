@@ -13,7 +13,12 @@ export const tools = {
   async sessionStatus({ client }: ToolDeps) {
     const session = await client.getSession();
     return session
-      ? { signedIn: true, user: session.user.email, expires: session.session.expiresAt }
+      ? {
+          signedIn: true,
+          user: session.user.email,
+          expires: session.session.expiresAt,
+          activeWorkspaceId: session.session.activeWorkspaceId ?? null,
+        }
       : { signedIn: false };
   },
 

@@ -29,7 +29,9 @@ const sessionSchema = z
       name: z.string().optional(),
       emailVerified: z.boolean().optional(),
     }),
-    session: z.object({ expiresAt: z.string().optional() }).default({}),
+    session: z
+      .object({ expiresAt: z.string().optional(), activeWorkspaceId: z.string().nullish() })
+      .default({}),
   })
   .nullable();
 
