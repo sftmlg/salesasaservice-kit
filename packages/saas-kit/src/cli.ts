@@ -5,8 +5,10 @@ import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { CATALOGUE_FILE, loadCatalogue } from "./catalogue-data.js";
 import { renderCatalogue } from "./catalogue-doc.js";
+import { isLiveCommand, runLiveCommand } from "./cli-live.js";
 import { DEFAULT_BASE_URL, loadConfig } from "./config.js";
 import { buildCatalogue, discover } from "./discovery.js";
+import { SaasError } from "./errors.js";
 import { createClient, ensureSession } from "./kit.js";
 import { buildOpenApi } from "./openapi.js";
 
@@ -16,6 +18,11 @@ const USAGE = `saas-kit <command>
   refresh [--path /de/x]... [--procedure router.name]...
                                        discover procedures with a live session, probe them read-only, rewrite the bundled catalogue;
                                        --procedure adds a name the crawl cannot reach (a GET probe still has to confirm it)
+
+  status | login | discover [--path /de/x]... | list [--router r] [--kind query|mutation] | probe
+  query <router.name> [json]           GET; probe prints the answer code of a read-only GET for every catalogued procedure
+  mutation <router.name> [json] --confirm
+                                       POST; refused without --confirm, a void-input procedure takes no json
 
 Environment: SAAS_BASE_URL, SAAS_SESSION_FILE, SAAS_CREDENTIALS_FILE or SAAS_EMAIL and SAAS_PASSWORD`;
 
@@ -53,6 +60,13 @@ async function main(): Promise<number> {
     console.log(JSON.stringify({ confirmed: Object.keys(catalogue.procedures).length, notFound }, null, 2));
     return 0;
   }
+  if (command && isLiveCommand(command)) {
+    const config = loadConfig();
+    const deps = { client: createClient(config), config, catalogue: loadCatalogue() };
+    const value = await runLiveCommand(command, deps, args);
+    console.log(JSON.stringify(value ?? null, null, 2));
+    return 0;
+  }
   return usage();
 }
 
@@ -64,7 +78,8 @@ function usage(): number {
 main().then(
   (code) => process.exit(code),
   (error) => {
-    console.error(error instanceof Error ? error.message : String(error));
+    const code = error instanceof SaasError ? `${error.code}: ` : "";
+    console.error(`${code}${error instanceof Error ? error.message : String(error)}`);
     process.exit(1);
   },
 );
