@@ -2,7 +2,7 @@
 
 Generated from `packages/saas-kit/data/procedures.json` (measured 2026-11-11). Do not edit by hand; run `saas-kit docs`.
 
-97 procedures, 97 confirmed by a read-only GET that did not answer `NOT_FOUND` and 0 named by a page of the app but not yet probed. The catalogue holds only what is true for every account; what a GET answers for one account on one day is runtime output of `saas-kit probe`, explained under "How the catalogue was confirmed" in [api-reference.md](api-reference.md).
+97 procedures confirmed by a read-only GET that did not answer `NOT_FOUND`. The catalogue holds only what is true for every account; what a GET answers for one account on one day is runtime output of `saas-kit probe`, explained under "How the catalogue was confirmed" in [api-reference.md](api-reference.md).
 
 ## activities
 

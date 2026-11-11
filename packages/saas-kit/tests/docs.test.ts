@@ -63,6 +63,18 @@ describe("generated documentation", () => {
     expect(() => loadCatalogue(pathToFileURL(file))).toThrow();
   });
 
+  it("refuses a hand-edited entry confirmed as unprobed (no probe produces that kind, so the entry would claim a confirmation nothing measured)", () => {
+    const file = join(mkdtempSync(join(tmpdir(), "saas-")), "procedures.json");
+    writeFileSync(
+      file,
+      JSON.stringify({
+        measured: "d",
+        procedures: { "a.b": { router: "a", kind: "mutation", confirmedBy: "unprobed" } },
+      }),
+    );
+    expect(() => loadCatalogue(pathToFileURL(file))).toThrow(/confirmedBy/);
+  });
+
   it("does not leak any credential-looking or personal data into the bundled catalogue", () => {
     expect(JSON.stringify(catalogue)).not.toMatch(/@|password|token/i);
   });
@@ -108,19 +120,6 @@ describe("products page catalogue entries", () => {
     expect(kinds["questionCatalogs.getCatalogForProduct"]).toBe("query");
     expect(productsPage.filter((name) => kinds[name] === "mutation")).toHaveLength(productsPage.length - 1);
   });
-
-  it("renders an unprobed entry as not yet probed and counts it apart from probed ones (the header must not call it confirmed)", () => {
-    const page = renderCatalogue({
-      measured: "d",
-      procedures: {
-        "a.q": proc("a", "query"),
-        "a.n": { router: "a", kind: "mutation", confirmedBy: "unprobed" },
-      },
-    });
-    expect(page).toContain("| `a.n` | POST | named by a page of the app, not yet probed |");
-    expect(page).toContain("2 procedures, 1 confirmed by a read-only GET");
-    expect(page).toContain("1 named by a page of the app but not yet probed");
-  });
 });
 
 describe("catalogue file", () => {
@@ -141,6 +140,18 @@ describe("catalogue file", () => {
       }),
     );
     expect(() => loadCatalogue(pathToFileURL(file))).toThrow();
+  });
+
+  it("refuses a hand-edited entry confirmed as unprobed (no probe produces that kind, so the entry would claim a confirmation nothing measured)", () => {
+    const file = join(mkdtempSync(join(tmpdir(), "saas-")), "procedures.json");
+    writeFileSync(
+      file,
+      JSON.stringify({
+        measured: "d",
+        procedures: { "a.b": { router: "a", kind: "mutation", confirmedBy: "unprobed" } },
+      }),
+    );
+    expect(() => loadCatalogue(pathToFileURL(file))).toThrow(/confirmedBy/);
   });
 });
 

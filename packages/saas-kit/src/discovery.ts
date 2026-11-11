@@ -4,7 +4,7 @@ import { errorCodeOf, queryPath } from "./trpc.js";
 
 export type ProcedureKind = "query" | "mutation";
 
-export type Confirmation = "get-refused" | "get-answered" | "unprobed";
+export type Confirmation = "get-refused" | "get-answered";
 
 export interface ProcedureEntry {
   router: string;
