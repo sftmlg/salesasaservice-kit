@@ -41,7 +41,7 @@ describe("MCP server wiring", () => {
     expect(calls).toHaveLength(0);
   });
 
-  it("refuses a non-boolean confirm at the schema before any handler runs (the string 'true' must not authorise a write)", async () => {
+  it("refuses a non-boolean confirm and sends nothing (the string 'true' must not authorise a write)", async () => {
     const { client, calls } = await connect(() => okReply(null));
     const result = await client.callTool({
       name: "mutation",
