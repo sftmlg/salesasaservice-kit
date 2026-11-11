@@ -42,12 +42,11 @@ const PUBLISHING_FAMILIES = [
 ];
 
 describe("mutation allowlist", () => {
-  it("lists exactly the 26 reviewed working mutations (a silently added name would open that write to every agent)", () => {
+  it("lists exactly the 20 reviewed working mutations (a silently added name would open that write to every agent)", () => {
     expect([...MCP_ALLOWED_MUTATIONS].sort()).toEqual(
       [
         "activities.create",
         "activities.createTask",
-        "activities.delete",
         "activities.update",
         "activities.updateTask",
         "activities.updateTaskStatus",
@@ -56,23 +55,37 @@ describe("mutation allowlist", () => {
         "contacts.create",
         "contacts.update",
         "inbox.acknowledge",
-        "inbox.acknowledgeFinancial",
         "inbox.acknowledgeProductProposalFailure",
         "listingDefaults.save",
-        "listings.deleteDraft",
         "listings.update",
         "offerTemplates.create",
-        "productProposals.delete",
-        "products.delete",
         "profile.cancelLogoUpload",
         "profile.completeLogoUpload",
-        "profile.deleteLogo",
         "profile.startLogoUpload",
         "profile.updateAddress",
         "profile.updateInfo",
         "profile.updateUnlimitedPartners",
       ].sort(),
     );
+  });
+
+  it.each([
+    "listings.deleteDraft",
+    "products.delete",
+    "productProposals.delete",
+    "activities.delete",
+    "profile.deleteLogo",
+    "inbox.acknowledgeFinancial",
+  ])(
+    "keeps %s a legal act (a delete or a financial acknowledgement is not a reversible working edit)",
+    (name) => {
+      expect(isMcpAllowedMutation(name)).toBe(false);
+      expect(isLegalAct(name)).toBe(true);
+    },
+  );
+
+  it("allows no name that deletes or acknowledges a financial item (an allowlist described as reversible must hold no delete)", () => {
+    expect(MCP_ALLOWED_MUTATIONS.filter((name) => /delete|remove|financial/i.test(name))).toEqual([]);
   });
 
   it("classifies every catalogued mutation as allowed or refused, and the two sets cover the catalogue (a new catalogued mutation must land on one side)", () => {

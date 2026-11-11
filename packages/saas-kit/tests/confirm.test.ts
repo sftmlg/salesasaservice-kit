@@ -28,7 +28,7 @@ describe("confirm guard", () => {
   it("a confirmed void-input mutation posts the body {} (a {0:null} body is rejected by such procedures)", async () => {
     const { fetch, calls } = fakeFetch(() => okReply({ started: true }));
     const client = new SaasClient({ baseUrl: "https://x.test", fetch });
-    await client.mutate("profile.deleteLogo", undefined, { confirm: true });
+    await client.mutate("profile.cancelLogoUpload", undefined, { confirm: true });
     expect(calls[0]?.method).toBe("POST");
     expect(calls[0]?.body).toBe("{}");
   });

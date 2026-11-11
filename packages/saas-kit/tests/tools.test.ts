@@ -44,7 +44,7 @@ describe("tool handlers", () => {
 
   it("mutation tool without input posts {} (an omitted tool argument means a void-input procedure)", async () => {
     const { deps: toolDeps, calls } = deps(() => okReply(null));
-    await tools.mutation(toolDeps, { procedure: "profile.deleteLogo", confirm: true });
+    await tools.mutation(toolDeps, { procedure: "profile.cancelLogoUpload", confirm: true });
     expect(calls[0]?.body).toBe("{}");
   });
 

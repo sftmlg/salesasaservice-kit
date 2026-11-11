@@ -156,15 +156,15 @@ Regenerate the catalogue with `saas-kit refresh` and the two documentation files
 
 ### MCP allowlist
 
-These 26 mutations are accepted over MCP, each with `confirm=true`:
+These 20 mutations are accepted over MCP, each with `confirm=true`. Each one creates or edits a working record of the account (profile, listing defaults, activities, tasks, inbox read marks, companies, contacts), and a further edit corrects it. None deletes anything, and none publishes, sends, signs, pays or consents:
 
 - `profile.updateInfo`, `profile.updateAddress`, `profile.updateUnlimitedPartners`
-- `profile.startLogoUpload`, `profile.completeLogoUpload`, `profile.cancelLogoUpload`, `profile.deleteLogo`
-- `listings.update`, `listings.deleteDraft`, `listingDefaults.save`
-- `products.delete`, `productProposals.delete`, `offerTemplates.create`
-- `activities.create`, `activities.update`, `activities.delete`
+- `profile.startLogoUpload`, `profile.completeLogoUpload`, `profile.cancelLogoUpload`
+- `listings.update`, `listingDefaults.save`
+- `offerTemplates.create`
+- `activities.create`, `activities.update`
 - `activities.createTask`, `activities.updateTask`, `activities.updateTaskStatus`
-- `inbox.acknowledge`, `inbox.acknowledgeFinancial`, `inbox.acknowledgeProductProposalFailure`
+- `inbox.acknowledge`, `inbox.acknowledgeProductProposalFailure`
 - `companies.create`, `companies.update`
 - `contacts.create`, `contacts.update`
 
@@ -172,7 +172,7 @@ The list is one typed constant, `MCP_ALLOWED_MUTATIONS` in `packages/saas-kit/sr
 
 ### Everything else
 
-Every other mutation, including an unknown name, is refused over MCP with `LEGAL_ACT_REFUSED` and a message that names the reason. That covers everything that publishes (`listings.publish`, `listings.unpublish`, `listings.commit`), accepts or rejects (`opportunities.*`), sends (`offers.*`), signs (`contracts.*`), pays or changes bank details (`commission.*`), subscribes (`subscriptions.*`), verifies or onboards (`verification.*`, `onboarding.*`), consents (`cookieConsents.record`), submits (`questionCatalogs.*`, `salesAgentWaitlistEntries.createEntry`) and removes users (`workspaceUsers.remove`), and any catalogued mutation not listed above.
+Every other mutation, including an unknown name, is refused over MCP with `LEGAL_ACT_REFUSED` and a message that names the reason. That covers everything that publishes (`listings.publish`, `listings.unpublish`, `listings.commit`), deletes (`listings.deleteDraft`, `products.delete`, `productProposals.delete`, `activities.delete`, `profile.deleteLogo`), acknowledges a financial item (`inbox.acknowledgeFinancial`), accepts or rejects (`opportunities.*`), sends (`offers.*`), signs (`contracts.*`), pays or changes bank details (`commission.*`), subscribes (`subscriptions.*`), verifies or onboards (`verification.*`, `onboarding.*`), consents (`cookieConsents.record`), submits (`questionCatalogs.*`, `salesAgentWaitlistEntries.createEntry`) and removes users (`workspaceUsers.remove`), and any catalogued mutation not listed above.
 
 - `client.mutate` refuses them unless the caller passes `legalAct: true` besides `confirm: true`.
 - The MCP server never passes `legalAct`, and an extra `legalAct` argument sent by an agent is ignored.

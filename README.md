@@ -74,7 +74,7 @@ Account creation is deliberately not a tool: it accepts the platform's terms on 
 
 ### Mutation policy
 
-`confirm=true` is set by whoever calls the tool, and an agent reads text that the platform or a counterparty controls, so that text can steer an agent into a write in the account holder's name. Over MCP only the allowlisted, reviewed, reversible working mutations are accepted (the list is `MCP_ALLOWED_MUTATIONS` in `packages/saas-kit/src/legal-acts.ts`, printed in [docs/api-reference.md](docs/api-reference.md#mcp-allowlist)). Every other mutation, including an unknown name and everything that publishes, accepts, rejects, signs, sends, pays, subscribes, consents, removes users or submits, is refused over MCP with `LEGAL_ACT_REFUSED`.
+`confirm=true` is set by whoever calls the tool, and an agent reads text that the platform or a counterparty controls, so that text can steer an agent into a write in the account holder's name. Over MCP only the 20 allowlisted, reviewed working edits are accepted, each one creating or editing a record that a further edit corrects, with no delete among them (the list is `MCP_ALLOWED_MUTATIONS` in `packages/saas-kit/src/legal-acts.ts`, printed in [docs/api-reference.md](docs/api-reference.md#mcp-allowlist)). Every other mutation, including an unknown name and everything that deletes or publishes, accepts, rejects, signs, sends, pays, subscribes, consents, removes users or submits, is refused over MCP with `LEGAL_ACT_REFUSED`.
 
 - `client.mutate` refuses a non-allowlisted mutation unless the caller passes `legalAct: true` besides `confirm: true`.
 - The MCP server never passes it.
