@@ -42,7 +42,7 @@ const PUBLISHING_FAMILIES = [
 ];
 
 describe("mutation allowlist", () => {
-  it("lists exactly the 15 reviewed working mutations (a silently added name would open that write to every agent)", () => {
+  it("lists exactly the 14 reviewed working mutations (a silently added name would open that write to every agent)", () => {
     expect([...MCP_ALLOWED_MUTATIONS].sort()).toEqual(
       [
         "activities.create",
@@ -56,7 +56,6 @@ describe("mutation allowlist", () => {
         "contacts.update",
         "inbox.acknowledge",
         "inbox.acknowledgeProductProposalFailure",
-        "offerTemplates.create",
         "profile.cancelLogoUpload",
         "profile.completeLogoUpload",
         "profile.startLogoUpload",
@@ -125,8 +124,9 @@ describe("mutation allowlist", () => {
     "products.generateShortDescription",
     "products.inspectWebsite",
     "products.suggestClassification",
+    "offerTemplates.create",
   ])(
-    "keeps %s a legal act (it puts an entry in front of sales agents in the account holder's name, or its behaviour is not observed and an unobserved write stays refused)",
+    "keeps %s a legal act (it puts an entry in front of sales agents in the account holder's name (an offer template is what sales agents send to end customers and the catalogue holds no update, cancel or delete for it), or its behaviour is not observed and an unobserved write stays refused)",
     async (name) => {
       expect(isMcpAllowedMutation(name)).toBe(false);
       const { mcp, calls } = await connectServer();

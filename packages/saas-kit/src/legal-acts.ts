@@ -2,7 +2,6 @@ export const MCP_ALLOWED_MUTATIONS = [
   "profile.startLogoUpload",
   "profile.completeLogoUpload",
   "profile.cancelLogoUpload",
-  "offerTemplates.create",
   "activities.create",
   "activities.update",
   "activities.createTask",

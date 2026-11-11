@@ -106,7 +106,7 @@ The four onboarding mutations below were called against the live platform with e
 
 ### Product and listing mutations
 
-These shapes were measured from the validation errors that invalid input produces. No call with a valid input was sent, so nothing was written, and the answers of a successful call are not documented. The errors name fields and enumerated values; which fields are optional was not recorded. `products.create`, `products.update`, `listings.create`, `listings.update` and `listingDefaults.save` are refused over MCP (see [Everything else](#everything-else)); `offerTemplates.create` is on the [allowlist](#mcp-allowlist).
+These shapes were measured from the validation errors that invalid input produces. No call with a valid input was sent, so nothing was written, and the answers of a successful call are not documented. The errors name fields and enumerated values; which fields are optional was not recorded. `products.create`, `products.update`, `listings.create`, `listings.update` and `listingDefaults.save` are refused over MCP (see [Everything else](#everything-else)); `offerTemplates.create` is refused too: an offer template is what sales agents send to end customers, and the catalogue holds no update, cancel or delete for it.
 
 `products.create` and `products.update` take the same fields; `products.update` adds `id`:
 
@@ -197,10 +197,9 @@ Regenerate the catalogue with `saas-kit refresh` and the two documentation files
 
 ### MCP allowlist
 
-These 15 mutations are accepted over MCP, each with `confirm=true`. Each one creates or edits a working record of the account (logo, activities, tasks, inbox read marks, companies, contacts), and a further edit corrects it. None deletes anything, and none publishes, sends, signs, pays or consents:
+These 14 mutations are accepted over MCP, each with `confirm=true`. Each one creates or edits a working record of the account (logo, activities, tasks, inbox read marks, companies, contacts), and a further edit corrects it. None deletes anything, and none publishes, sends, signs, pays or consents:
 
 - `profile.startLogoUpload`, `profile.completeLogoUpload`, `profile.cancelLogoUpload`
-- `offerTemplates.create`
 - `activities.create`, `activities.update`
 - `activities.createTask`, `activities.updateTask`, `activities.updateTaskStatus`
 - `inbox.acknowledge`, `inbox.acknowledgeProductProposalFailure`
@@ -217,6 +216,7 @@ The product procedures follow the same rule, per name:
 
 - `products.create`, `products.update`, `listings.create` and `productProposals.accept` put or keep an entry in front of sales agents (a listing shows as "coming soon" before the contract is signed), so they are statements in the account holder's name.
 - `listings.update` and `listingDefaults.save` set the commission terms and the listing text that sales agents may already act on. Whether an edit reaches a listing that is already published was never observed, so a later edit is not known to correct anything. They are refused over MCP and need `--confirm --legal-act` on the CLI.
+- `offerTemplates.create` creates the template that sales agents send to end customers, and the catalogue holds no update, cancel or delete for it, so a created template could not be corrected. It is refused.
 - `products.inspectWebsite` makes the platform fetch a web address that the caller names, so an agent steered by platform text could direct it; it is refused.
 - `products.extractFromText`, `products.extractPricing`, `products.generateShortDescription` and `products.suggestClassification` probably only compute a result from the text they are given, but whether they also store it, bill for it or send the text to a third party was not observed. They are refused until that is observed.
 - `products.startImageUpload` and `products.completeImageUpload` stage a file like the logo upload does, but no `cancel` counterpart is catalogued, so a staged upload could not be undone by a further edit. They are refused.
