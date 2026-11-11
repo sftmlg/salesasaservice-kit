@@ -1,0 +1,5 @@
+{
+  "measured": "2026-11-11",
+  "billingPeriods": { "Einmalig": "one_time", "Pro Monat": "per_month" },
+  "units": { "Stück": "piece", "Stunde": "hour", "Tag": "day" }
+}

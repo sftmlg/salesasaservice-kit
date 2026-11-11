@@ -3,6 +3,7 @@ import { runLiveCommand } from "../src/cli-live.js";
 import { SaasClient } from "../src/client.js";
 import { ConfigError, ConfirmationRequiredError } from "../src/errors.js";
 import { fakeFetch, okReply, proc, trpcError } from "./helpers.js";
+import { FakePlatform, product } from "./products-page-fixture.js";
 
 const catalogue = {
   measured: "2026-11-11",
@@ -67,5 +68,33 @@ describe("live CLI commands", () => {
   it("list rejects an unknown kind instead of silently returning everything", async () => {
     const { deps } = setup(() => "");
     await expect(runLiveCommand("list", deps, ["--kind", "write"])).rejects.toBeInstanceOf(ConfigError);
+  });
+
+  it("catalogue reads the products page with GET only and returns the rows (the command must not write)", async () => {
+    const platform = new FakePlatform([product(1, "Alpha")]);
+    const deps = {
+      client: new SaasClient({ baseUrl: "https://x.test", fetch: platform.fetch }),
+      config: { baseUrl: "https://x.test", sessionFile: undefined, credentials: undefined },
+      catalogue,
+    };
+    const result = (await runLiveCommand("catalogue", deps, [])) as { products: { title: string }[] };
+    expect(result.products.map((row) => row.title)).toEqual(["Alpha"]);
+    expect(platform.requests.map((request) => request.method)).toEqual(["GET"]);
+  });
+
+  it("apply without a file fails before any request (a missing path must not run an empty plan)", async () => {
+    const { deps, calls } = setup(() => okReply(null));
+    await expect(runLiveCommand("apply", deps, ["--confirm", "--legal-act"])).rejects.toBeInstanceOf(
+      ConfigError,
+    );
+    expect(calls).toHaveLength(0);
+  });
+
+  it("apply with an unreadable file fails before any request", async () => {
+    const { deps, calls } = setup(() => okReply(null));
+    await expect(runLiveCommand("apply", deps, ["/nonexistent/apply.json"])).rejects.toBeInstanceOf(
+      ConfigError,
+    );
+    expect(calls).toHaveLength(0);
   });
 });

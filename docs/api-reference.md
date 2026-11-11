@@ -143,6 +143,17 @@ These shapes were measured from the validation errors that invalid input produce
 
 The helper procedures `products.extractFromText`, `products.extractPricing`, `products.generateShortDescription`, `products.inspectWebsite`, `products.suggestClassification`, `products.startImageUpload`, `products.completeImageUpload` and `questionCatalogs.getCatalogForProduct` have an unknown input schema: their names are confirmed by a probe (see below), but no input was observed.
 
+### Products and listings page
+
+`GET /de/business-partner/products-services` (signed in, `text/html`) carries the account's products and listings as server-rendered React Server Components data in `self.__next_f.push([1, "..."])` script chunks. Measured with a signed-in session (read-only `GET`):
+
+- The chunks concatenate into rows `<hex id>:<payload>`. A payload is one JSON value up to the next newline, or `T<hex byte length>,<text>`, a text row whose length is counted in UTF-8 bytes and which is followed directly by the next row.
+- One row holds an object with the arrays `products` and `listings` (plus `canManage`, `hrefs`, `listingDefaults`, `notice`). In flight data a string starting with `$` is a reference (`$undefined`, `$L99`) and a literal leading dollar sign is written `$$`.
+- Product row: `id`, `itemType` (`product` or `proposal`; a proposal has a null `priceLabel`), `title`, `subtitle`, `kind`, `description`, `categoryLabel`, `industry`, `priceLabel`, `listingCount`, `createdAtIso`, `createdAtLabel`, `canDelete`, `imageId`.
+- Listing row: `id`, `title`, `subtitle`, `productTitle`, `kind`, `status` (`draft` or `published` per the page's labels; only `published` was present), `description`, `categoryLabel`, `industry`, `priceLabel`, `region`, `commission`, `publishDisabledReason`, `createdAtIso`, `createdAtLabel`, `imageId`. A listing has no product id: it is linked to its product by `productTitle`.
+- `priceLabel` is `<amount> € / <unit>, <period>` with a non-breaking space (U+00A0) before the euro sign, a dot as thousands separator and a comma as decimal separator. The unit and period words are the platform's German labels, listed in `packages/saas-kit/data/page-labels.json` (observed: three units, two periods).
+- `commission` is `<number> %` with a non-breaking space; every observed listing was a percent commission. A fixed commission is assumed to end in `€` and was not observed.
+
 ### Queries
 
 Queries without input send `input={}` (see the request envelope). The workspace id the queries need is `session.activeWorkspaceId` from `GET /api/auth/get-session` (`saas-kit status` prints it).
