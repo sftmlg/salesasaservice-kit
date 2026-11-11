@@ -1,4 +1,5 @@
 import type { SaasClient } from "./client.js";
+import { SaasError } from "./errors.js";
 import { errorCodeOf, queryPath } from "./trpc.js";
 
 export type ProcedureKind = "query" | "mutation";
@@ -109,8 +110,15 @@ export async function probeProcedure(client: SaasClient, procedure: string): Pro
   return errorCodeOf(res.status, res.text);
 }
 
-export function kindFromProbe(observed: string): ProcedureKind {
-  return observed === "METHOD_NOT_SUPPORTED" ? "mutation" : "query";
+const METHOD_REFUSED = "METHOD_NOT_SUPPORTED";
+
+function isProcedureAnswer(observed: string): boolean {
+  return observed !== "UNAUTHORIZED" && !observed.startsWith("HTTP_");
+}
+
+export function kindFromProbe(observed: string, discovered?: ProcedureKind): ProcedureKind {
+  if (observed === METHOD_REFUSED) return "mutation";
+  return discovered ?? "query";
 }
 
 export async function buildCatalogue(
@@ -121,13 +129,28 @@ export async function buildCatalogue(
 ): Promise<{ catalogue: Catalogue; notFound: string[] }> {
   const procedures: Record<string, ProcedureEntry> = {};
   const notFound: string[] = [];
+  const unprobed: string[] = [];
   const names = [...new Set([...Object.keys(discovered), ...supplied])].sort((left, right) =>
     left.localeCompare(right),
   );
+  if (names.length === 0) {
+    throw new SaasError(
+      "no procedure names to probe: the crawl found none (signed out?)",
+      "NOTHING_TO_PROBE",
+    );
+  }
   for (const name of names) {
     const observed = await probeProcedure(client, name);
     if (observed === "NOT_FOUND") notFound.push(name);
-    else procedures[name] = { kind: discovered[name] ?? kindFromProbe(observed), observed };
+    else if (isProcedureAnswer(observed)) {
+      procedures[name] = { kind: kindFromProbe(observed, discovered[name]), observed };
+    } else unprobed.push(`${name} (${observed})`);
+  }
+  if (unprobed.length > 0) {
+    throw new SaasError(
+      `${unprobed.length} probes got no procedure answer, so no catalogue is built: ${unprobed.join(", ")}`,
+      "PROBE_FAILED",
+    );
   }
   return { catalogue: { measured: today.toISOString().slice(0, 10), procedures }, notFound };
 }

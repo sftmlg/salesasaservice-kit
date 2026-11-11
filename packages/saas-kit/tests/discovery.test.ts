@@ -87,6 +87,34 @@ describe("catalogue building", () => {
     expect(notFound).toEqual(["a.typo"]);
   });
 
+  it.each([
+    ["a dead session", () => ({ status: 401, body: trpcError("UNAUTHORIZED", 401) })],
+    ["a gateway page", () => ({ status: 502, body: "<html>bad gateway</html>" })],
+  ])(
+    "builds no catalogue when a probe meets %s (a failed probe must not be stored as a confirmed procedure)",
+    async (_label, reply) => {
+      const { fetch } = fakeFetch(reply);
+      await expect(
+        buildCatalogue(new SaasClient({ baseUrl: "https://x.test", fetch }), { "a.b": "query" }),
+      ).rejects.toMatchObject({ code: "PROBE_FAILED" });
+    },
+  );
+
+  it("builds no catalogue from an empty crawl (a redirect to login must not wipe the stored catalogue)", async () => {
+    const { fetch } = fakeFetch(() => okReply(1));
+    await expect(
+      buildCatalogue(new SaasClient({ baseUrl: "https://x.test", fetch }), {}),
+    ).rejects.toMatchObject({ code: "NOTHING_TO_PROBE" });
+  });
+
+  it("trusts a refused GET over the bundle guess: a name the bundle showed as query is a mutation (docs would map it to GET)", async () => {
+    const { fetch } = fakeFetch(() => ({ status: 405, body: trpcError("METHOD_NOT_SUPPORTED", 405) }));
+    const { catalogue } = await buildCatalogue(new SaasClient({ baseUrl: "https://x.test", fetch }), {
+      "a.b": "query",
+    });
+    expect(catalogue.procedures["a.b"]?.kind).toBe("mutation");
+  });
+
   it("probes with GET only, so discovery can never write", async () => {
     const { fetch, calls } = fakeFetch(() => okReply(1));
     await buildCatalogue(new SaasClient({ baseUrl: "https://x.test", fetch }), { "a.b": "mutation" });
