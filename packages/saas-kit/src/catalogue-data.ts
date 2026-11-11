@@ -5,14 +5,13 @@ import type { Catalogue } from "./discovery.js";
 const catalogueSchema: z.ZodType<Catalogue> = z.object({
   measured: z.string(),
   procedures: z.record(
-    z
-      .object({
-        router: z.string(),
-        kind: z.enum(["query", "mutation"]),
-        confirmedBy: z.enum(["get-refused", "get-answered"]),
-        note: z.string().optional(),
-      })
-      .strict(),
+    z.string(),
+    z.strictObject({
+      router: z.string(),
+      kind: z.enum(["query", "mutation"]),
+      confirmedBy: z.enum(["get-refused", "get-answered"]),
+      note: z.exactOptional(z.string()),
+    }),
   ),
 });
 

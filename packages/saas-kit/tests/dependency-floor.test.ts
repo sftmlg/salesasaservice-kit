@@ -44,6 +44,10 @@ describe("dependency floors (versions below these carry published advisories)", 
     expect(tinypool === undefined || atLeast(tinypool, [2, 1, 2])).toBe(true);
   });
 
+  it("zod is at least 4.6.6 (high: GHSA-mrhx-c7xc-m3w5), so the schemas that parse external data run on the fixed major", () => {
+    expect(atLeast(installedVersion("zod", import.meta.url), [4, 6, 6])).toBe(true);
+  });
+
   it("the floor check can fail: a version below the floor is reported as below", () => {
     expect(atLeast([4, 1, 11], [4, 1, 12])).toBe(false);
     expect(atLeast([3, 99, 99], [4, 1, 12])).toBe(false);

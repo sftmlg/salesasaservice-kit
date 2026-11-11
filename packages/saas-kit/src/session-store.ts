@@ -5,7 +5,7 @@ import type { CookieJar } from "./cookies.js";
 import { ConfigError } from "./errors.js";
 import { parseSecretJson } from "./secret-json.js";
 
-const sessionFileSchema = z.object({ cookies: z.record(z.string()).default({}) });
+const sessionFileSchema = z.object({ cookies: z.record(z.string(), z.string()).default({}) });
 
 export interface SessionStore {
   load(): CookieJar;
