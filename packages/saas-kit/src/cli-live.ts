@@ -8,8 +8,8 @@ function parseInput(raw: string | undefined): unknown {
   if (raw === undefined) return undefined;
   try {
     return JSON.parse(raw);
-  } catch {
-    throw new ConfigError(`input is not valid JSON: ${raw.slice(0, 80)}`, "CONFIG");
+  } catch (cause) {
+    throw new ConfigError(`input is not valid JSON: ${raw.slice(0, 80)}`, { code: "CONFIG", cause });
   }
 }
 
@@ -20,7 +20,8 @@ function procedureAndInput(args: string[]): { procedure: string; input: unknown;
     allowPositionals: true,
   });
   const [procedure, raw] = positionals;
-  if (!procedure) throw new ConfigError("a procedure name (router.procedure) is required", "CONFIG");
+  if (!procedure)
+    throw new ConfigError("a procedure name (router.procedure) is required", { code: "CONFIG" });
   return { procedure, input: parseInput(raw), confirm: values.confirm === true };
 }
 
@@ -34,7 +35,7 @@ const liveCommands: Record<string, LiveCommand> = {
   list: (deps, args) => {
     const { values } = parseArgs({ args, options: { router: { type: "string" }, kind: { type: "string" } } });
     if (values.kind !== undefined && values.kind !== "query" && values.kind !== "mutation") {
-      throw new ConfigError("--kind must be query or mutation", "CONFIG");
+      throw new ConfigError("--kind must be query or mutation", { code: "CONFIG" });
     }
     return tools.listProcedures(deps, { router: values.router, kind: values.kind });
   },
@@ -54,6 +55,6 @@ export function isLiveCommand(name: string): boolean {
 
 export async function runLiveCommand(name: string, deps: ToolDeps, args: string[]): Promise<unknown> {
   const command = Object.hasOwn(liveCommands, name) ? liveCommands[name] : undefined;
-  if (!command) throw new ConfigError(`unknown command ${name}`, "CONFIG");
+  if (!command) throw new ConfigError(`unknown command ${name}`, { code: "CONFIG" });
   return command(deps, args);
 }

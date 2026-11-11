@@ -12,7 +12,7 @@ export async function loginWithConfig(client: SaasClient, config: KitConfig) {
   if (!config.credentials) {
     throw new NotSignedInError(
       "no credentials: set SAAS_CREDENTIALS_FILE (JSON with email and password) or SAAS_EMAIL and SAAS_PASSWORD",
-      "NO_CREDENTIALS",
+      { code: "NO_CREDENTIALS" },
     );
   }
   return client.signIn(config.credentials);

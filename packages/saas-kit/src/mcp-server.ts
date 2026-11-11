@@ -3,6 +3,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { loadCatalogue } from "./catalogue-data.js";
 import { loadConfig } from "./config.js";
 import { createClient } from "./kit.js";
+import { printErrorLine } from "./output.js";
 import { buildServer } from "./server.js";
 
 async function main(): Promise<void> {
@@ -12,6 +13,6 @@ async function main(): Promise<void> {
 }
 
 main().catch((error) => {
-  console.error(error instanceof Error ? error.message : String(error));
+  printErrorLine(error instanceof Error ? error.message : String(error));
   process.exit(1);
 });

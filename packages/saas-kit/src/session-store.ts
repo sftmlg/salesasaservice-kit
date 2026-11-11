@@ -32,11 +32,12 @@ export class FileSessionStore implements SessionStore {
     } catch (cause) {
       throw new ConfigError(
         `cannot read the session file: ${cause instanceof Error ? cause.message : String(cause)}`,
-        "SESSION_FILE",
+        { code: "SESSION_FILE", cause },
       );
     }
     const parsed = sessionFileSchema.safeParse(raw);
-    if (!parsed.success) throw new ConfigError("the session file must hold a cookies object", "SESSION_FILE");
+    if (!parsed.success)
+      throw new ConfigError("the session file must hold a cookies object", { code: "SESSION_FILE" });
     return parsed.data.cookies;
   }
 

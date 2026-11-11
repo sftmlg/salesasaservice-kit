@@ -143,10 +143,9 @@ export async function buildCatalogue(
     left.localeCompare(right),
   );
   if (names.length === 0) {
-    throw new SaasError(
-      "no procedure names to probe: the crawl found none (signed out?)",
-      "NOTHING_TO_PROBE",
-    );
+    throw new SaasError("no procedure names to probe: the crawl found none (signed out?)", {
+      code: "NOTHING_TO_PROBE",
+    });
   }
   for (const name of names) {
     const observed = await probeProcedure(client, name);
@@ -164,7 +163,7 @@ export async function buildCatalogue(
   if (unprobed.length > 0) {
     throw new SaasError(
       `${unprobed.length} probes got no procedure answer, so no catalogue is built: ${unprobed.join(", ")}`,
-      "PROBE_FAILED",
+      { code: "PROBE_FAILED" },
     );
   }
   return { catalogue: { measured: today.toISOString().slice(0, 10), procedures }, notFound };

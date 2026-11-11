@@ -59,7 +59,9 @@ export class SaasClient {
     init: { method?: "GET" | "POST"; body?: string; accept?: string; auth?: boolean } = {},
   ): Promise<HttpResult> {
     if (!path.startsWith("/")) {
-      throw new SaasError(`path "${path}" must start with "/" to stay on ${this.baseUrl}`, "BAD_PATH");
+      throw new SaasError(`path "${path}" must start with "/" to stay on ${this.baseUrl}`, {
+        code: "BAD_PATH",
+      });
     }
     const cookie = init.auth === false ? "" : cookieHeader(this.store.load());
     const headers = {
@@ -85,11 +87,10 @@ export class SaasClient {
       auth: false,
     });
     if (res.status >= 400)
-      throw new SaasError(
-        `sign-up failed (HTTP ${res.status}): ${res.text.slice(0, 300)}`,
-        "SIGN_UP_FAILED",
-        res.status,
-      );
+      throw new SaasError(`sign-up failed (HTTP ${res.status}): ${res.text.slice(0, 300)}`, {
+        code: "SIGN_UP_FAILED",
+        httpStatus: res.status,
+      });
   }
 
   async signIn(credentials: Credentials): Promise<SessionInfo> {
@@ -99,18 +100,16 @@ export class SaasClient {
       auth: false,
     });
     if (res.status >= 400)
-      throw new SaasError(
-        `sign-in failed (HTTP ${res.status}): ${res.text.slice(0, 300)}`,
-        "SIGN_IN_FAILED",
-        res.status,
-      );
+      throw new SaasError(`sign-in failed (HTTP ${res.status}): ${res.text.slice(0, 300)}`, {
+        code: "SIGN_IN_FAILED",
+        httpStatus: res.status,
+      });
     const session = await this.getSession();
     if (!session) {
-      throw new NotSignedInError(
-        "sign-in returned no session (email verification pending?)",
-        "NO_SESSION",
-        res.status,
-      );
+      throw new NotSignedInError("sign-in returned no session (email verification pending?)", {
+        code: "NO_SESSION",
+        httpStatus: res.status,
+      });
     }
     return session;
   }
@@ -118,31 +117,31 @@ export class SaasClient {
   async verifyEmail(link: string): Promise<void> {
     const url = new URL(link);
     if (url.origin !== this.baseUrl) {
-      throw new SaasError(
-        `verification link points to ${url.origin}, expected ${this.baseUrl}`,
-        "FOREIGN_LINK",
-      );
+      throw new SaasError(`verification link points to ${url.origin}, expected ${this.baseUrl}`, {
+        code: "FOREIGN_LINK",
+      });
     }
     const res = await this.http(`${url.pathname}${url.search}`, { accept: "text/html" });
     if (res.status >= 400)
-      throw new SaasError(`verification failed (HTTP ${res.status})`, "VERIFY_FAILED", res.status);
+      throw new SaasError(`verification failed (HTTP ${res.status})`, {
+        code: "VERIFY_FAILED",
+        httpStatus: res.status,
+      });
   }
 
   async getSession(): Promise<SessionInfo | null> {
     const res = await this.http("/api/auth/get-session");
     if (res.status >= 400)
-      throw new UnexpectedResponseError(
-        `get-session answered HTTP ${res.status}`,
-        "SESSION_HTTP",
-        res.status,
-      );
+      throw new UnexpectedResponseError(`get-session answered HTTP ${res.status}`, {
+        code: "SESSION_HTTP",
+        httpStatus: res.status,
+      });
     const parsed = sessionSchema.safeParse(parseJson(res.text));
     if (!parsed.success) {
-      throw new UnexpectedResponseError(
-        `get-session answered an unknown shape: ${res.text.slice(0, 200)}`,
-        "SESSION_SHAPE",
-        res.status,
-      );
+      throw new UnexpectedResponseError(`get-session answered an unknown shape: ${res.text.slice(0, 200)}`, {
+        code: "SESSION_SHAPE",
+        httpStatus: res.status,
+      });
     }
     return parsed.data;
   }

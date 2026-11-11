@@ -1,11 +1,14 @@
+export type ErrorDetails = { code: string; httpStatus?: number; cause?: unknown };
+
 export class SaasError extends Error {
-  constructor(
-    message: string,
-    readonly code: string,
-    readonly httpStatus?: number,
-  ) {
-    super(message);
+  readonly code: string;
+  readonly httpStatus: number | undefined;
+
+  constructor(message: string, details: ErrorDetails) {
+    super(message, details.cause === undefined ? undefined : { cause: details.cause });
     this.name = new.target.name;
+    this.code = details.code;
+    this.httpStatus = details.httpStatus;
   }
 }
 

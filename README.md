@@ -85,7 +85,7 @@ await client.mutate("listings.publish", input, { confirm: true });
 
 ### Development
 
-`pnpm check` runs typecheck, Biome and the tests. Tests live in `packages/saas-kit/tests`, run against a fake `fetch` (no network), and each test name states the bug it would catch. The catalogue's single source is `packages/saas-kit/data/procedures.json`; `docs/openapi.json` and `docs/procedure-catalogue.md` are generated from it with `saas-kit docs`, and a test fails if they drift.
+`pnpm check` runs typecheck, Biome and the tests. Tests live in `packages/saas-kit/tests`, run against a fake `fetch` (no network), and each test name states the bug it would catch. The catalogue's single source is `packages/saas-kit/data/procedures.json`; `docs/openapi.json` and `docs/procedure-catalogue.md` are generated from it with `saas-kit docs`, and a test fails if they drift. Biome runs the strict preset (rules as errors plus the `short-identifier.grit` plugin, which every `biome.json` that lints code lists in its own `plugins`); `lint-gate.test.ts` plants a one-letter binding and requires the plugin finding, so the plugin cannot go blind.
 
 ## 3. Documentation
 

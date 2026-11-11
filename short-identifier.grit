@@ -1,0 +1,28 @@
+language js
+
+or {
+  JsIdentifierBinding() as $binding where {
+    $binding <: r"^[a-zA-Z_$][a-zA-Z0-9_$]?$",
+    not $binding <: within JsImport(),
+    not $binding <: or {
+      "id",
+      "db",
+      "fs",
+      "os",
+      "ok",
+      "ip",
+      "ui",
+      "io",
+      "_"
+    },
+    register_diagnostic(span=$binding, message="Identifier shorter than three characters: name what it holds (row, total, sortedValues), not its type or position.", severity="error")
+  },
+  JsIdentifierBinding() as $binding where {
+    $binding <: r"^_+[a-zA-Z0-9$].+$",
+    not $binding <: within JsImport(),
+    not $binding <: within JsFormalParameter(),
+    not $binding <: within JsRestParameter(),
+    not $binding <: within JsObjectBindingPatternProperty(),
+    register_diagnostic(span=$binding, message="A leading underscore marks an unused parameter only: name this binding without it.", severity="error")
+  }
+}

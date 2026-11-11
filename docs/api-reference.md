@@ -93,14 +93,16 @@ The platform does not publish input schemas. A schema is documented here only af
 
 ### Mutations
 
-| Procedure                                 | Input                                                                                                       | Answer                                                         |
-| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| `onboarding.createWorkspace`              | `type` (`business_partner` or `sales_agent`), `legalName`, `website`, `websiteConfirmed`, `proposeProducts` | not called (it creates a workspace)                            |
-| `verification.startWorkspaceVerification` | void: body `{}`                                                                                             | not called (it starts a verification)                          |
-| `profile.updateAddress`                   | `street`, `postalCode`, `city`, `country` (ISO country code, for example `AT`)                              | `{"success":true}`; sending the current values changes nothing |
-| `profile.updateInfo`                      | see below                                                                                                   | not called                                                     |
+Observed live: the four onboarding mutations below were called on 2026-11-11 by the account owner with exactly the input documented here, and each returned success. The shapes are taken from those calls, not from a list of field names.
 
-`profile.updateInfo` fields: `companiesRegisterCourt`, `companiesRegisterNumber`, `companiesRegisterStatus` (`registered` or `not_registered`), `contactEmail`, `contactPhone`, `displayName`, `formationStatus` (`established` or `in_formation`), `gisaNumber`, `hasNaturalPersonUnlimitedPartner` (boolean or `null`), `inLiquidation` (boolean or `null`), `legalForm` (`gmbh`, `flexkapg`, `ag`, `og`, `kg`, `gmbh_co_kg`, `sole_proprietor`, `gesbr` or `other`), `legalName`, `otherLegalForm`, `proprietorName`, `vatId`, `website`, `websiteConfirmed`. Unused text fields are sent as empty strings, not `null`.
+| Procedure                                 | Input                                                                                                       | Observed live (2026-11-11)                                     |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `onboarding.createWorkspace`              | `type` (`business_partner` or `sales_agent`), `legalName`, `website`, `websiteConfirmed`, `proposeProducts` | success: a workspace id, with the caller's role `bp_owner`     |
+| `verification.startWorkspaceVerification` | void: body `{}`                                                                                             | success: verification status `approved`                        |
+| `profile.updateAddress`                   | `street`, `postalCode`, `city`, `country` (ISO country code, for example `AT`)                              | `{"success":true}`; sending the current values changes nothing |
+| `profile.updateInfo`                      | see below                                                                                                   | `{"success":true}`                                             |
+
+`profile.updateInfo` fields (observed live): `companiesRegisterCourt`, `companiesRegisterNumber`, `companiesRegisterStatus` (`registered` or `not_registered`), `contactEmail`, `contactPhone`, `displayName`, `formationStatus` (`established` or `in_formation`), `gisaNumber`, `hasNaturalPersonUnlimitedPartner` (boolean or `null`), `inLiquidation` (boolean or `null`), `legalForm` (`gmbh`, `flexkapg`, `ag`, `og`, `kg`, `gmbh_co_kg`, `sole_proprietor`, `gesbr` or `other`), `legalName`, `otherLegalForm`, `proprietorName`, `vatId`, `website`, `websiteConfirmed`. Text fields that do not apply take empty strings; `null` is rejected.
 
 ### Queries
 
@@ -120,6 +122,16 @@ Queries without input send `input={}` (see the request envelope). The workspace 
 | `offers.getCertificateDownloadUrl`                                                                                                                                                          | `acceptanceId`, `opportunityId`                                                                           | not observed with a real acceptance                                                                                                                                                                                                                                           |
 | `commission.getDashboard`, `commission.getHistory`, `commission.listPayouts`, `commission.listPositions`                                                                                    | not determined                                                                                            | `FORBIDDEN` `not_authorized`                                                                                                                                                                                                                                                  |
 | `opportunities.getSalesAgentDetail`, `opportunities.searchStagingCompanies`, `opportunities.searchStagingContacts`                                                                          | not determined                                                                                            | `FORBIDDEN`, "Requires one of: sa_owner; has: bp_owner" (sales-agent role only)                                                                                                                                                                                               |
+
+## Known limits
+
+These procedures need an existing deal (an opportunity with a deal room, an offer or an acceptance). Without a real deal an input cannot be observed: an unknown id only answers `NOT_FOUND`, and sending a mutation would act on a real counterparty. They are catalogued by name and kind and their inputs stay open; this is a limit of what can be exercised, not a gap in the reference.
+
+- Offers: `offers.send`, `offers.reissueLink`, `offers.revokeLink`, `offers.startSignedUpload`, `offers.completeSignedUpload`, `offers.listByOpportunity`, `offers.getSendRecipients`, `offers.getDownloadUrl`, `offers.getSignedDownloadUrl`, `offers.getCertificateDownloadUrl`
+- Acceptance and close: `opportunities.acceptRequest`, `opportunities.rejectRequest`, `opportunities.requestRevision`, `opportunities.acceptClose`, `opportunities.rejectClose`
+- Deal room: `opportunities.listMessages`, `opportunities.listRequestHistory`, `opportunities.getRequestSnapshot`
+
+Not a deal limit, and described above: the commission queries answer `FORBIDDEN` until the contract is signed, and the sales-agent queries need the `sa_owner` role.
 
 ## How the catalogue was confirmed
 

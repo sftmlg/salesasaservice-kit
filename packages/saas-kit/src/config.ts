@@ -29,15 +29,14 @@ function parseBaseUrl(value: string): string {
   let url: URL;
   try {
     url = new URL(trimmed);
-  } catch {
-    throw new ConfigError(`SAAS_BASE_URL is not a URL: ${trimmed}`, "CONFIG");
+  } catch (cause) {
+    throw new ConfigError(`SAAS_BASE_URL is not a URL: ${trimmed}`, { code: "CONFIG", cause });
   }
   const secure = url.protocol === "https:" || (url.protocol === "http:" && LOCAL_HOSTS.has(url.hostname));
   if (!secure || url.pathname !== "/") {
-    throw new ConfigError(
-      "SAAS_BASE_URL must be an https origin without a path (http only for localhost)",
-      "CONFIG",
-    );
+    throw new ConfigError("SAAS_BASE_URL must be an https origin without a path (http only for localhost)", {
+      code: "CONFIG",
+    });
   }
   return url.origin;
 }
@@ -58,12 +57,12 @@ function loadCredentials(env: Env): Credentials | undefined {
     } catch (cause) {
       throw new ConfigError(
         `cannot read SAAS_CREDENTIALS_FILE: ${cause instanceof Error ? cause.message : String(cause)}`,
-        "CONFIG",
+        { code: "CONFIG", cause },
       );
     }
     const parsed = credentialsSchema.safeParse(raw);
     if (!parsed.success) {
-      throw new ConfigError("SAAS_CREDENTIALS_FILE must contain email and password", "CONFIG");
+      throw new ConfigError("SAAS_CREDENTIALS_FILE must contain email and password", { code: "CONFIG" });
     }
     return parsed.data;
   }

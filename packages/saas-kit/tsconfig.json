@@ -6,8 +6,15 @@
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
-    "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "verbatimModuleSyntax": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "types": ["node"],
@@ -15,5 +22,6 @@
     "rootDir": ".",
     "declaration": true
   },
+  "files": ["./json-unknown.d.ts"],
   "include": ["src", "tests"]
 }

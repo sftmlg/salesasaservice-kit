@@ -11,6 +11,7 @@ import { buildCatalogue, discover, UNDISCOVERABLE } from "./discovery.js";
 import { SaasError } from "./errors.js";
 import { createClient, ensureSession } from "./kit.js";
 import { buildOpenApi } from "./openapi.js";
+import { printErrorLine, printLine } from "./output.js";
 
 const USAGE = `saas-kit <command>
 
@@ -55,21 +56,21 @@ async function main(): Promise<number> {
       ...(values.procedure ?? []),
     ]);
     write(fileURLToPath(CATALOGUE_FILE), `${JSON.stringify(catalogue, null, 2)}\n`);
-    console.log(JSON.stringify({ confirmed: Object.keys(catalogue.procedures).length, notFound }, null, 2));
+    printLine(JSON.stringify({ confirmed: Object.keys(catalogue.procedures).length, notFound }, null, 2));
     return 0;
   }
   if (command && isLiveCommand(command)) {
     const config = loadConfig();
     const deps = { client: createClient(config), config, catalogue: loadCatalogue() };
     const value = await runLiveCommand(command, deps, args);
-    console.log(JSON.stringify(value ?? null, null, 2));
+    printLine(JSON.stringify(value ?? null, null, 2));
     return 0;
   }
   return usage();
 }
 
 function usage(): number {
-  console.error(USAGE);
+  printErrorLine(USAGE);
   return 3;
 }
 
@@ -77,7 +78,7 @@ main().then(
   (code) => process.exit(code),
   (error) => {
     const code = error instanceof SaasError ? `${error.code}: ` : "";
-    console.error(`${code}${error instanceof Error ? error.message : String(error)}`);
+    printErrorLine(`${code}${error instanceof Error ? error.message : String(error)}`);
     process.exit(1);
   },
 );

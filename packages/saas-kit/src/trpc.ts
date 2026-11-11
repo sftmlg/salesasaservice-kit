@@ -12,7 +12,9 @@ const PROCEDURE_RE = /^[A-Za-z][A-Za-z0-9_]*\.[A-Za-z][A-Za-z0-9_]*$/;
 
 export function assertProcedureName(name: string): void {
   if (!PROCEDURE_RE.test(name)) {
-    throw new SaasError(`invalid procedure name "${name}", expected router.procedure`, "BAD_PROCEDURE_NAME");
+    throw new SaasError(`invalid procedure name "${name}", expected router.procedure`, {
+      code: "BAD_PROCEDURE_NAME",
+    });
   }
 }
 
@@ -54,24 +56,26 @@ export function unwrapEnvelope(status: number, text: string): unknown {
   let parsed: unknown;
   try {
     parsed = JSON.parse(text);
-  } catch {
-    throw new UnexpectedResponseError(
-      `non-JSON answer (HTTP ${status}): ${text.slice(0, 200)}`,
-      "NON_JSON",
-      status,
-    );
+  } catch (cause) {
+    throw new UnexpectedResponseError(`non-JSON answer (HTTP ${status}): ${text.slice(0, 200)}`, {
+      code: "NON_JSON",
+      httpStatus: status,
+      cause,
+    });
   }
   const item = firstItem(parsed);
   if (!item) {
-    throw new UnexpectedResponseError(`empty tRPC envelope (HTTP ${status})`, "EMPTY_ENVELOPE", status);
+    throw new UnexpectedResponseError(`empty tRPC envelope (HTTP ${status})`, {
+      code: "EMPTY_ENVELOPE",
+      httpStatus: status,
+    });
   }
   if (item.error) throw mapTrpcError(item.error, status);
   if (!item.result) {
-    throw new UnexpectedResponseError(
-      `envelope without result or error (HTTP ${status})`,
-      "NO_RESULT",
-      status,
-    );
+    throw new UnexpectedResponseError(`envelope without result or error (HTTP ${status})`, {
+      code: "NO_RESULT",
+      httpStatus: status,
+    });
   }
   return item.result.data;
 }
@@ -82,15 +86,15 @@ export function mapTrpcError(error: NonNullable<EnvelopeItem["error"]>, status: 
   const message = error.message ?? code;
   switch (code) {
     case "UNAUTHORIZED":
-      return new NotSignedInError(message, code, httpStatus);
+      return new NotSignedInError(message, { code, httpStatus });
     case "PRECONDITION_FAILED":
-      return new OnboardingIncompleteError(message, code, httpStatus);
+      return new OnboardingIncompleteError(message, { code, httpStatus });
     case "NOT_FOUND":
-      return new UnknownProcedureError(message, code, httpStatus);
+      return new UnknownProcedureError(message, { code, httpStatus });
     case "METHOD_NOT_SUPPORTED":
-      return new MethodNotSupportedError(message, code, httpStatus);
+      return new MethodNotSupportedError(message, { code, httpStatus });
     default:
-      return new SaasError(message, code, httpStatus);
+      return new SaasError(message, { code, httpStatus });
   }
 }
 

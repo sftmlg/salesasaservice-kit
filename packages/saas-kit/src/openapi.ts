@@ -1,6 +1,10 @@
 import type { Catalogue } from "./discovery.js";
 
-const batchRef = { $ref: "#/components/parameters/batch" };
+function ref(target: string): Record<string, string> {
+  return Object.fromEntries([["$ref", target]]);
+}
+
+const batchRef = ref("#/components/parameters/batch");
 
 export function buildOpenApi(catalogue: Catalogue, baseUrl: string): Record<string, unknown> {
   const paths: Record<string, unknown> = {};
@@ -14,24 +18,24 @@ export function buildOpenApi(catalogue: Catalogue, baseUrl: string): Record<stri
       responses: {
         200: {
           description: "tRPC batch result",
-          content: { "application/json": { schema: { $ref: "#/components/schemas/BatchResult" } } },
+          content: { "application/json": { schema: ref("#/components/schemas/BatchResult") } },
         },
         default: {
           description: "tRPC error envelope",
-          content: { "application/json": { schema: { $ref: "#/components/schemas/BatchError" } } },
+          content: { "application/json": { schema: ref("#/components/schemas/BatchError") } },
         },
       },
     };
     paths[`/api/trpc/${name}`] =
       kind === "query"
-        ? { get: { ...operation, parameters: [batchRef, { $ref: "#/components/parameters/input" }] } }
+        ? { get: { ...operation, parameters: [batchRef, ref("#/components/parameters/input")] } }
         : {
             post: {
               ...operation,
               parameters: [batchRef],
               requestBody: {
                 required: true,
-                content: { "application/json": { schema: { $ref: "#/components/schemas/BatchInput" } } },
+                content: { "application/json": { schema: ref("#/components/schemas/BatchInput") } },
               },
             },
           };
