@@ -114,6 +114,8 @@ export class FakePlatform {
   readonly mutations: Mutation[] = [];
   readonly requests: Recorded[] = [];
   failOn: string | undefined;
+  afterWrite: ((procedure: string) => void) | undefined;
+  answerWithoutId = false;
   private counter = 100;
 
   constructor(
@@ -128,13 +130,19 @@ export class FakePlatform {
     const input = (JSON.parse(req.body ?? "{}") as Record<string, Record<string, unknown>>)["0"] ?? {};
     if (procedure === this.failOn) return trpcError("INTERNAL_SERVER_ERROR", 500, "boom");
     this.mutations.push({ procedure, input });
-    this.record(procedure, input);
-    return okReply({ success: true });
+    const created = this.record(procedure, input);
+    this.afterWrite?.(procedure);
+    return okReply(
+      created && !this.answerWithoutId ? { id: created.id, title: created.title } : { success: true },
+    );
   };
 
   readonly fetch = fakeFetch(this.handle).fetch;
 
-  private record(procedure: string, input: Record<string, unknown>): void {
+  private record(
+    procedure: string,
+    input: Record<string, unknown>,
+  ): FixtureProduct | FixtureListing | undefined {
     const title = String(input["title"] ?? "");
     if (procedure === "products.create") {
       const label = priceLabel(
@@ -142,20 +150,25 @@ export class FakePlatform {
         String(input["unit"] ?? "piece"),
         String(input["billingPeriod"] ?? "one_time"),
       );
-      this.products.push(product(this.counter++, title, { priceLabel: label }));
-    } else if (procedure === "listings.create") {
+      const created = product(this.counter++, title, { priceLabel: label });
+      this.products.push(created);
+      return created;
+    }
+    if (procedure === "listings.create") {
       const owner = this.products.find((row) => row.id === input["productId"]);
-      this.listings.push(
-        listing(this.counter++, owner?.title ?? "", {
-          status: "draft",
-          region: String(input["region"] ?? ""),
-          commission: `${String(input["commissionValue"] ?? "0")}${NBSP}%`,
-        }),
-      );
-    } else if (procedure === "listings.publish") {
+      const created = listing(this.counter++, owner?.title ?? "", {
+        status: "draft",
+        region: String(input["region"] ?? ""),
+        commission: `${String(input["commissionValue"] ?? "0")}${NBSP}%`,
+      });
+      this.listings.push(created);
+      return created;
+    }
+    if (procedure === "listings.publish") {
       const row = this.listings.find((candidate) => candidate.id === input["id"]);
       if (row) row.status = "published";
     }
+    return undefined;
   }
 
   get getCount(): number {

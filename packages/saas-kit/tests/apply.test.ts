@@ -218,6 +218,37 @@ describe("apply writes", () => {
     expect(result).toMatchObject({ mode: "apply", steps: ["products.create a", "listings.create a"] });
   });
 
+  it("attaches the listing to the product the create answer named, not to a same-titled record that appeared meanwhile", async () => {
+    const platform = new FakePlatform();
+    platform.afterWrite = (procedure) => {
+      if (procedure === "products.create") platform.products.unshift(product(7, "Alpha"));
+    };
+    await runApply(setup(platform).client, file([entry("a", "Alpha")]), LIVE);
+    const created = platform.products.at(-1);
+    expect(platform.mutations[1]?.input["productId"]).toBe(created?.id);
+  });
+
+  it("publishes the listing the create answer named, not a same-titled listing that appeared meanwhile", async () => {
+    const platform = new FakePlatform();
+    platform.afterWrite = (procedure) => {
+      if (procedure === "listings.create")
+        platform.listings.unshift(listing(7, "Alpha", { status: "draft" }));
+    };
+    await runApply(setup(platform).client, file([entry("a", "Alpha")]), { ...LIVE, publish: true });
+    const created = platform.listings.at(-1);
+    const publish = platform.mutations.find((mutation) => mutation.procedure === "listings.publish");
+    expect(publish?.input).toEqual({ id: created?.id });
+  });
+
+  it("stops with a rerun hint when a create answer carries no id (a guessed id would publish the wrong record)", async () => {
+    const platform = new FakePlatform();
+    platform.answerWithoutId = true;
+    await expect(runApply(setup(platform).client, file([entry("a", "Alpha")]), LIVE)).rejects.toMatchObject({
+      code: "NO_ID_IN_ANSWER",
+    });
+    expect(platform.mutations.map((mutation) => mutation.procedure)).toEqual(["products.create"]);
+  });
+
   it("updates a changed product with its id and all given fields, and a changed listing with id and productId", async () => {
     const platform = new FakePlatform(
       [product(1, "Alpha", { priceLabel: priceLabel("900", "piece", "one_time") })],

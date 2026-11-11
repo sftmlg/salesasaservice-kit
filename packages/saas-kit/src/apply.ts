@@ -195,11 +195,13 @@ function part(id: string | undefined, changes: Change[]): PlanPart {
 
 class Writer {
   readonly steps: string[] = [];
+  readonly createdIds = new Map<string, string>();
   constructor(private readonly client: SaasClient) {}
 
-  async send(procedure: string, key: string, input: unknown): Promise<void> {
+  async send(procedure: string, key: string, input: unknown): Promise<unknown> {
+    let answer: unknown;
     try {
-      await this.client.mutate(procedure, input, { confirm: true, legalAct: true });
+      answer = await this.client.mutate(procedure, input, { confirm: true, legalAct: true });
     } catch (cause) {
       const detail = cause instanceof Error ? cause.message : String(cause);
       throw new SaasError(
@@ -208,81 +210,63 @@ class Writer {
       );
     }
     this.steps.push(`${procedure} ${key}`);
+    return answer;
   }
-}
 
-function idByTitle(rows: { title: string; id: string }[], title: string, what: string): string {
-  const found = rows.find((row) => row.title.trim() === title);
-  if (!found) {
-    throw new SaasError(`the ${what} "${title}" is not on the products page after it was written`, {
-      code: "NOT_FOUND_AFTER_WRITE",
-    });
+  async create(
+    procedure: "products.create" | "listings.create",
+    key: string,
+    input: unknown,
+  ): Promise<string> {
+    const answer = await this.send(procedure, key, input);
+    const id = typeof answer === "object" && answer !== null ? (answer as { id?: unknown }).id : undefined;
+    if (typeof id !== "string" || id === "") {
+      throw new SaasError(
+        `${procedure} for "${key}" was written but its answer carries no id, so the kit stops instead of guessing one after ${this.steps.length} completed step(s) [${this.steps.join(", ")}]. Run apply again to continue: records are matched by title`,
+        { code: "NO_ID_IN_ANSWER" },
+      );
+    }
+    this.createdIds.set(`${procedure} ${key}`, id);
+    return id;
   }
-  return found.id;
 }
 
 async function writeProducts(writer: Writer, entries: ApplyEntry[], plan: PlanEntry[]): Promise<void> {
   for (const [index, entry] of entries.entries()) {
     const item = plan[index];
     if (item?.product.action === "create") {
-      await writer.send("products.create", item.key, entry.product);
+      await writer.create("products.create", item.key, entry.product);
     } else if (item?.product.action === "update") {
-      await writer.send("products.update", item.key, { id: item.product.id, ...entry.product });
+      await writer.send("products.update", item.key, { ...entry.product, id: item.product.id });
     }
   }
 }
 
-async function writeListings(
-  writer: Writer,
-  entries: ApplyEntry[],
-  plan: PlanEntry[],
-  page: ProductsPage,
-): Promise<void> {
+async function writeListings(writer: Writer, entries: ApplyEntry[], plan: PlanEntry[]): Promise<void> {
   for (const [index, entry] of entries.entries()) {
     const item = plan[index];
     if (!item || item.listing.action === "unchanged") continue;
-    const productId =
-      item.product.id ??
-      idByTitle(
-        page.products.filter((row) => row.itemType === "product"),
-        item.title,
-        "product",
-      );
+    const productId = item.product.id ?? writer.createdIds.get(`products.create ${item.key}`);
     if (item.listing.action === "create") {
-      await writer.send("listings.create", item.key, { productId, ...entry.listing });
+      await writer.create("listings.create", item.key, { ...entry.listing, productId });
     } else {
-      await writer.send("listings.update", item.key, { id: item.listing.id, productId, ...entry.listing });
+      await writer.send("listings.update", item.key, { ...entry.listing, id: item.listing.id, productId });
     }
   }
 }
 
-async function publishListings(writer: Writer, plan: PlanEntry[], page: ProductsPage): Promise<void> {
+async function publishListings(writer: Writer, plan: PlanEntry[]): Promise<void> {
   for (const item of plan.filter((candidate) => candidate.publish)) {
-    const listing = page.listings.find((row) => row.productTitle.trim() === item.title);
-    if (!listing) {
-      throw new SaasError(`the listing of "${item.title}" is not on the products page`, {
-        code: "NOT_FOUND_AFTER_WRITE",
-      });
-    }
-    if (listing.status !== "published") await writer.send("listings.publish", item.key, { id: listing.id });
+    const id = item.listing.id ?? writer.createdIds.get(`listings.create ${item.key}`);
+    await writer.send("listings.publish", item.key, { id });
   }
 }
 
-async function execute(
-  client: SaasClient,
-  entries: ApplyEntry[],
-  plan: PlanEntry[],
-  page: ProductsPage,
-): Promise<string[]> {
+async function execute(client: SaasClient, entries: ApplyEntry[], plan: PlanEntry[]): Promise<string[]> {
   const writer = new Writer(client);
   await writeProducts(writer, entries, plan);
-  const created = plan.some((item) => item.product.action === "create");
-  const afterProducts = created ? await fetchProductsPage(client) : page;
-  await writeListings(writer, entries, plan, afterProducts);
-  if (plan.some((item) => item.publish)) {
-    const listed = plan.some((item) => item.listing.action === "create");
-    await publishListings(writer, plan, listed ? await fetchProductsPage(client) : afterProducts);
-  }
+  await writeListings(writer, entries, plan);
+  await publishListings(writer, plan);
   return writer.steps;
 }
 
@@ -292,5 +276,5 @@ export async function runApply(client: SaasClient, text: string, flags: ApplyFla
   const page = await fetchProductsPage(client);
   const plan = entries.map((entry) => planEntry(entry, page, flags.publish));
   if (mode === "dry-run") return { mode, sent: 0, plan, notCompared: NOT_COMPARED };
-  return { mode, steps: await execute(client, entries, plan, page), plan };
+  return { mode, steps: await execute(client, entries, plan), plan };
 }
