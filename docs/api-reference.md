@@ -201,7 +201,7 @@ Regenerate the catalogue with `saas-kit refresh` and the two documentation files
 
 These 14 mutations are accepted over MCP, each with `confirm=true`. None deletes anything, and none publishes, sends, signs, pays or consents. They are not all corrected the same way:
 
-- Record edits (`activities.create`, `activities.update`, `activities.createTask`, `activities.updateTask`, `activities.updateTaskStatus`, `companies.create`, `companies.update`, `contacts.create`, `contacts.update`): a later `update` corrects the record. The activity and task updates are in the catalogue; the companies and contacts mutations are not.
+- Record edits (`activities.create`, `activities.update`, `activities.createTask`, `activities.updateTask`, `activities.updateTaskStatus`, `companies.create`, `companies.update`, `contacts.create`, `contacts.update`): an update overwrites the content of a record. A record made by one of the four create mutations stays in the account, because no delete is reachable over MCP. The activity and task updates are in the catalogue; no `companies.*` or `contacts.*` correction path is observed in it.
 - Logo upload (`profile.startLogoUpload`, `profile.completeLogoUpload`, `profile.cancelLogoUpload`): the cancel undoes a staged upload. A completed upload has no catalogued undo over MCP, because the logo delete is refused.
 - Read marks (`inbox.acknowledge`, `inbox.acknowledgeProductProposalFailure`): they mark an inbox item as read, with no catalogued undo.
 

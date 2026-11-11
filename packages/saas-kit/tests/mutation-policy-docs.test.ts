@@ -21,7 +21,9 @@ function backticked(text: string): string[] {
 
 describe("documented mutation policy equals the typed source", () => {
   it("the allowlist section of the API reference lists exactly MCP_ALLOWED_MUTATIONS (a name added to or dropped from the code but not the docs is the bug)", () => {
-    const documented = backticked(section(reference, "### MCP allowlist")).sort();
+    const documented = backticked(section(reference, "### MCP allowlist"))
+      .filter((name) => !name.endsWith("*"))
+      .sort();
     expect(documented.length).toBeGreaterThan(0);
     expect(documented).toEqual([...MCP_ALLOWED_MUTATIONS].sort());
   });
@@ -56,6 +58,27 @@ describe("documented mutation policy equals the typed source", () => {
     for (const text of [section(reference, "### MCP allowlist"), readme]) {
       expect(text).toMatch(/read marks/i);
       expect(text).toMatch(/no catalogued undo/);
+    }
+  });
+
+  it("says a created record stays in the account and never claims it can be undone or removed over MCP (a later update was documented as correcting every record edit, including the create mutations)", () => {
+    const edits = section(reference, "### MCP allowlist")
+      .split("\n")
+      .find((line) => line.startsWith("- Record edits"));
+    const mutationPolicy = readme.split("\n").find((line) => line.startsWith("`confirm=true` is set by"));
+    expect(edits).toBeDefined();
+    expect(mutationPolicy).toBeDefined();
+    for (const text of [edits ?? "", mutationPolicy ?? ""]) {
+      expect(text).toMatch(/overwrites the content of a record/);
+      expect(text).toMatch(/stays in the account/);
+      expect(text).toMatch(/no delete is reachable over MCP/);
+      expect(text).toMatch(/no `companies\.\*` or `contacts\.\*` correction path is observed/);
+      expect(text).not.toMatch(
+        /corrects? the record|are corrected by|\bcan be (undone|removed|deleted|reverted)/,
+      );
+      expect(text).not.toMatch(
+        /\b(create\w*|created records?)\b[^.;]*\b(is|are|can be) (undone|removed|deleted|reverted|corrected)/i,
+      );
     }
   });
 
