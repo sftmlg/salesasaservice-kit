@@ -141,7 +141,7 @@ These shapes were measured from the validation errors that invalid input produce
 
 `offerTemplates.create` takes `name` (string); further fields are unknown.
 
-The helper procedures `products.extractFromText`, `products.extractPricing`, `products.generateShortDescription`, `products.inspectWebsite`, `products.suggestClassification`, `products.startImageUpload`, `products.completeImageUpload` and `questionCatalogs.getCatalogForProduct` have no measured input; they are catalogued by name only (see below).
+The helper procedures `products.extractFromText`, `products.extractPricing`, `products.generateShortDescription`, `products.inspectWebsite`, `products.suggestClassification`, `products.startImageUpload`, `products.completeImageUpload` and `questionCatalogs.getCatalogForProduct` have an unknown input schema: their names are confirmed by a probe (see below), but no input was observed.
 
 ### Queries
 

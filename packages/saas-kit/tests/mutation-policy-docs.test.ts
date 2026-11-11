@@ -84,6 +84,11 @@ describe("documented mutation policy equals the typed source", () => {
     expect(reference).not.toMatch(/does not even confirm that they are mutations/);
   });
 
+  it("says the input schema of the helper procedures is unknown instead of calling their names unprobed (the names were probed and confirmed, only the input was not observed)", () => {
+    expect(reference).not.toMatch(/unprobed/i);
+    expect(reference).toMatch(/have an unknown input schema: their names are confirmed by a probe/);
+  });
+
   it("attributes the VAT id verification statement to the platform's own page text instead of stating it as the kit's measurement (an unattributed claim reads as an observation of an account)", () => {
     const quote = "Mit USt-IdNr. läuft die Verifizierung automatisch, sonst per Ausweisdokument";
     const lines = reference.split("\n").filter((line) => /verif/i.test(line) && /VAT id|USt-IdNr/.test(line));
