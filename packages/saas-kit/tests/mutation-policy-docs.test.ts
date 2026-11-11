@@ -51,4 +51,12 @@ describe("documented mutation policy equals the typed source", () => {
         .filter((line) => MCP_ALLOWED_MUTATIONS.filter((name) => line.includes(`\`${name}\``)).length > 1),
     ).toEqual([]);
   });
+
+  it("attributes the VAT id verification statement to the platform's own page text instead of stating it as the kit's measurement (an unattributed claim reads as an observation of an account)", () => {
+    const quote = "Mit USt-IdNr. läuft die Verifizierung automatisch, sonst per Ausweisdokument";
+    const lines = reference.split("\n").filter((line) => /verif/i.test(line) && /VAT id|USt-IdNr/.test(line));
+    expect(lines.length).toBeGreaterThan(0);
+    expect(lines.filter((line) => !/profile page/i.test(line))).toEqual([]);
+    expect(reference).toContain(`"${quote}"`);
+  });
 });

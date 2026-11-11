@@ -75,13 +75,13 @@ Failure is an array with one item holding an `error`; the HTTP status is repeate
 
 ## Onboarding gate
 
-For an account that has not finished onboarding, workspace procedures answer `PRECONDITION_FAILED` ("Onboarding state does not allow this operation") until it has completed: company profile with legal details, verification (automatic when a VAT id is given, otherwise an identity document), and the platform contract including a declaration of signing authority. Most of these steps are legal acts of the account holder and cannot be done by the kit. Once the account has a business-partner workspace the gated queries answer with their own result or error (`BAD_REQUEST` when the input does not validate, `FORBIDDEN` for a missing role) instead. Two mutations belong to this flow: `onboarding.createWorkspace` creates the workspace, and `verification.startWorkspaceVerification` (void input) starts its verification. Neither is on the MCP allowlist, so over MCP both are refused, and the library and the CLI send them only with `legalAct` besides `confirm` (see [Mutation policy](#mutation-policy)).
+For an account that has not finished onboarding, workspace procedures answer `PRECONDITION_FAILED` ("Onboarding state does not allow this operation") until it has completed: company profile with legal details, verification (the platform's own profile page says "Mit USt-IdNr. läuft die Verifizierung automatisch, sonst per Ausweisdokument"), and the platform contract including a declaration of signing authority. Most of these steps are legal acts of the account holder and cannot be done by the kit. Once the account has a business-partner workspace the gated queries answer with their own result or error (`BAD_REQUEST` when the input does not validate, `FORBIDDEN` for a missing role) instead. Two mutations belong to this flow: `onboarding.createWorkspace` creates the workspace, and `verification.startWorkspaceVerification` (void input) starts its verification. Neither is on the MCP allowlist, so over MCP both are refused, and the library and the CLI send them only with `legalAct` besides `confirm` (see [Mutation policy](#mutation-policy)).
 
 ### Order for a business partner
 
 1. `onboarding.createWorkspace` with type `business_partner`.
 2. `profile.updateInfo` (company data) and `profile.updateAddress`.
-3. Verification: `verification.startWorkspaceVerification`; it completes automatically when the profile carries a VAT id, otherwise an identity document is needed.
+3. Verification: `verification.startWorkspaceVerification`. The platform's own profile page says "Mit USt-IdNr. läuft die Verifizierung automatisch, sonst per Ausweisdokument".
 4. The platform contract (`contracts.signWorkspaceContract`), which includes the declaration of signing authority.
 5. Listings. They can be placed before the contract is signed and then show as "coming soon".
 
@@ -95,12 +95,12 @@ The platform does not publish input schemas. A schema is documented here only af
 
 The four onboarding mutations below were called against the live platform with exactly the input documented here, and each returned success. The shapes are taken from those calls, not from a list of field names.
 
-| Procedure                                 | Input                                                                                                       | Answer                                                                                  |
-| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| `onboarding.createWorkspace`              | `type` (`business_partner` or `sales_agent`), `legalName`, `website`, `websiteConfirmed`, `proposeProducts` | success: a workspace id; the creator becomes the workspace owner (`bp_owner`)           |
-| `verification.startWorkspaceVerification` | void: body `{}`                                                                                             | success: a verification status; `approved` right away when the profile carries a VAT id |
-| `profile.updateAddress`                   | `street`, `postalCode`, `city`, `country` (ISO country code, for example `AT`)                              | `{"success":true}`; sending the current values changes nothing                          |
-| `profile.updateInfo`                      | see below                                                                                                   | `{"success":true}`                                                                      |
+| Procedure                                 | Input                                                                                                       | Answer                                                                                                       |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `onboarding.createWorkspace`              | `type` (`business_partner` or `sales_agent`), `legalName`, `website`, `websiteConfirmed`, `proposeProducts` | success: a workspace id; the creator becomes the workspace owner (`bp_owner`)                                |
+| `verification.startWorkspaceVerification` | void: body `{}`                                                                                             | success: a verification status; the profile page text says the verification runs automatically with a VAT id |
+| `profile.updateAddress`                   | `street`, `postalCode`, `city`, `country` (ISO country code, for example `AT`)                              | `{"success":true}`; sending the current values changes nothing                                               |
+| `profile.updateInfo`                      | see below                                                                                                   | `{"success":true}`                                                                                           |
 
 `profile.updateInfo` fields (observed live): `companiesRegisterCourt`, `companiesRegisterNumber`, `companiesRegisterStatus` (`registered` or `not_registered`), `contactEmail`, `contactPhone`, `displayName`, `formationStatus` (`established` or `in_formation`), `gisaNumber`, `hasNaturalPersonUnlimitedPartner` (boolean or `null`), `inLiquidation` (boolean or `null`), `legalForm` (`gmbh`, `flexkapg`, `ag`, `og`, `kg`, `gmbh_co_kg`, `sole_proprietor`, `gesbr` or `other`), `legalName`, `otherLegalForm`, `proprietorName`, `vatId`, `website`, `websiteConfirmed`. Text fields that do not apply take empty strings; `null` is rejected.
 
