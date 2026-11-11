@@ -13,16 +13,26 @@ function parseInput(raw: string | undefined): unknown {
   }
 }
 
-function procedureAndInput(args: string[]): { procedure: string; input: unknown; confirm: boolean } {
+function procedureAndInput(args: string[]): {
+  procedure: string;
+  input: unknown;
+  confirm: boolean;
+  legalAct: boolean;
+} {
   const { values, positionals } = parseArgs({
     args,
-    options: { confirm: { type: "boolean" } },
+    options: { confirm: { type: "boolean" }, "legal-act": { type: "boolean" } },
     allowPositionals: true,
   });
   const [procedure, raw] = positionals;
   if (!procedure)
     throw new ConfigError("a procedure name (router.procedure) is required", { code: "CONFIG" });
-  return { procedure, input: parseInput(raw), confirm: values.confirm === true };
+  return {
+    procedure,
+    input: parseInput(raw),
+    confirm: values.confirm === true,
+    legalAct: values["legal-act"] === true,
+  };
 }
 
 const liveCommands: Record<string, LiveCommand> = {

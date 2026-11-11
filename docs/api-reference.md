@@ -75,7 +75,7 @@ Failure is an array with one item holding an `error`; the HTTP status is repeate
 
 ## Onboarding gate
 
-For an account that has not finished onboarding, workspace procedures answer `PRECONDITION_FAILED` ("Onboarding state does not allow this operation") until it has completed: company profile with legal details, verification (automatic when a VAT id is given, otherwise an identity document), and the platform contract including a declaration of signing authority. Most of these steps are legal acts of the account holder and cannot be done by the kit. Once the account has a business-partner workspace the gated queries answer with their own result or error (`BAD_REQUEST` when the input does not validate, `FORBIDDEN` for a missing role) instead. Two mutations belong to this flow: `onboarding.createWorkspace` creates the workspace, and `verification.startWorkspaceVerification` (void input) starts its verification. Both are legal acts of the account holder; the kit lists them but only sends them through the confirm guard.
+For an account that has not finished onboarding, workspace procedures answer `PRECONDITION_FAILED` ("Onboarding state does not allow this operation") until it has completed: company profile with legal details, verification (automatic when a VAT id is given, otherwise an identity document), and the platform contract including a declaration of signing authority. Most of these steps are legal acts of the account holder and cannot be done by the kit. Once the account has a business-partner workspace the gated queries answer with their own result or error (`BAD_REQUEST` when the input does not validate, `FORBIDDEN` for a missing role) instead. Two mutations belong to this flow: `onboarding.createWorkspace` creates the workspace, and `verification.startWorkspaceVerification` (void input) starts its verification. Both are legal acts of the account holder; the kit lists them and sends `onboarding.createWorkspace` only behind the legal-act guard (see [Legal acts](#legal-acts)).
 
 ### Order for a business partner
 
@@ -147,4 +147,24 @@ Regenerate the catalogue with `saas-kit refresh` and the two documentation files
 
 - Prefer queries; they cannot write.
 - A mutation changes data that other parties on the platform see. The kit only sends one with an explicit `confirm`, to be given after the account holder approved the exact input.
+- A legal act needs a second, separate opt-in (next section).
 - Keep credentials and the session cookie out of version control.
+
+## Legal acts
+
+Ten procedures bind the account holder legally or financially: signing the platform contract, accepting or rejecting a request or a close, confirming business details, requesting a payout, changing bank details, opening a checkout, sending an offer and creating the workspace.
+
+- `contracts.signWorkspaceContract`
+- `opportunities.acceptRequest`, `opportunities.acceptClose`, `opportunities.rejectClose`
+- `commission.confirmBusinessDetails`, `commission.requestPayout`, `commission.updateBankDetails`
+- `subscriptions.createCheckout`
+- `offers.send`
+- `onboarding.createWorkspace`
+
+Reason: `confirm=true` is set by whoever calls the tool, and an agent reads text that the platform or a counterparty controls (messages, names, offer text). That text can steer an agent into a legal act in the account holder's name, so `confirm` cannot prove that a person decided. The kit therefore gates these procedures a second time:
+
+- `client.mutate` refuses them unless the caller passes `legalAct: true` besides `confirm: true`.
+- The MCP server never passes `legalAct`, and refuses these procedures with `LEGAL_ACT_REFUSED` and the reason. An extra `legalAct` argument sent by an agent is ignored.
+- The CLI accepts them only with `--legal-act` besides `--confirm`. `--legal-act` does not replace `--confirm`.
+
+The list is one typed constant, `LEGAL_ACT_PROCEDURES` in `packages/saas-kit/src/legal-acts.ts`. A procedure not on the list is not thereby harmless; the list names the acts that were identified as binding.

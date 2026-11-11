@@ -22,8 +22,9 @@ const USAGE = `saas-kit <command>
 
   status | login | discover [--path /de/x]... | list [--router r] [--kind query|mutation] | probe
   query <router.name> [json]           GET; probe prints the answer code of a read-only GET for every catalogued procedure
-  mutation <router.name> [json] --confirm
-                                       POST; refused without --confirm, a void-input procedure takes no json
+  mutation <router.name> [json] --confirm [--legal-act]
+                                       POST; refused without --confirm, a void-input procedure takes no json;
+                                       a legal act (see README) is refused without --legal-act as well
 
 Environment: SAAS_BASE_URL, SAAS_SESSION_FILE, SAAS_CREDENTIALS_FILE or SAAS_EMAIL and SAAS_PASSWORD`;
 

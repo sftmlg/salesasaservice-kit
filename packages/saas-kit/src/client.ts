@@ -1,7 +1,7 @@
 import { z } from "zod";
 import type { Credentials } from "./config.js";
 import { DEFAULT_BASE_URL } from "./config.js";
-import { assertConfirmed } from "./confirm.js";
+import { assertConfirmed, assertLegalActAllowed } from "./confirm.js";
 import { applySetCookies, cookieHeader } from "./cookies.js";
 import { NotSignedInError, SaasError, UnexpectedResponseError } from "./errors.js";
 import { MemorySessionStore, type SessionStore } from "./session-store.js";
@@ -151,7 +151,12 @@ export class SaasClient {
     return unwrapEnvelope(res.status, res.text);
   }
 
-  async mutate(procedure: string, input: unknown, options: { confirm: boolean }): Promise<unknown> {
+  async mutate(
+    procedure: string,
+    input: unknown,
+    options: { confirm: boolean; legalAct?: boolean },
+  ): Promise<unknown> {
+    assertLegalActAllowed(procedure, options.legalAct);
     assertConfirmed(options.confirm, `mutation ${procedure}`);
     const { path, body } = mutationRequest(procedure, input);
     const res = await this.send(path, { method: "POST", body });

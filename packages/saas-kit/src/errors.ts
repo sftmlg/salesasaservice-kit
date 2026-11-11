@@ -17,5 +17,6 @@ export class OnboardingIncompleteError extends SaasError {}
 export class UnknownProcedureError extends SaasError {}
 export class MethodNotSupportedError extends SaasError {}
 export class ConfirmationRequiredError extends SaasError {}
+export class LegalActRefusedError extends SaasError {}
 export class UnexpectedResponseError extends SaasError {}
 export class ConfigError extends SaasError {}

@@ -18,13 +18,13 @@ We built this kit because the marketplace has no public API, and working with it
 
 One package, `packages/saas-kit`, with a library and two executables.
 
-| Part                               | What it does                                                                                                                                               |
-| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Client (`SaasClient`)              | better-auth sign-up, sign-in and email verification, cookie jar, tRPC query and mutation, session store                                                    |
-| Discovery                          | crawls the signed-in app, extracts procedure names, probes them with `GET` only                                                                            |
-| OpenAPI                            | generates the OpenAPI 3.1 file and the catalogue page from the bundled catalogue                                                                           |
-| MCP server (`saas-kit-mcp`, stdio) | exposes the platform as tools                                                                                                                              |
-| CLI (`saas-kit`)                   | `status`, `login`, `discover`, `list`, `probe` (GET every catalogued procedure, prints the answer codes), `query`, `mutation --confirm`, `docs`, `refresh` |
+| Part                               | What it does                                                                                                                                                             |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Client (`SaasClient`)              | better-auth sign-up, sign-in and email verification, cookie jar, tRPC query and mutation, session store                                                                  |
+| Discovery                          | crawls the signed-in app, extracts procedure names, probes them with `GET` only                                                                                          |
+| OpenAPI                            | generates the OpenAPI 3.1 file and the catalogue page from the bundled catalogue                                                                                         |
+| MCP server (`saas-kit-mcp`, stdio) | exposes the platform as tools                                                                                                                                            |
+| CLI (`saas-kit`)                   | `status`, `login`, `discover`, `list`, `probe` (GET every catalogued procedure, prints the answer codes), `query`, `mutation --confirm [--legal-act]`, `docs`, `refresh` |
 
 ### Setup
 
@@ -61,16 +61,28 @@ Everything comes from environment variables. No secret is read from the reposito
 }
 ```
 
-| Tool              | Effect                                                                                                                       |
-| ----------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `session_status`  | whether a session exists, for whom, until when                                                                               |
-| `login`           | sign in with the configured credentials and store the session                                                                |
-| `discover`        | crawl the signed-in app and list procedures and routes (read-only)                                                           |
-| `list_procedures` | the bundled catalogue, filterable by router and kind                                                                         |
-| `query`           | call a tRPC query (HTTP `GET`, cannot write)                                                                                 |
-| `mutation`        | call a tRPC mutation; **refused unless `confirm` is `true`**, which is for after the account holder approved the exact input |
+| Tool              | Effect                                                                                                                                                               |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `session_status`  | whether a session exists, for whom, until when                                                                                                                       |
+| `login`           | sign in with the configured credentials and store the session                                                                                                        |
+| `discover`        | crawl the signed-in app and list procedures and routes (read-only)                                                                                                   |
+| `list_procedures` | the bundled catalogue, filterable by router and kind                                                                                                                 |
+| `query`           | call a tRPC query (HTTP `GET`, cannot write)                                                                                                                         |
+| `mutation`        | call a tRPC mutation; **refused unless `confirm` is `true`**, which is for after the account holder approved the exact input; **legal acts are always refused here** |
 
 Account creation is deliberately not a tool: it accepts the platform's terms on behalf of a person. It exists in the client library as `signUp`, which requires `acceptTerms: true`.
+
+### Legal acts
+
+`confirm=true` is set by whoever calls the tool, and an agent reads text that the platform or a counterparty controls, so that text can steer an agent into a legal act in the account holder's name. Ten procedures are therefore gated a second time (`LEGAL_ACT_PROCEDURES`, `packages/saas-kit/src/legal-acts.ts`):
+
+`contracts.signWorkspaceContract`, `opportunities.acceptRequest`, `opportunities.acceptClose`, `opportunities.rejectClose`, `commission.confirmBusinessDetails`, `commission.requestPayout`, `commission.updateBankDetails`, `subscriptions.createCheckout`, `offers.send`, `onboarding.createWorkspace`.
+
+- `client.mutate` refuses them unless the caller passes `legalAct: true` besides `confirm: true`.
+- The MCP server never passes it and refuses them with `LEGAL_ACT_REFUSED`.
+- The CLI accepts them only as `saas-kit mutation <router.name> [json] --confirm --legal-act`.
+
+Details: [docs/api-reference.md](docs/api-reference.md#legal-acts).
 
 ### Library
 
@@ -81,6 +93,7 @@ const client = new SaasClient({ store: new FileSessionStore(process.env.SAAS_SES
 await client.signIn({ email, password });
 const status = await client.query("subscriptions.getStatus");
 await client.mutate("listings.publish", input, { confirm: true });
+await client.mutate("offers.send", input, { confirm: true, legalAct: true }); // a legal act, see below
 ```
 
 ### Development

@@ -7,6 +7,7 @@ export * from "./cookies.js";
 export * from "./discovery.js";
 export * from "./errors.js";
 export * from "./kit.js";
+export * from "./legal-acts.js";
 export * from "./openapi.js";
 export * from "./server.js";
 export * from "./session-store.js";

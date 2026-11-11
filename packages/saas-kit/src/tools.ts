@@ -64,7 +64,13 @@ export const tools = {
     return client.query(args.procedure, args.input);
   },
 
-  async mutation({ client }: ToolDeps, args: { procedure: string; input?: unknown; confirm: boolean }) {
-    return client.mutate(args.procedure, args.input, { confirm: args.confirm });
+  async mutation(
+    { client }: ToolDeps,
+    args: { procedure: string; input?: unknown; confirm: boolean; legalAct?: boolean },
+  ) {
+    return client.mutate(args.procedure, args.input, {
+      confirm: args.confirm,
+      ...(args.legalAct === undefined ? {} : { legalAct: args.legalAct }),
+    });
   },
 };

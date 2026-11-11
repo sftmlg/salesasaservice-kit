@@ -47,13 +47,16 @@ export function buildServer(deps: ToolDeps): McpServer {
   );
   server.tool(
     "mutation",
-    "Call a tRPC mutation. WRITES on the platform: confirm must be true, and only after the account holder approved the exact input.",
+    "Call a tRPC mutation. WRITES on the platform: confirm must be true, and only after the account holder approved the exact input. Legal acts (signing, accepting, payout, bank details, checkout, offers, workspace creation) are refused here and need the CLI.",
     {
       procedure,
       input: z.unknown().optional().describe("JSON input"),
       confirm: z.boolean().describe("must be true; anything else is refused"),
     },
-    (args) => run(() => tools.mutation(deps, args)),
+    (args) =>
+      run(() =>
+        tools.mutation(deps, { procedure: args.procedure, input: args.input, confirm: args.confirm }),
+      ),
   );
   return server;
 }
