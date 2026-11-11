@@ -154,6 +154,32 @@ describe("apply planning", () => {
     expect(result.plan[0]?.listing.changes[0]).toEqual({ field: "commissionValue", from: "5", to: "10" });
   });
 
+  it("treats an empty titleOverride as no override (the listing showing the product title must not update on every run)", async () => {
+    const platform = new FakePlatform([product(1, "Alpha")], [listing(1, "Alpha")]);
+    const result = await runApply(
+      setup(platform).client,
+      file([entry("a", "Alpha", {}, { titleOverride: "" })]),
+      LIVE,
+    );
+    expect(result.plan[0]?.listing.action).toBe("unchanged");
+    expect(platform.mutations).toEqual([]);
+  });
+
+  it("plans clearing a shown override when titleOverride is empty (clearing must still be detected)", async () => {
+    const platform = new FakePlatform(
+      [product(1, "Alpha")],
+      [listing(1, "Alpha", { title: "Special offer" })],
+    );
+    const result = await runApply(
+      setup(platform).client,
+      file([entry("a", "Alpha", {}, { titleOverride: "" })]),
+      DRY,
+    );
+    expect(result.plan[0]?.listing.changes).toEqual([
+      { field: "titleOverride", from: "Special offer", to: "" },
+    ]);
+  });
+
   it("stops on two products of one title without sending anything (matching by title would be a guess)", async () => {
     const platform = new FakePlatform([product(1, "Alpha"), product(2, "Alpha")]);
     await expect(runApply(setup(platform).client, file([entry("a", "Alpha")]), LIVE)).rejects.toMatchObject({

@@ -95,10 +95,17 @@ function productChanges(existing: ProductRow, desired: Record<string, unknown>):
   ];
 }
 
+function titleOverrideChange(existing: ListingRow, desired: unknown): Change[] {
+  if (desired !== "") return change("titleOverride", existing.title, desired);
+  return sameText(existing.title, existing.productTitle)
+    ? []
+    : [{ field: "titleOverride", from: existing.title, to: "" }];
+}
+
 function listingChanges(existing: ListingRow, desired: Record<string, unknown>): Change[] {
   assertReadable(existing.commissionLabel, existing.commissionMode, `listing "${existing.title}"`);
   return [
-    ...change("titleOverride", existing.title, desired["titleOverride"]),
+    ...titleOverrideChange(existing, desired["titleOverride"]),
     ...change("region", existing.region, desired["region"]),
     ...change("commissionMode", existing.commissionMode, desired["commissionMode"]),
     ...change("commissionValue", existing.commissionValue, desired["commissionValue"], sameNumber),
