@@ -1,7 +1,7 @@
 import { z } from "zod";
 import type { Credentials } from "./config.js";
 import { DEFAULT_BASE_URL } from "./config.js";
-import { assertConfirmed, assertLegalActAllowed } from "./confirm.js";
+import { assertConfirmed, assertLegalActAllowed, assertSignUpAllowed } from "./confirm.js";
 import { applySetCookies, cookieHeader } from "./cookies.js";
 import { NotSignedInError, SaasError, UnexpectedResponseError } from "./errors.js";
 import { MemorySessionStore, type SessionStore } from "./session-store.js";
@@ -80,7 +80,11 @@ export class SaasClient {
     return { status: res.status, location: res.headers.get("location"), text: await res.text() };
   }
 
-  async signUp(input: { name: string; email: string; password: string; acceptTerms: true }): Promise<void> {
+  async signUp(
+    input: { name: string; email: string; password: string; acceptTerms: true },
+    options: { legalAct: true },
+  ): Promise<void> {
+    assertSignUpAllowed(options?.legalAct);
     const res = await this.send("/api/auth/sign-up/email", {
       method: "POST",
       body: JSON.stringify({ ...input, callbackURL: "/de" }),

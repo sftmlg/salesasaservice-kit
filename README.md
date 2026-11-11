@@ -70,7 +70,7 @@ Everything comes from environment variables. No secret is read from the reposito
 | `query`           | call a tRPC query (HTTP `GET`, cannot write)                                                                                                                         |
 | `mutation`        | call a tRPC mutation; **refused unless `confirm` is `true`**, which is for after the account holder approved the exact input; **legal acts are always refused here** |
 
-Account creation is deliberately not a tool: it accepts the platform's terms on behalf of a person. It exists in the client library as `signUp`, which requires `acceptTerms: true`.
+Account creation is deliberately not a tool: it accepts the platform's terms on behalf of a person. It exists in the client library as `signUp`, which requires `acceptTerms: true` and the explicit option `legalAct: true` (`client.signUp(input, { legalAct: true })`); only call it after that person decided to accept the terms.
 
 ### Legal acts
 

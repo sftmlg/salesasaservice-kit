@@ -16,7 +16,7 @@ Machine-readable form: [openapi.json](openapi.json) (OpenAPI 3.1). Procedure lis
 
 ## Authentication flow
 
-1. `POST /api/auth/sign-up/email` with `name`, `email`, `password` (at least 15 characters), `acceptTerms: true` and an optional `callbackURL`. Without `acceptTerms` the answer is `TERMS_NOT_ACCEPTED`. Accepting terms is a legal act of the account holder, so a person must decide it.
+1. `POST /api/auth/sign-up/email` with `name`, `email`, `password` (at least 15 characters), `acceptTerms: true` and an optional `callbackURL`. Without `acceptTerms` the answer is `TERMS_NOT_ACCEPTED`. Accepting terms is a legal act of the account holder, so a person must decide it; the kit's `signUp` therefore requires `legalAct: true` and is not an MCP tool.
 2. The platform mails a verification link of the form `/api/auth/verify-email?token=...&callbackURL=...`. Open it (GET) to confirm the address. Until then sign-in answers `EMAIL_NOT_VERIFIED` (HTTP 403).
 3. `POST /api/auth/sign-in/email` with `email` and `password`. The answer sets the session cookie (`__Secure-better-auth.session_token`).
 4. `GET /api/auth/get-session` returns the user and session, or `null` when signed out.

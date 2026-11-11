@@ -20,3 +20,12 @@ export function assertLegalActAllowed(procedure: string, legalAct: unknown): voi
     );
   }
 }
+
+export function assertSignUpAllowed(legalAct: unknown): void {
+  if (legalAct !== true) {
+    throw new LegalActRefusedError(
+      "sign-up accepts the platform terms in a person's name: pass legalAct=true only after that person decided to accept them",
+      { code: "LEGAL_ACT_REFUSED" },
+    );
+  }
+}

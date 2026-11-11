@@ -52,15 +52,26 @@ describe("auth flow", () => {
 
   it("sign-up sends acceptTerms and no cookie", async () => {
     const { fetch, calls } = fakeFetch(() => "{}");
-    await new SaasClient({ baseUrl: "https://x.test", fetch }).signUp({
-      name: "N N",
-      email: "a@b.c",
-      password: "p",
-      acceptTerms: true,
-    });
+    await new SaasClient({ baseUrl: "https://x.test", fetch }).signUp(
+      { name: "N N", email: "a@b.c", password: "p", acceptTerms: true },
+      { legalAct: true },
+    );
     expect(JSON.parse(calls[0]?.body ?? "{}")).toMatchObject({ acceptTerms: true, email: "a@b.c" });
     expect(calls[0]?.headers.get("cookie")).toBeNull();
   });
+
+  it.each([{}, { legalAct: false }, { legalAct: "true" }, undefined])(
+    "sign-up with options %j is refused and sends nothing (it accepts the platform terms in a person's name)",
+    async (options) => {
+      const { fetch, calls } = fakeFetch(() => "{}");
+      const client = new SaasClient({ baseUrl: "https://x.test", fetch });
+      const input = { name: "N N", email: "a@b.c", password: "p", acceptTerms: true };
+      await expect(Reflect.apply(client.signUp, client, [input, options])).rejects.toMatchObject({
+        code: "LEGAL_ACT_REFUSED",
+      });
+      expect(calls).toHaveLength(0);
+    },
+  );
 
   it("refuses a verification link on a foreign origin (the session cookie must not be sent to a third party)", async () => {
     const { fetch, calls } = fakeFetch(() => "");
