@@ -1,0 +1,4098 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Sales as a Service tRPC API (unofficial)",
+    "version": "2026-11-10",
+    "description": "Unofficial description of the tRPC endpoints the salesasaservice.at web app calls. Derived from the client bundles and read-only probes; not published or endorsed by the platform. Workspace procedures answer PRECONDITION_FAILED until onboarding is complete."
+  },
+  "servers": [
+    {
+      "url": "https://www.salesasaservice.at"
+    }
+  ],
+  "paths": {
+    "/api/auth/sign-up/email": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "operationId": "auth_signUpEmail",
+        "summary": "Create an account (better-auth)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "email",
+                  "password",
+                  "acceptTerms"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 2
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 15
+                  },
+                  "acceptTerms": {
+                    "const": true
+                  },
+                  "callbackURL": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User created, email verification pending"
+          },
+          "400": {
+            "description": "e.g. TERMS_NOT_ACCEPTED"
+          }
+        }
+      }
+    },
+    "/api/auth/sign-in/email": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "operationId": "auth_signInEmail",
+        "summary": "Sign in, sets the session cookie",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Signed in"
+          },
+          "403": {
+            "description": "EMAIL_NOT_VERIFIED"
+          }
+        }
+      }
+    },
+    "/api/auth/get-session": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "operationId": "auth_getSession",
+        "summary": "Current user and session, null when signed out",
+        "responses": {
+          "200": {
+            "description": "Session or null"
+          }
+        }
+      }
+    },
+    "/api/auth/verify-email": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "operationId": "auth_verifyEmail",
+        "summary": "Confirm the email address with the mailed token",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "callbackURL",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Verified, redirect to callbackURL"
+          }
+        }
+      }
+    },
+    "/api/trpc/activities.create": {
+      "post": {
+        "operationId": "activities_create",
+        "tags": [
+          "activities"
+        ],
+        "summary": "mutation activities.create",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/activities.createTask": {
+      "post": {
+        "operationId": "activities_createTask",
+        "tags": [
+          "activities"
+        ],
+        "summary": "mutation activities.createTask",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/activities.delete": {
+      "post": {
+        "operationId": "activities_delete",
+        "tags": [
+          "activities"
+        ],
+        "summary": "mutation activities.delete",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/activities.list": {
+      "get": {
+        "operationId": "activities_list",
+        "tags": [
+          "activities"
+        ],
+        "summary": "query activities.list",
+        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          },
+          {
+            "$ref": "#/components/parameters/input"
+          }
+        ]
+      }
+    },
+    "/api/trpc/activities.update": {
+      "post": {
+        "operationId": "activities_update",
+        "tags": [
+          "activities"
+        ],
+        "summary": "mutation activities.update",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/activities.updateTask": {
+      "post": {
+        "operationId": "activities_updateTask",
+        "tags": [
+          "activities"
+        ],
+        "summary": "mutation activities.updateTask",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/activities.updateTaskStatus": {
+      "post": {
+        "operationId": "activities_updateTaskStatus",
+        "tags": [
+          "activities"
+        ],
+        "summary": "mutation activities.updateTaskStatus",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/commission.confirmBusinessDetails": {
+      "post": {
+        "operationId": "commission_confirmBusinessDetails",
+        "tags": [
+          "commission"
+        ],
+        "summary": "mutation commission.confirmBusinessDetails",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/commission.getDashboard": {
+      "get": {
+        "operationId": "commission_getDashboard",
+        "tags": [
+          "commission"
+        ],
+        "summary": "query commission.getDashboard",
+        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          },
+          {
+            "$ref": "#/components/parameters/input"
+          }
+        ]
+      }
+    },
+    "/api/trpc/commission.getFinancialProfile": {
+      "get": {
+        "operationId": "commission_getFinancialProfile",
+        "tags": [
+          "commission"
+        ],
+        "summary": "query commission.getFinancialProfile",
+        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          },
+          {
+            "$ref": "#/components/parameters/input"
+          }
+        ]
+      }
+    },
+    "/api/trpc/commission.getHistory": {
+      "get": {
+        "operationId": "commission_getHistory",
+        "tags": [
+          "commission"
+        ],
+        "summary": "query commission.getHistory",
+        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          },
+          {
+            "$ref": "#/components/parameters/input"
+          }
+        ]
+      }
+    },
+    "/api/trpc/commission.listInvoices": {
+      "get": {
+        "operationId": "commission_listInvoices",
+        "tags": [
+          "commission"
+        ],
+        "summary": "query commission.listInvoices",
+        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          },
+          {
+            "$ref": "#/components/parameters/input"
+          }
+        ]
+      }
+    },
+    "/api/trpc/commission.listPayouts": {
+      "get": {
+        "operationId": "commission_listPayouts",
+        "tags": [
+          "commission"
+        ],
+        "summary": "query commission.listPayouts",
+        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          },
+          {
+            "$ref": "#/components/parameters/input"
+          }
+        ]
+      }
+    },
+    "/api/trpc/commission.listPositions": {
+      "get": {
+        "operationId": "commission_listPositions",
+        "tags": [
+          "commission"
+        ],
+        "summary": "query commission.listPositions",
+        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          },
+          {
+            "$ref": "#/components/parameters/input"
+          }
+        ]
+      }
+    },
+    "/api/trpc/commission.quotePayout": {
+      "post": {
+        "operationId": "commission_quotePayout",
+        "tags": [
+          "commission"
+        ],
+        "summary": "mutation commission.quotePayout",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/commission.requestPayout": {
+      "post": {
+        "operationId": "commission_requestPayout",
+        "tags": [
+          "commission"
+        ],
+        "summary": "mutation commission.requestPayout",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/commission.requestTaxProfileOverride": {
+      "post": {
+        "operationId": "commission_requestTaxProfileOverride",
+        "tags": [
+          "commission"
+        ],
+        "summary": "mutation commission.requestTaxProfileOverride",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/commission.retryDocument": {
+      "post": {
+        "operationId": "commission_retryDocument",
+        "tags": [
+          "commission"
+        ],
+        "summary": "mutation commission.retryDocument",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/commission.updateBankDetails": {
+      "post": {
+        "operationId": "commission_updateBankDetails",
+        "tags": [
+          "commission"
+        ],
+        "summary": "mutation commission.updateBankDetails",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/contracts.signWorkspaceContract": {
+      "post": {
+        "operationId": "contracts_signWorkspaceContract",
+        "tags": [
+          "contracts"
+        ],
+        "summary": "mutation contracts.signWorkspaceContract",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/cookieConsents.record": {
+      "post": {
+        "operationId": "cookieConsents_record",
+        "tags": [
+          "cookieConsents"
+        ],
+        "summary": "mutation cookieConsents.record",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/inbox.acknowledge": {
+      "post": {
+        "operationId": "inbox_acknowledge",
+        "tags": [
+          "inbox"
+        ],
+        "summary": "mutation inbox.acknowledge",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/inbox.acknowledgeFinancial": {
+      "post": {
+        "operationId": "inbox_acknowledgeFinancial",
+        "tags": [
+          "inbox"
+        ],
+        "summary": "mutation inbox.acknowledgeFinancial",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/inbox.acknowledgeProductProposalFailure": {
+      "post": {
+        "operationId": "inbox_acknowledgeProductProposalFailure",
+        "tags": [
+          "inbox"
+        ],
+        "summary": "mutation inbox.acknowledgeProductProposalFailure",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/inbox.listActive": {
+      "get": {
+        "operationId": "inbox_listActive",
+        "tags": [
+          "inbox"
+        ],
+        "summary": "query inbox.listActive",
+        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          },
+          {
+            "$ref": "#/components/parameters/input"
+          }
+        ]
+      }
+    },
+    "/api/trpc/inbox.listFinancial": {
+      "get": {
+        "operationId": "inbox_listFinancial",
+        "tags": [
+          "inbox"
+        ],
+        "summary": "query inbox.listFinancial",
+        "description": "Observed server answer to a GET with null input: OK. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          },
+          {
+            "$ref": "#/components/parameters/input"
+          }
+        ]
+      }
+    },
+    "/api/trpc/inbox.listProductProposalFailures": {
+      "get": {
+        "operationId": "inbox_listProductProposalFailures",
+        "tags": [
+          "inbox"
+        ],
+        "summary": "query inbox.listProductProposalFailures",
+        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          },
+          {
+            "$ref": "#/components/parameters/input"
+          }
+        ]
+      }
+    },
+    "/api/trpc/listingDefaults.save": {
+      "post": {
+        "operationId": "listingDefaults_save",
+        "tags": [
+          "listingDefaults"
+        ],
+        "summary": "mutation listingDefaults.save",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/listings.commit": {
+      "post": {
+        "operationId": "listings_commit",
+        "tags": [
+          "listings"
+        ],
+        "summary": "mutation listings.commit",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/listings.deleteDraft": {
+      "post": {
+        "operationId": "listings_deleteDraft",
+        "tags": [
+          "listings"
+        ],
+        "summary": "mutation listings.deleteDraft",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/listings.publish": {
+      "post": {
+        "operationId": "listings_publish",
+        "tags": [
+          "listings"
+        ],
+        "summary": "mutation listings.publish",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/listings.unpublish": {
+      "post": {
+        "operationId": "listings_unpublish",
+        "tags": [
+          "listings"
+        ],
+        "summary": "mutation listings.unpublish",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/listings.update": {
+      "post": {
+        "operationId": "listings_update",
+        "tags": [
+          "listings"
+        ],
+        "summary": "mutation listings.update",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/offerTemplates.create": {
+      "post": {
+        "operationId": "offerTemplates_create",
+        "tags": [
+          "offerTemplates"
+        ],
+        "summary": "mutation offerTemplates.create",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/offers.completeSignedUpload": {
+      "post": {
+        "operationId": "offers_completeSignedUpload",
+        "tags": [
+          "offers"
+        ],
+        "summary": "mutation offers.completeSignedUpload",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/offers.getCertificateDownloadUrl": {
+      "get": {
+        "operationId": "offers_getCertificateDownloadUrl",
+        "tags": [
+          "offers"
+        ],
+        "summary": "query offers.getCertificateDownloadUrl",
+        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          },
+          {
+            "$ref": "#/components/parameters/input"
+          }
+        ]
+      }
+    },
+    "/api/trpc/offers.getDownloadUrl": {
+      "get": {
+        "operationId": "offers_getDownloadUrl",
+        "tags": [
+          "offers"
+        ],
+        "summary": "query offers.getDownloadUrl",
+        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          },
+          {
+            "$ref": "#/components/parameters/input"
+          }
+        ]
+      }
+    },
+    "/api/trpc/offers.getSendRecipients": {
+      "get": {
+        "operationId": "offers_getSendRecipients",
+        "tags": [
+          "offers"
+        ],
+        "summary": "query offers.getSendRecipients",
+        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          },
+          {
+            "$ref": "#/components/parameters/input"
+          }
+        ]
+      }
+    },
+    "/api/trpc/offers.getSignedDownloadUrl": {
+      "get": {
+        "operationId": "offers_getSignedDownloadUrl",
+        "tags": [
+          "offers"
+        ],
+        "summary": "query offers.getSignedDownloadUrl",
+        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          },
+          {
+            "$ref": "#/components/parameters/input"
+          }
+        ]
+      }
+    },
+    "/api/trpc/offers.listByOpportunity": {
+      "get": {
+        "operationId": "offers_listByOpportunity",
+        "tags": [
+          "offers"
+        ],
+        "summary": "query offers.listByOpportunity",
+        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          },
+          {
+            "$ref": "#/components/parameters/input"
+          }
+        ]
+      }
+    },
+    "/api/trpc/offers.reissueLink": {
+      "post": {
+        "operationId": "offers_reissueLink",
+        "tags": [
+          "offers"
+        ],
+        "summary": "mutation offers.reissueLink",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/offers.revokeLink": {
+      "post": {
+        "operationId": "offers_revokeLink",
+        "tags": [
+          "offers"
+        ],
+        "summary": "mutation offers.revokeLink",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/offers.send": {
+      "post": {
+        "operationId": "offers_send",
+        "tags": [
+          "offers"
+        ],
+        "summary": "mutation offers.send",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/offers.startSignedUpload": {
+      "post": {
+        "operationId": "offers_startSignedUpload",
+        "tags": [
+          "offers"
+        ],
+        "summary": "mutation offers.startSignedUpload",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/opportunities.acceptClose": {
+      "post": {
+        "operationId": "opportunities_acceptClose",
+        "tags": [
+          "opportunities"
+        ],
+        "summary": "mutation opportunities.acceptClose",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/opportunities.acceptRequest": {
+      "post": {
+        "operationId": "opportunities_acceptRequest",
+        "tags": [
+          "opportunities"
+        ],
+        "summary": "mutation opportunities.acceptRequest",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/opportunities.getRequestSnapshot": {
+      "get": {
+        "operationId": "opportunities_getRequestSnapshot",
+        "tags": [
+          "opportunities"
+        ],
+        "summary": "query opportunities.getRequestSnapshot",
+        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          },
+          {
+            "$ref": "#/components/parameters/input"
+          }
+        ]
+      }
+    },
+    "/api/trpc/opportunities.getSalesAgentDetail": {
+      "get": {
+        "operationId": "opportunities_getSalesAgentDetail",
+        "tags": [
+          "opportunities"
+        ],
+        "summary": "query opportunities.getSalesAgentDetail",
+        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          },
+          {
+            "$ref": "#/components/parameters/input"
+          }
+        ]
+      }
+    },
+    "/api/trpc/opportunities.listMessages": {
+      "get": {
+        "operationId": "opportunities_listMessages",
+        "tags": [
+          "opportunities"
+        ],
+        "summary": "query opportunities.listMessages",
+        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          },
+          {
+            "$ref": "#/components/parameters/input"
+          }
+        ]
+      }
+    },
+    "/api/trpc/opportunities.listRequestHistory": {
+      "get": {
+        "operationId": "opportunities_listRequestHistory",
+        "tags": [
+          "opportunities"
+        ],
+        "summary": "query opportunities.listRequestHistory",
+        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          },
+          {
+            "$ref": "#/components/parameters/input"
+          }
+        ]
+      }
+    },
+    "/api/trpc/opportunities.rejectClose": {
+      "post": {
+        "operationId": "opportunities_rejectClose",
+        "tags": [
+          "opportunities"
+        ],
+        "summary": "mutation opportunities.rejectClose",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/opportunities.rejectRequest": {
+      "post": {
+        "operationId": "opportunities_rejectRequest",
+        "tags": [
+          "opportunities"
+        ],
+        "summary": "mutation opportunities.rejectRequest",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/opportunities.requestRevision": {
+      "post": {
+        "operationId": "opportunities_requestRevision",
+        "tags": [
+          "opportunities"
+        ],
+        "summary": "mutation opportunities.requestRevision",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/opportunities.searchStagingCompanies": {
+      "get": {
+        "operationId": "opportunities_searchStagingCompanies",
+        "tags": [
+          "opportunities"
+        ],
+        "summary": "query opportunities.searchStagingCompanies",
+        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          },
+          {
+            "$ref": "#/components/parameters/input"
+          }
+        ]
+      }
+    },
+    "/api/trpc/opportunities.searchStagingContacts": {
+      "get": {
+        "operationId": "opportunities_searchStagingContacts",
+        "tags": [
+          "opportunities"
+        ],
+        "summary": "query opportunities.searchStagingContacts",
+        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          },
+          {
+            "$ref": "#/components/parameters/input"
+          }
+        ]
+      }
+    },
+    "/api/trpc/opportunities.updateStaging": {
+      "post": {
+        "operationId": "opportunities_updateStaging",
+        "tags": [
+          "opportunities"
+        ],
+        "summary": "mutation opportunities.updateStaging",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/productProposals.delete": {
+      "post": {
+        "operationId": "productProposals_delete",
+        "tags": [
+          "productProposals"
+        ],
+        "summary": "mutation productProposals.delete",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/products.delete": {
+      "post": {
+        "operationId": "products_delete",
+        "tags": [
+          "products"
+        ],
+        "summary": "mutation products.delete",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/profile.cancelLogoUpload": {
+      "post": {
+        "operationId": "profile_cancelLogoUpload",
+        "tags": [
+          "profile"
+        ],
+        "summary": "mutation profile.cancelLogoUpload",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/profile.completeLogoUpload": {
+      "post": {
+        "operationId": "profile_completeLogoUpload",
+        "tags": [
+          "profile"
+        ],
+        "summary": "mutation profile.completeLogoUpload",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/profile.deleteLogo": {
+      "post": {
+        "operationId": "profile_deleteLogo",
+        "tags": [
+          "profile"
+        ],
+        "summary": "mutation profile.deleteLogo",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/profile.startLogoUpload": {
+      "post": {
+        "operationId": "profile_startLogoUpload",
+        "tags": [
+          "profile"
+        ],
+        "summary": "mutation profile.startLogoUpload",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/profile.updateAddress": {
+      "post": {
+        "operationId": "profile_updateAddress",
+        "tags": [
+          "profile"
+        ],
+        "summary": "mutation profile.updateAddress",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/profile.updateInfo": {
+      "post": {
+        "operationId": "profile_updateInfo",
+        "tags": [
+          "profile"
+        ],
+        "summary": "mutation profile.updateInfo",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/profile.updateUnlimitedPartners": {
+      "post": {
+        "operationId": "profile_updateUnlimitedPartners",
+        "tags": [
+          "profile"
+        ],
+        "summary": "mutation profile.updateUnlimitedPartners",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/questionCatalogs.startAttempt": {
+      "post": {
+        "operationId": "questionCatalogs_startAttempt",
+        "tags": [
+          "questionCatalogs"
+        ],
+        "summary": "mutation questionCatalogs.startAttempt",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/questionCatalogs.submitAttempt": {
+      "post": {
+        "operationId": "questionCatalogs_submitAttempt",
+        "tags": [
+          "questionCatalogs"
+        ],
+        "summary": "mutation questionCatalogs.submitAttempt",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/salesAgentWaitlistEntries.createEntry": {
+      "post": {
+        "operationId": "salesAgentWaitlistEntries_createEntry",
+        "tags": [
+          "salesAgentWaitlistEntries"
+        ],
+        "summary": "mutation salesAgentWaitlistEntries.createEntry",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/subscriptions.cancelAtPeriodEnd": {
+      "post": {
+        "operationId": "subscriptions_cancelAtPeriodEnd",
+        "tags": [
+          "subscriptions"
+        ],
+        "summary": "mutation subscriptions.cancelAtPeriodEnd",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/subscriptions.createCheckout": {
+      "post": {
+        "operationId": "subscriptions_createCheckout",
+        "tags": [
+          "subscriptions"
+        ],
+        "summary": "mutation subscriptions.createCheckout",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/subscriptions.createPortalSession": {
+      "post": {
+        "operationId": "subscriptions_createPortalSession",
+        "tags": [
+          "subscriptions"
+        ],
+        "summary": "mutation subscriptions.createPortalSession",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/subscriptions.getStatus": {
+      "get": {
+        "operationId": "subscriptions_getStatus",
+        "tags": [
+          "subscriptions"
+        ],
+        "summary": "query subscriptions.getStatus",
+        "description": "Observed server answer to a GET with null input: PRECONDITION_FAILED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          },
+          {
+            "$ref": "#/components/parameters/input"
+          }
+        ]
+      }
+    },
+    "/api/trpc/subscriptions.reactivate": {
+      "post": {
+        "operationId": "subscriptions_reactivate",
+        "tags": [
+          "subscriptions"
+        ],
+        "summary": "mutation subscriptions.reactivate",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/verification.cancelIdentityDocumentVerification": {
+      "post": {
+        "operationId": "verification_cancelIdentityDocumentVerification",
+        "tags": [
+          "verification"
+        ],
+        "summary": "mutation verification.cancelIdentityDocumentVerification",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/verification.resumeIdentityDocumentVerification": {
+      "post": {
+        "operationId": "verification_resumeIdentityDocumentVerification",
+        "tags": [
+          "verification"
+        ],
+        "summary": "mutation verification.resumeIdentityDocumentVerification",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/verification.startWorkspaceVerification": {
+      "post": {
+        "operationId": "verification_startWorkspaceVerification",
+        "tags": [
+          "verification"
+        ],
+        "summary": "mutation verification.startWorkspaceVerification",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/workspaceUsers.remove": {
+      "post": {
+        "operationId": "workspaceUsers_remove",
+        "tags": [
+          "workspaceUsers"
+        ],
+        "summary": "mutation workspaceUsers.remove",
+        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "sessionCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "__Secure-better-auth.session_token",
+        "description": "Set by sign-in; POSTs also need an Origin header matching the site."
+      }
+    },
+    "parameters": {
+      "batch": {
+        "name": "batch",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "const": "1"
+        }
+      },
+      "input": {
+        "name": "input",
+        "in": "query",
+        "required": true,
+        "description": "JSON object keyed by batch index, e.g. {\"0\":{...}}",
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "schemas": {
+      "BatchInput": {
+        "type": "object",
+        "description": "Keyed by batch index, e.g. {\"0\":{...}}; plain JSON, no transformer",
+        "additionalProperties": true
+      },
+      "BatchResult": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "result": {
+              "type": "object",
+              "properties": {
+                "data": {}
+              }
+            }
+          }
+        }
+      },
+      "BatchError": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "error": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                },
+                "code": {
+                  "type": "integer",
+                  "examples": [
+                    -32004,
+                    -32012,
+                    -32001,
+                    -32600
+                  ]
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "examples": [
+                        "NOT_FOUND",
+                        "PRECONDITION_FAILED",
+                        "UNAUTHORIZED",
+                        "BAD_REQUEST",
+                        "METHOD_NOT_SUPPORTED"
+                      ]
+                    },
+                    "httpStatus": {
+                      "type": "integer"
+                    },
+                    "path": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,313 @@
+{
+  "measured": "2026-11-10",
+  "procedures": {
+    "activities.create": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "activities.createTask": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "activities.delete": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "activities.list": {
+      "kind": "query",
+      "observed": "PRECONDITION_FAILED"
+    },
+    "activities.update": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "activities.updateTask": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "activities.updateTaskStatus": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "commission.confirmBusinessDetails": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "commission.getDashboard": {
+      "kind": "query",
+      "observed": "PRECONDITION_FAILED"
+    },
+    "commission.getFinancialProfile": {
+      "kind": "query",
+      "observed": "PRECONDITION_FAILED"
+    },
+    "commission.getHistory": {
+      "kind": "query",
+      "observed": "PRECONDITION_FAILED"
+    },
+    "commission.listInvoices": {
+      "kind": "query",
+      "observed": "PRECONDITION_FAILED"
+    },
+    "commission.listPayouts": {
+      "kind": "query",
+      "observed": "PRECONDITION_FAILED"
+    },
+    "commission.listPositions": {
+      "kind": "query",
+      "observed": "PRECONDITION_FAILED"
+    },
+    "commission.quotePayout": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "commission.requestPayout": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "commission.requestTaxProfileOverride": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "commission.retryDocument": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "commission.updateBankDetails": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "contracts.signWorkspaceContract": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "cookieConsents.record": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "inbox.acknowledge": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "inbox.acknowledgeFinancial": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "inbox.acknowledgeProductProposalFailure": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "inbox.listActive": {
+      "kind": "query",
+      "observed": "PRECONDITION_FAILED"
+    },
+    "inbox.listFinancial": {
+      "kind": "query",
+      "observed": "OK"
+    },
+    "inbox.listProductProposalFailures": {
+      "kind": "query",
+      "observed": "PRECONDITION_FAILED"
+    },
+    "listingDefaults.save": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "listings.commit": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "listings.deleteDraft": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "listings.publish": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "listings.unpublish": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "listings.update": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "offerTemplates.create": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "offers.completeSignedUpload": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "offers.getCertificateDownloadUrl": {
+      "kind": "query",
+      "observed": "PRECONDITION_FAILED"
+    },
+    "offers.getDownloadUrl": {
+      "kind": "query",
+      "observed": "PRECONDITION_FAILED"
+    },
+    "offers.getSendRecipients": {
+      "kind": "query",
+      "observed": "PRECONDITION_FAILED"
+    },
+    "offers.getSignedDownloadUrl": {
+      "kind": "query",
+      "observed": "PRECONDITION_FAILED"
+    },
+    "offers.listByOpportunity": {
+      "kind": "query",
+      "observed": "PRECONDITION_FAILED"
+    },
+    "offers.reissueLink": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "offers.revokeLink": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "offers.send": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "offers.startSignedUpload": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "opportunities.acceptClose": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "opportunities.acceptRequest": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "opportunities.getRequestSnapshot": {
+      "kind": "query",
+      "observed": "PRECONDITION_FAILED"
+    },
+    "opportunities.getSalesAgentDetail": {
+      "kind": "query",
+      "observed": "PRECONDITION_FAILED"
+    },
+    "opportunities.listMessages": {
+      "kind": "query",
+      "observed": "PRECONDITION_FAILED"
+    },
+    "opportunities.listRequestHistory": {
+      "kind": "query",
+      "observed": "PRECONDITION_FAILED"
+    },
+    "opportunities.rejectClose": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "opportunities.rejectRequest": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "opportunities.requestRevision": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "opportunities.searchStagingCompanies": {
+      "kind": "query",
+      "observed": "PRECONDITION_FAILED"
+    },
+    "opportunities.searchStagingContacts": {
+      "kind": "query",
+      "observed": "PRECONDITION_FAILED"
+    },
+    "opportunities.updateStaging": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "productProposals.delete": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "products.delete": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "profile.cancelLogoUpload": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "profile.completeLogoUpload": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "profile.deleteLogo": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "profile.startLogoUpload": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "profile.updateAddress": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "profile.updateInfo": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "profile.updateUnlimitedPartners": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "questionCatalogs.startAttempt": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "questionCatalogs.submitAttempt": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "salesAgentWaitlistEntries.createEntry": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "subscriptions.cancelAtPeriodEnd": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "subscriptions.createCheckout": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "subscriptions.createPortalSession": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "subscriptions.getStatus": {
+      "kind": "query",
+      "observed": "PRECONDITION_FAILED"
+    },
+    "subscriptions.reactivate": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "verification.cancelIdentityDocumentVerification": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "verification.resumeIdentityDocumentVerification": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "verification.startWorkspaceVerification": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    },
+    "workspaceUsers.remove": {
+      "kind": "mutation",
+      "observed": "METHOD_NOT_SUPPORTED"
+    }
+  }
+}

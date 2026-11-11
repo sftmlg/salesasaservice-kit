@@ -1,0 +1,9 @@
+pre-commit:
+  commands:
+    biome:
+      glob: "*.{ts,json,md}"
+      run: pnpm exec biome check --no-errors-on-unmatched {staged_files}
+pre-push:
+  commands:
+    check:
+      run: pnpm check

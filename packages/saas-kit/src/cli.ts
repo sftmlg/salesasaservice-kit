@@ -1,0 +1,58 @@
+#!/usr/bin/env node
+import { mkdirSync, writeFileSync } from "node:fs";
+import { dirname } from "node:path";
+import { CATALOGUE_FILE, loadCatalogue } from "./catalogue-data.js";
+import { renderCatalogue } from "./catalogue-doc.js";
+import { loadConfig } from "./config.js";
+import { buildCatalogue, discover } from "./discovery.js";
+import { createClient, loginWithConfig } from "./kit.js";
+import { buildOpenApi } from "./openapi.js";
+
+const USAGE = `saas-kit <command>
+
+  docs <openapi.json> <catalogue.md>   render the OpenAPI file and the catalogue page from the bundled catalogue
+  refresh [--path /de/x]...            discover procedures with a live session, probe them read-only, rewrite the bundled catalogue
+
+Environment: SAAS_BASE_URL, SAAS_SESSION_FILE, SAAS_CREDENTIALS_FILE or SAAS_EMAIL and SAAS_PASSWORD`;
+
+function write(file: string, content: string): void {
+  mkdirSync(dirname(file), { recursive: true });
+  writeFileSync(file, content);
+}
+
+async function main(): Promise<number> {
+  const [command, ...args] = process.argv.slice(2);
+  const config = loadConfig();
+  if (command === "docs") {
+    const [openapiFile, catalogueFile] = args;
+    if (!openapiFile || !catalogueFile) return usage();
+    const catalogue = loadCatalogue();
+    write(openapiFile, `${JSON.stringify(buildOpenApi(catalogue, config.baseUrl), null, 2)}\n`);
+    write(catalogueFile, `${renderCatalogue(catalogue)}`);
+    return 0;
+  }
+  if (command === "refresh") {
+    const paths = args.flatMap((a, i) => (args[i - 1] === "--path" ? [a] : []));
+    const client = createClient(config);
+    await loginWithConfig(client, config);
+    const found = await discover(client, ["/de", ...paths]);
+    const { catalogue, notFound } = await buildCatalogue(client, found.procedures);
+    write(CATALOGUE_FILE.pathname, `${JSON.stringify(catalogue, null, 2)}\n`);
+    console.log(JSON.stringify({ confirmed: Object.keys(catalogue.procedures).length, notFound }, null, 2));
+    return 0;
+  }
+  return usage();
+}
+
+function usage(): number {
+  console.error(USAGE);
+  return 3;
+}
+
+main().then(
+  (code) => process.exit(code),
+  (error) => {
+    console.error(error instanceof Error ? error.message : String(error));
+    process.exit(1);
+  },
+);

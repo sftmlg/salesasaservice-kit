@@ -1,0 +1,30 @@
+{
+  "name": "@software-moling/salesasaservice-kit",
+  "version": "0.1.0",
+  "description": "Typed client and MCP server for the Sales as a Service marketplace (unofficial)",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "saas-kit": "./dist/cli.js",
+    "saas-kit-mcp": "./dist/mcp-server.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  }
+}
