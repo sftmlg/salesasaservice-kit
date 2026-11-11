@@ -1,10 +1,16 @@
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
 const requireFromHere = createRequire(import.meta.url);
 const packageSchema = z.object({ version: z.string() });
+const enginesSchema = z.object({ engines: z.object({ node: z.string() }) });
+
+function enginesNode(file: string): string {
+  return enginesSchema.parse(JSON.parse(readFileSync(file, "utf8"))).engines.node;
+}
 
 function installedVersion(name: string, from: string): number[] | undefined {
   let file: string;
@@ -46,6 +52,13 @@ describe("dependency floors (versions below these carry published advisories)", 
 
   it("zod is at least 4.6.6 (high: GHSA-mrhx-c7xc-m3w5), so the schemas that parse external data run on the fixed major", () => {
     expect(atLeast(installedVersion("zod", import.meta.url), [4, 6, 6])).toBe(true);
+  });
+
+  it("engines.node equals what the installed vite requires (>=20 admitted Node 20.0 to 20.18, where the toolchain does not run)", () => {
+    const own = enginesNode(fileURLToPath(new URL("../package.json", import.meta.url)));
+    const vite = enginesNode(createRequire(vitestPackage).resolve("vite/package.json"));
+    expect(own).toBe(vite);
+    expect(own).toBe("^20.19.0 || >=22.12.0");
   });
 
   it("the floor check can fail: a version below the floor is reported as below", () => {
