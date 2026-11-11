@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+import { loadCatalogue } from "../src/catalogue-data.js";
 import { isLegalAct, MCP_ALLOWED_MUTATIONS } from "../src/legal-acts.js";
 
 const root = new URL("../../../", import.meta.url);
@@ -50,6 +51,22 @@ describe("documented mutation policy equals the typed source", () => {
         .split("\n")
         .filter((line) => MCP_ALLOWED_MUTATIONS.filter((name) => line.includes(`\`${name}\``)).length > 1),
     ).toEqual([]);
+  });
+
+  it("does not say the catalogue fails to confirm the product helper procedures as mutations while it holds them as probed mutations (a stale sentence from before the signed-in refresh)", () => {
+    const helpers = [
+      "products.extractFromText",
+      "products.extractPricing",
+      "products.generateShortDescription",
+      "products.inspectWebsite",
+      "products.suggestClassification",
+      "products.startImageUpload",
+      "products.completeImageUpload",
+    ];
+    const procedures = loadCatalogue().procedures;
+    expect(helpers.map((name) => procedures[name]?.kind)).toEqual(helpers.map(() => "mutation"));
+    expect(helpers.map((name) => procedures[name]?.confirmedBy)).toEqual(helpers.map(() => "get-refused"));
+    expect(reference).not.toMatch(/does not even confirm that they are mutations/);
   });
 
   it("attributes the VAT id verification statement to the platform's own page text instead of stating it as the kit's measurement (an unattributed claim reads as an observation of an account)", () => {
