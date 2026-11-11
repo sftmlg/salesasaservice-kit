@@ -40,7 +40,9 @@ content-type: application/json
 {"0":<json or null>}
 ```
 
-The `input` query value is URL-encoded JSON. Send `null` for "no input"; an omitted key is not equivalent.
+(for a void-input mutation the body is `{}`)
+
+The `input` query value is URL-encoded JSON. For a query without input send `null`; an omitted key is not equivalent. A mutation without input (void input) takes the body `{}` with no `0` key; `{"0":null}` is a different request.
 
 ## Response and error envelope
 

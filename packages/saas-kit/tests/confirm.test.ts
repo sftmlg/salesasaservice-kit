@@ -25,6 +25,14 @@ describe("confirm guard", () => {
     expect(calls).toHaveLength(0);
   });
 
+  it("a confirmed void-input mutation posts the body {} (a {0:null} body is rejected by such procedures)", async () => {
+    const { fetch, calls } = fakeFetch(() => ok({ started: true }));
+    const client = new SaasClient({ baseUrl: "https://x.test", fetch });
+    await client.mutate("verification.startWorkspaceVerification", undefined, { confirm: true });
+    expect(calls[0]?.method).toBe("POST");
+    expect(calls[0]?.body).toBe("{}");
+  });
+
   it("does not require confirm for queries (reads stay frictionless)", async () => {
     const { fetch, calls } = fakeFetch(() => ok("x"));
     const client = new SaasClient({ baseUrl: "https://x.test", fetch });

@@ -42,6 +42,12 @@ describe("tool handlers", () => {
     expect(calls[0]?.method).toBe("POST");
   });
 
+  it("mutation tool without input posts {} (an omitted tool argument means a void-input procedure)", async () => {
+    const { deps: d, calls } = deps(() => ok(null));
+    await tools.mutation(d, { procedure: "verification.startWorkspaceVerification", confirm: true });
+    expect(calls[0]?.body).toBe("{}");
+  });
+
   it("query tool uses GET even for a procedure the catalogue lists as mutation (the read tool must never write)", async () => {
     const { deps: d, calls } = deps(() => ok(null));
     await tools.query(d, { procedure: "listings.publish" });

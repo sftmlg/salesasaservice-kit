@@ -23,7 +23,10 @@ export function queryPath(procedure: string, input?: unknown): string {
 
 export function mutationRequest(procedure: string, input?: unknown): { path: string; body: string } {
   assertProcedureName(procedure);
-  return { path: `/api/trpc/${procedure}?batch=1`, body: JSON.stringify({ 0: input ?? null }) };
+  return {
+    path: `/api/trpc/${procedure}?batch=1`,
+    body: JSON.stringify(input === undefined ? {} : { 0: input }),
+  };
 }
 
 interface ErrorItem {

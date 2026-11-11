@@ -32,6 +32,14 @@ describe("request envelope", () => {
     expect(JSON.parse(req.body)).toEqual({ 0: { name: "A" } });
   });
 
+  it("sends {} for a mutation without input (a void-input procedure rejects a body that carries a 0 key)", () => {
+    expect(mutationRequest("verification.startWorkspaceVerification").body).toBe("{}");
+  });
+
+  it("keeps an explicit null input as {0:null} (null is an input, undefined is none)", () => {
+    expect(mutationRequest("a.b", null).body).toBe('{"0":null}');
+  });
+
   it.each(["../auth/get-session", "a.b?x=1", "a", "a.b.c", "a.b/../c", ""])(
     "rejects procedure name %j (path traversal into other endpoints)",
     (name) => {
