@@ -27,7 +27,7 @@ function setup(reply: Parameters<typeof fakeFetch>[0]) {
 describe("live CLI commands", () => {
   it("mutation without --confirm is refused and sends nothing (a typed command must not write by default)", async () => {
     const { deps, calls } = setup(() => okReply(null));
-    await expect(runLiveCommand("mutation", deps, ["profile.updateInfo", '{"x":1}'])).rejects.toBeInstanceOf(
+    await expect(runLiveCommand("mutation", deps, ["listings.update", '{"x":1}'])).rejects.toBeInstanceOf(
       ConfirmationRequiredError,
     );
     expect(calls).toHaveLength(0);
@@ -35,13 +35,13 @@ describe("live CLI commands", () => {
 
   it("mutation --confirm without json posts {} (a void-input procedure rejects a {0:null} body)", async () => {
     const { deps, calls } = setup(() => okReply({ success: true }));
-    await runLiveCommand("mutation", deps, ["profile.updateInfo", "--confirm"]);
+    await runLiveCommand("mutation", deps, ["listings.update", "--confirm"]);
     expect(calls[0]?.body).toBe("{}");
   });
 
   it("mutation --confirm with json posts it under key 0", async () => {
     const { deps, calls } = setup(() => okReply({ success: true }));
-    await runLiveCommand("mutation", deps, ["profile.updateInfo", '{"city":"Innsbruck"}', "--confirm"]);
+    await runLiveCommand("mutation", deps, ["listings.update", '{"city":"Innsbruck"}', "--confirm"]);
     expect(JSON.parse(calls[0]?.body ?? "")).toEqual({ 0: { city: "Innsbruck" } });
   });
 

@@ -80,7 +80,7 @@ For an account that has not finished onboarding, workspace procedures answer `PR
 ### Order for a business partner
 
 1. `onboarding.createWorkspace` with type `business_partner`.
-2. `profile.updateInfo` (company data) and `profile.updateAddress`.
+2. `profile.updateInfo` (company data) and `profile.updateAddress`. Both are legal statements and not on the MCP allowlist: the CLI needs `--confirm --legal-act`.
 3. Verification: `verification.startWorkspaceVerification`. The platform's own profile page says "Mit USt-IdNr. läuft die Verifizierung automatisch, sonst per Ausweisdokument".
 4. The platform contract (`contracts.signWorkspaceContract`), which includes the declaration of signing authority.
 5. Listings. They can be placed before the contract is signed and then show as "coming soon".
@@ -156,9 +156,8 @@ Regenerate the catalogue with `saas-kit refresh` and the two documentation files
 
 ### MCP allowlist
 
-These 20 mutations are accepted over MCP, each with `confirm=true`. Each one creates or edits a working record of the account (profile, listing defaults, activities, tasks, inbox read marks, companies, contacts), and a further edit corrects it. None deletes anything, and none publishes, sends, signs, pays or consents:
+These 17 mutations are accepted over MCP, each with `confirm=true`. Each one creates or edits a working record of the account (logo, listing defaults, activities, tasks, inbox read marks, companies, contacts), and a further edit corrects it. None deletes anything, and none publishes, sends, signs, pays or consents:
 
-- `profile.updateInfo`, `profile.updateAddress`, `profile.updateUnlimitedPartners`
 - `profile.startLogoUpload`, `profile.completeLogoUpload`, `profile.cancelLogoUpload`
 - `listings.update`, `listingDefaults.save`
 - `offerTemplates.create`
@@ -172,8 +171,9 @@ The list is one typed constant, `MCP_ALLOWED_MUTATIONS` in `packages/saas-kit/sr
 
 ### Everything else
 
-Every other mutation, including an unknown name, is refused over MCP with `LEGAL_ACT_REFUSED` and a message that names the reason. That covers everything that publishes (`listings.publish`, `listings.unpublish`, `listings.commit`), deletes (`listings.deleteDraft`, `products.delete`, `productProposals.delete`, `activities.delete`, `profile.deleteLogo`), acknowledges a financial item (`inbox.acknowledgeFinancial`), accepts or rejects (`opportunities.*`), sends (`offers.*`), signs (`contracts.*`), pays or changes bank details (`commission.*`), subscribes (`subscriptions.*`), verifies or onboards (`verification.*`, `onboarding.*`), consents (`cookieConsents.record`), submits (`questionCatalogs.*`, `salesAgentWaitlistEntries.createEntry`) and removes users (`workspaceUsers.remove`), and any catalogued mutation not listed above.
+Every other mutation, including an unknown name, is refused over MCP with `LEGAL_ACT_REFUSED` and a message that names the reason. That covers the account's legal statements (`profile.updateInfo`, `profile.updateAddress`, `profile.updateUnlimitedPartners`), everything that publishes (`listings.publish`, `listings.unpublish`, `listings.commit`), deletes (`listings.deleteDraft`, `products.delete`, `productProposals.delete`, `activities.delete`, `profile.deleteLogo`), acknowledges a financial item (`inbox.acknowledgeFinancial`), accepts or rejects (`opportunities.*`), sends (`offers.*`), signs (`contracts.*`), pays or changes bank details (`commission.*`), subscribes (`subscriptions.*`), verifies or onboards (`verification.*`, `onboarding.*`), consents (`cookieConsents.record`), submits (`questionCatalogs.*`, `salesAgentWaitlistEntries.createEntry`) and removes users (`workspaceUsers.remove`), and any catalogued mutation not listed above.
 
+- `profile.updateInfo`, `profile.updateAddress` and `profile.updateUnlimitedPartners` state the company's legal data: legal name, legal form, register number, registered address, unlimited partners and the VAT id. The platform uses them for its self-billing, and a later edit does not undo invoices already issued, so a steered agent must not be able to change them. The registered address counts because the supplier's address is a mandatory invoice particular.
 - `client.mutate` refuses them unless the caller passes `legalAct: true` besides `confirm: true`.
 - The MCP server never passes `legalAct`, and an extra `legalAct` argument sent by an agent is ignored.
 - The CLI accepts them only with `--legal-act` besides `--confirm`. `--legal-act` does not replace `--confirm`.

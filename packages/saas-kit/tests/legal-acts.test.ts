@@ -42,7 +42,7 @@ const PUBLISHING_FAMILIES = [
 ];
 
 describe("mutation allowlist", () => {
-  it("lists exactly the 20 reviewed working mutations (a silently added name would open that write to every agent)", () => {
+  it("lists exactly the 17 reviewed working mutations (a silently added name would open that write to every agent)", () => {
     expect([...MCP_ALLOWED_MUTATIONS].sort()).toEqual(
       [
         "activities.create",
@@ -62,12 +62,43 @@ describe("mutation allowlist", () => {
         "profile.cancelLogoUpload",
         "profile.completeLogoUpload",
         "profile.startLogoUpload",
-        "profile.updateAddress",
-        "profile.updateInfo",
-        "profile.updateUnlimitedPartners",
       ].sort(),
     );
   });
+
+  it.each(["profile.updateInfo", "profile.updateAddress", "profile.updateUnlimitedPartners"])(
+    "keeps %s a legal act (the company's legal statements feed the platform's self-billing, and a later edit does not undo invoices already issued)",
+    (name) => {
+      expect(isMcpAllowedMutation(name)).toBe(false);
+      expect(isLegalAct(name)).toBe(true);
+    },
+  );
+
+  it.each(["profile.updateInfo", "profile.updateAddress", "profile.updateUnlimitedPartners"])(
+    "refuses %s over MCP with confirm=true and legalAct=true and sends nothing (a steered agent must not change the legal data)",
+    async (procedure) => {
+      const { mcp, calls } = await connectServer();
+      const result = await mcp.callTool({
+        name: "mutation",
+        arguments: { procedure, confirm: true, legalAct: true },
+      });
+      expect(result.isError).toBe(true);
+      expect(JSON.stringify(result.content)).toContain("LEGAL_ACT_REFUSED");
+      expect(calls).toHaveLength(0);
+    },
+  );
+
+  it.each(["profile.updateInfo", "profile.updateAddress", "profile.updateUnlimitedPartners"])(
+    "the CLI posts %s only with --confirm --legal-act (the human opt-in must remain possible, or the legal data could not be maintained)",
+    async (procedure) => {
+      const { deps, calls } = setup();
+      await expect(runLiveCommand("mutation", deps, [procedure, "--confirm"])).rejects.toBeInstanceOf(
+        LegalActRefusedError,
+      );
+      await runLiveCommand("mutation", deps, [procedure, "--confirm", "--legal-act"]);
+      expect(calls).toHaveLength(1);
+    },
+  );
 
   it.each([
     "listings.deleteDraft",
@@ -116,13 +147,7 @@ describe("mutation allowlist", () => {
     expect(calls).toHaveLength(0);
   });
 
-  it.each([
-    "Profile.updateInfo",
-    "PROFILE.UPDATEINFO",
-    "profile.UpdateInfo",
-    " profile.updateInfo",
-    "profile.updateInfo ",
-  ])(
+  it.each(["Listings.update", "LISTINGS.UPDATE", "listings.Update", " listings.update", "listings.update "])(
     "refuses the variant %j over MCP (a case or whitespace variant must not match an allowlist entry)",
     async (variant) => {
       const { mcp, calls } = await connectServer();
@@ -234,8 +259,8 @@ describe("legal-act guard", () => {
 
   it("does not demand legalAct for an allowlisted mutation (the extra flag must not become mandatory for working mutations)", async () => {
     const { client, deps, calls } = setup();
-    await client.mutate("profile.updateInfo", {}, { confirm: true });
-    await runLiveCommand("mutation", deps, ["profile.updateInfo", "--confirm"]);
+    await client.mutate("listings.update", {}, { confirm: true });
+    await runLiveCommand("mutation", deps, ["listings.update", "--confirm"]);
     expect(calls).toHaveLength(2);
   });
 });
