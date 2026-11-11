@@ -77,9 +77,9 @@ describe("cookies through the client", () => {
   it("sends an Origin matching the site on POST (the platform's CSRF check refuses without it)", async () => {
     const { fetch, calls } = fakeFetch(() => okReply(null));
     const client = new SaasClient({ baseUrl: "https://x.test/", fetch });
-    await client.mutate("a.b", {}, { confirm: true });
+    await client.mutate("profile.updateInfo", {}, { confirm: true });
     expect(calls[0]?.headers.get("origin")).toBe("https://x.test");
-    expect(calls[0]?.url).toBe("https://x.test/api/trpc/a.b?batch=1");
+    expect(calls[0]?.url).toBe("https://x.test/api/trpc/profile.updateInfo?batch=1");
   });
 });
 

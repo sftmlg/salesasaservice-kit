@@ -34,7 +34,7 @@ describe("MCP server wiring", () => {
     const { client, calls } = await connect(() => okReply(null));
     const result = await client.callTool({
       name: "mutation",
-      arguments: { procedure: "listings.publish", confirm: false },
+      arguments: { procedure: "listings.update", confirm: false },
     });
     expect(result.isError).toBe(true);
     expect(textOf(result)).toContain("CONFIRMATION_REQUIRED");
@@ -45,7 +45,7 @@ describe("MCP server wiring", () => {
     const { client, calls } = await connect(() => okReply(null));
     const result = await client.callTool({
       name: "mutation",
-      arguments: { procedure: "listings.publish", confirm: "true" },
+      arguments: { procedure: "listings.update", confirm: "true" },
     });
     expect(result.isError).toBe(true);
     expect(calls).toHaveLength(0);

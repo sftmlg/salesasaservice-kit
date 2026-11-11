@@ -1,10 +1,11 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { describe, expect, it } from "vitest";
+import { loadCatalogue } from "../src/catalogue-data.js";
 import { runLiveCommand } from "../src/cli-live.js";
 import { SaasClient } from "../src/client.js";
 import { ConfirmationRequiredError, LegalActRefusedError } from "../src/errors.js";
-import { LEGAL_ACT_PROCEDURES } from "../src/legal-acts.js";
+import { isLegalAct, isMcpAllowedMutation, MCP_ALLOWED_MUTATIONS } from "../src/legal-acts.js";
 import { buildServer } from "../src/server.js";
 import { fakeFetch, okReply } from "./helpers.js";
 
@@ -25,23 +26,123 @@ async function connectServer() {
   return { mcp, calls };
 }
 
-describe("legal-act guard", () => {
-  it("lists exactly the ten legal-act procedures (a dropped entry silently re-opens that act to agents)", () => {
-    expect([...LEGAL_ACT_PROCEDURES].sort()).toEqual([
-      "commission.confirmBusinessDetails",
-      "commission.requestPayout",
-      "commission.updateBankDetails",
-      "contracts.signWorkspaceContract",
-      "offers.send",
-      "onboarding.createWorkspace",
-      "opportunities.acceptClose",
-      "opportunities.acceptRequest",
-      "opportunities.rejectClose",
-      "subscriptions.createCheckout",
-    ]);
+const catalogued = Object.entries(loadCatalogue().procedures)
+  .filter(([, entry]) => entry.kind === "mutation")
+  .map(([name]) => name)
+  .sort();
+const refused = catalogued.filter((name) => !isMcpAllowedMutation(name));
+const accepted = catalogued.filter(isMcpAllowedMutation);
+
+const PUBLISHING_FAMILIES = [
+  /^listings\.(publish|unpublish|commit)$/,
+  /^(opportunities|offers|contracts|commission|subscriptions|verification|onboarding|questionCatalogs)\./,
+  /^cookieConsents\.record$/,
+  /^workspaceUsers\.remove$/,
+  /^salesAgentWaitlistEntries\.createEntry$/,
+];
+
+describe("mutation allowlist", () => {
+  it("lists exactly the 26 reviewed working mutations (a silently added name would open that write to every agent)", () => {
+    expect([...MCP_ALLOWED_MUTATIONS].sort()).toEqual(
+      [
+        "activities.create",
+        "activities.createTask",
+        "activities.delete",
+        "activities.update",
+        "activities.updateTask",
+        "activities.updateTaskStatus",
+        "companies.create",
+        "companies.update",
+        "contacts.create",
+        "contacts.update",
+        "inbox.acknowledge",
+        "inbox.acknowledgeFinancial",
+        "inbox.acknowledgeProductProposalFailure",
+        "listingDefaults.save",
+        "listings.deleteDraft",
+        "listings.update",
+        "offerTemplates.create",
+        "productProposals.delete",
+        "products.delete",
+        "profile.cancelLogoUpload",
+        "profile.completeLogoUpload",
+        "profile.deleteLogo",
+        "profile.startLogoUpload",
+        "profile.updateAddress",
+        "profile.updateInfo",
+        "profile.updateUnlimitedPartners",
+      ].sort(),
+    );
   });
 
-  describe.each(LEGAL_ACT_PROCEDURES)("%s", (procedure) => {
+  it("classifies every catalogued mutation as allowed or refused, and the two sets cover the catalogue (a new catalogued mutation must land on one side)", () => {
+    expect(accepted.length + refused.length).toBe(catalogued.length);
+    expect(catalogued.every((name) => isMcpAllowedMutation(name) !== isLegalAct(name))).toBe(true);
+  });
+
+  it("allows no catalogued name from the publish, accept, reject, sign, send, pay, subscribe, consent, remove or submit families (an allowlist entry for one of them is the bug)", () => {
+    const leaked = accepted.filter((name) => PUBLISHING_FAMILIES.some((family) => family.test(name)));
+    expect(leaked).toEqual([]);
+  });
+
+  it("refuses at least the publishing families it knows are catalogued (an empty refused set would pass the check above for nothing)", () => {
+    expect(refused).toEqual(
+      expect.arrayContaining(["listings.publish", "offers.send", "workspaceUsers.remove"]),
+    );
+  });
+
+  it("refuses an unknown name over MCP with the reason and sends nothing (a denylist would have let it through)", async () => {
+    const { mcp, calls } = await connectServer();
+    const result = await mcp.callTool({
+      name: "mutation",
+      arguments: { procedure: "totally.unknown", confirm: true },
+    });
+    expect(result.isError).toBe(true);
+    expect(JSON.stringify(result.content)).toContain("LEGAL_ACT_REFUSED");
+    expect(JSON.stringify(result.content)).toContain("allowlist");
+    expect(calls).toHaveLength(0);
+  });
+
+  it.each([
+    "Profile.updateInfo",
+    "PROFILE.UPDATEINFO",
+    "profile.UpdateInfo",
+    " profile.updateInfo",
+    "profile.updateInfo ",
+  ])(
+    "refuses the variant %j over MCP (a case or whitespace variant must not match an allowlist entry)",
+    async (variant) => {
+      const { mcp, calls } = await connectServer();
+      const result = await mcp.callTool({
+        name: "mutation",
+        arguments: { procedure: variant, confirm: true },
+      });
+      expect(result.isError).toBe(true);
+      expect(JSON.stringify(result.content)).toContain("LEGAL_ACT_REFUSED");
+      expect(calls).toHaveLength(0);
+    },
+  );
+
+  describe.each(MCP_ALLOWED_MUTATIONS)("%s", (procedure) => {
+    it("is posted over MCP with confirm=true", async () => {
+      const { mcp, calls } = await connectServer();
+      const result = await mcp.callTool({ name: "mutation", arguments: { procedure, confirm: true } });
+      expect(result.isError).not.toBe(true);
+      expect(calls).toHaveLength(1);
+    });
+
+    it("is still refused over MCP without confirm=true (the allowlist must not replace the confirmation)", async () => {
+      const { mcp, calls } = await connectServer();
+      const result = await mcp.callTool({ name: "mutation", arguments: { procedure, confirm: false } });
+      expect(result.isError).toBe(true);
+      expect(JSON.stringify(result.content)).toContain("CONFIRMATION_REQUIRED");
+      expect(calls).toHaveLength(0);
+    });
+  });
+});
+
+describe("legal-act guard", () => {
+  describe.each(refused)("%s", (procedure) => {
     it("client.mutate with confirm=true but no legalAct is refused and sends nothing (confirm alone is set by an agent)", async () => {
       const { client, calls } = setup();
       await expect(client.mutate(procedure, {}, { confirm: true })).rejects.toBeInstanceOf(
@@ -99,7 +200,7 @@ describe("legal-act guard", () => {
     expect(calls).toHaveLength(0);
   });
 
-  it("matches the procedure name case-insensitively (a case variant must not slip past the list)", async () => {
+  it("refuses a case variant of a refused name in the library (a case variant must not slip past the allowlist)", async () => {
     const { client, calls } = setup();
     await expect(client.mutate("Offers.Send", {}, { confirm: true })).rejects.toBeInstanceOf(
       LegalActRefusedError,
@@ -107,9 +208,21 @@ describe("legal-act guard", () => {
     expect(calls).toHaveLength(0);
   });
 
-  it("does not block an ordinary mutation (the guard must not turn every write into a legal act)", async () => {
-    const { client, calls } = setup();
-    await client.mutate("listings.publish", {}, { confirm: true });
-    expect(calls).toHaveLength(1);
+  it("refuses an unknown name in the library and the CLI without legalAct (unknown must not mean harmless)", async () => {
+    const { client, deps, calls } = setup();
+    await expect(client.mutate("totally.unknown", {}, { confirm: true })).rejects.toBeInstanceOf(
+      LegalActRefusedError,
+    );
+    await expect(runLiveCommand("mutation", deps, ["totally.unknown", "--confirm"])).rejects.toBeInstanceOf(
+      LegalActRefusedError,
+    );
+    expect(calls).toHaveLength(0);
+  });
+
+  it("does not demand legalAct for an allowlisted mutation (the extra flag must not become mandatory for working mutations)", async () => {
+    const { client, deps, calls } = setup();
+    await client.mutate("profile.updateInfo", {}, { confirm: true });
+    await runLiveCommand("mutation", deps, ["profile.updateInfo", "--confirm"]);
+    expect(calls).toHaveLength(2);
   });
 });

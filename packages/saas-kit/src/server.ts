@@ -47,7 +47,7 @@ export function buildServer(deps: ToolDeps): McpServer {
   );
   server.tool(
     "mutation",
-    "Call a tRPC mutation. WRITES on the platform: confirm must be true, and only after the account holder approved the exact input. Legal acts (signing, accepting, payout, bank details, checkout, offers, workspace creation) are refused here and need the CLI.",
+    "Call a tRPC mutation. WRITES on the platform: confirm must be true, and only after the account holder approved the exact input. Only the reviewed, reversible working mutations on the allowlist are accepted; every other name (publishing, accepting, rejecting, signing, sending, paying, subscribing, consenting, removing users, submitting, or unknown) is refused here and needs the CLI with --legal-act.",
     {
       procedure,
       input: z.unknown().optional().describe("JSON input"),

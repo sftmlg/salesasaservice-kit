@@ -1,20 +1,40 @@
-export const LEGAL_ACT_PROCEDURES = [
-  "contracts.signWorkspaceContract",
-  "opportunities.acceptRequest",
-  "opportunities.acceptClose",
-  "opportunities.rejectClose",
-  "commission.confirmBusinessDetails",
-  "commission.requestPayout",
-  "commission.updateBankDetails",
-  "subscriptions.createCheckout",
-  "offers.send",
-  "onboarding.createWorkspace",
+export const MCP_ALLOWED_MUTATIONS = [
+  "profile.updateInfo",
+  "profile.updateAddress",
+  "profile.updateUnlimitedPartners",
+  "profile.startLogoUpload",
+  "profile.completeLogoUpload",
+  "profile.cancelLogoUpload",
+  "profile.deleteLogo",
+  "listings.update",
+  "listings.deleteDraft",
+  "listingDefaults.save",
+  "products.delete",
+  "productProposals.delete",
+  "offerTemplates.create",
+  "activities.create",
+  "activities.update",
+  "activities.delete",
+  "activities.createTask",
+  "activities.updateTask",
+  "activities.updateTaskStatus",
+  "inbox.acknowledge",
+  "inbox.acknowledgeFinancial",
+  "inbox.acknowledgeProductProposalFailure",
+  "companies.create",
+  "companies.update",
+  "contacts.create",
+  "contacts.update",
 ] as const;
 
-export type LegalActProcedure = (typeof LEGAL_ACT_PROCEDURES)[number];
+export type McpAllowedMutation = (typeof MCP_ALLOWED_MUTATIONS)[number];
 
-const LEGAL_ACT_NAMES = new Set<string>(LEGAL_ACT_PROCEDURES.map((name) => name.toLowerCase()));
+const ALLOWED_NAMES = new Set<string>(MCP_ALLOWED_MUTATIONS);
+
+export function isMcpAllowedMutation(procedure: string): boolean {
+  return ALLOWED_NAMES.has(procedure);
+}
 
 export function isLegalAct(procedure: string): boolean {
-  return LEGAL_ACT_NAMES.has(procedure.toLowerCase());
+  return !isMcpAllowedMutation(procedure);
 }

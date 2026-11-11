@@ -29,7 +29,7 @@ describe("tool handlers", () => {
   it("mutation tool refuses without confirm and sends nothing (an agent forgetting confirm must not write)", async () => {
     const { deps: toolDeps, calls } = deps(() => okReply(null));
     await expect(
-      tools.mutation(toolDeps, { procedure: "listings.publish", input: { id: 1 }, confirm: false }),
+      tools.mutation(toolDeps, { procedure: "listings.update", input: { id: 1 }, confirm: false }),
     ).rejects.toBeInstanceOf(ConfirmationRequiredError);
     expect(calls).toHaveLength(0);
   });
@@ -37,14 +37,14 @@ describe("tool handlers", () => {
   it("mutation tool posts when confirmed", async () => {
     const { deps: toolDeps, calls } = deps(() => okReply({ done: true }));
     expect(
-      await tools.mutation(toolDeps, { procedure: "listings.publish", input: { id: 1 }, confirm: true }),
+      await tools.mutation(toolDeps, { procedure: "listings.update", input: { id: 1 }, confirm: true }),
     ).toEqual({ done: true });
     expect(calls[0]?.method).toBe("POST");
   });
 
   it("mutation tool without input posts {} (an omitted tool argument means a void-input procedure)", async () => {
     const { deps: toolDeps, calls } = deps(() => okReply(null));
-    await tools.mutation(toolDeps, { procedure: "verification.startWorkspaceVerification", confirm: true });
+    await tools.mutation(toolDeps, { procedure: "profile.deleteLogo", confirm: true });
     expect(calls[0]?.body).toBe("{}");
   });
 
