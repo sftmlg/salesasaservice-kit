@@ -1,5 +1,8 @@
+import { readFileSync } from "node:fs";
 import { parseArgs } from "node:util";
+import { runApply } from "./apply.js";
 import { ConfigError } from "./errors.js";
+import { fetchProductsPage } from "./products-page.js";
 import { type ToolDeps, tools } from "./tools.js";
 
 type LiveCommand = (deps: ToolDeps, args: string[]) => Promise<unknown>;
@@ -35,6 +38,27 @@ function procedureAndInput(args: string[]): {
   };
 }
 
+function applyFile(deps: ToolDeps, args: string[]): Promise<unknown> {
+  const { values, positionals } = parseArgs({
+    args,
+    options: { confirm: { type: "boolean" }, "legal-act": { type: "boolean" }, publish: { type: "boolean" } },
+    allowPositionals: true,
+  });
+  const [file] = positionals;
+  if (!file) throw new ConfigError("apply needs the path of a JSON file", { code: "CONFIG" });
+  let text: string;
+  try {
+    text = readFileSync(file, "utf8");
+  } catch (cause) {
+    throw new ConfigError("cannot read the apply file", { code: "CONFIG", cause });
+  }
+  return runApply(deps.client, text, {
+    confirm: values.confirm === true,
+    legalAct: values["legal-act"] === true,
+    publish: values.publish === true,
+  });
+}
+
 const liveCommands: Record<string, LiveCommand> = {
   status: (deps) => tools.sessionStatus(deps),
   login: (deps) => tools.login(deps),
@@ -50,6 +74,8 @@ const liveCommands: Record<string, LiveCommand> = {
     return tools.listProcedures(deps, { router: values.router, kind: values.kind });
   },
   probe: (deps) => tools.probe(deps),
+  catalogue: (deps) => fetchProductsPage(deps.client),
+  apply: applyFile,
   query: (deps, args) => {
     const { procedure, input } = procedureAndInput(args);
     return tools.query(deps, { procedure, input });

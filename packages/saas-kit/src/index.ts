@@ -1,3 +1,4 @@
+export * from "./apply.js";
 export * from "./catalogue-data.js";
 export * from "./catalogue-doc.js";
 export * from "./client.js";
@@ -9,6 +10,7 @@ export * from "./errors.js";
 export * from "./kit.js";
 export * from "./legal-acts.js";
 export * from "./openapi.js";
+export * from "./products-page.js";
 export * from "./server.js";
 export * from "./session-store.js";
 export * from "./tools.js";

@@ -30,3 +30,17 @@ export function assertSignUpAllowed(legalAct: unknown): void {
     );
   }
 }
+
+export type ApplyMode = "dry-run" | "apply";
+
+export function applyMode(flags: { confirm: boolean; legalAct: boolean }): ApplyMode {
+  if (!flags.confirm && !flags.legalAct) return "dry-run";
+  assertConfirmed(flags.confirm, "apply");
+  if (!flags.legalAct) {
+    throw new LegalActRefusedError(
+      "apply creates and edits products and listings in front of sales agents in the account holder's name, and --publish publishes them: it needs --legal-act besides --confirm. It is not available through the MCP server",
+      { code: "LEGAL_ACT_REFUSED" },
+    );
+  }
+  return "apply";
+}

@@ -18,13 +18,13 @@ We built this kit because the marketplace has no public API, and working with it
 
 One package, `packages/saas-kit`, with a library and two executables.
 
-| Part                               | What it does                                                                                                                                                             |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Client (`SaasClient`)              | better-auth sign-up, sign-in and email verification, cookie jar, tRPC query and mutation, session store                                                                  |
-| Discovery                          | crawls the signed-in app, extracts procedure names, probes them with `GET` only                                                                                          |
-| OpenAPI                            | generates the OpenAPI 3.1 file and the catalogue page from the bundled catalogue                                                                                         |
-| MCP server (`saas-kit-mcp`, stdio) | exposes the platform as tools                                                                                                                                            |
-| CLI (`saas-kit`)                   | `status`, `login`, `discover`, `list`, `probe` (GET every catalogued procedure, prints the answer codes), `query`, `mutation --confirm [--legal-act]`, `docs`, `refresh` |
+| Part                               | What it does                                                                                                                                                                                          |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Client (`SaasClient`)              | better-auth sign-up, sign-in and email verification, cookie jar, tRPC query and mutation, session store                                                                                               |
+| Discovery                          | crawls the signed-in app, extracts procedure names, probes them with `GET` only                                                                                                                       |
+| OpenAPI                            | generates the OpenAPI 3.1 file and the catalogue page from the bundled catalogue                                                                                                                      |
+| MCP server (`saas-kit-mcp`, stdio) | exposes the platform as tools                                                                                                                                                                         |
+| CLI (`saas-kit`)                   | `status`, `login`, `discover`, `list`, `probe` (GET every catalogued procedure, prints the answer codes), `query`, `catalogue`, `apply <file>`, `mutation --confirm [--legal-act]`, `docs`, `refresh` |
 
 ### Setup
 
@@ -79,8 +79,23 @@ Account creation is deliberately not a tool: it accepts the platform's terms on 
 - `client.mutate` refuses a non-allowlisted mutation unless the caller passes `legalAct: true` besides `confirm: true`.
 - The MCP server never passes it.
 - The CLI accepts them only as `saas-kit mutation <router.name> [json] --confirm --legal-act`.
+- `saas-kit apply <file>` writes products and listings and is a legal act as a whole; it is a CLI command only, with no MCP tool (see [Catalogue and apply](#catalogue-and-apply)).
 
 Details: [docs/api-reference.md](docs/api-reference.md#mutation-policy).
+
+### Catalogue and apply
+
+`saas-kit catalogue` lists the account's own products and listings, read from the signed-in page `/de/business-partner/products-services` with one `GET` (the page's server-rendered data; no tRPC call, no write). It prints `products` (`id`, `itemType` `product` or `proposal`, `title`, `kind`, `priceLabel`, `price`, `unit`, `billingPeriod`, `listingCount`) and `listings` (`id`, `productId`, `productTitle`, `title`, `status`, `priceLabel`, `price`, `unit`, `billingPeriod`, `region`, `commissionLabel`, `commissionMode`, `commissionValue`). The page shows price and commission only as formatted labels, so the kit parses them (`1.500 € / piece, one-time` becomes price `1500`); a label it cannot read stays visible as its raw text with null parsed fields. A listing is linked to its product by title, because the page gives no product id on a listing. Page shape and the observed label formats: [docs/api-reference.md](docs/api-reference.md#products-and-listings-page).
+
+`saas-kit apply <file> [--publish] [--confirm --legal-act]` takes a JSON array of `{ "key", "product", "listing" }`, where `product` is the `products.create` input and `listing` the `listings.create` input without `productId`.
+
+- It reads the catalogue page, matches existing products by title (surrounding spaces ignored; an AI proposal is not a product), and plans per entry: create what is missing, update what differs, leave the rest.
+- Default: a dry run. It prints the plan with `from`/`to` per changed field and sends nothing but that one `GET`.
+- Both `--confirm` and `--legal-act` are required to write; one of them alone is refused before any request. It creates and edits records that sales agents see, so it is a legal act in the account holder's name. There is no MCP tool for it.
+- Order: `products.create` and `products.update`, then `listings.create` and `listings.update`. The `products.create` answer carries the new id, which is the `productId` of the listing; `listings.publish` takes `{ "id" }` and runs only with `--publish`, and only for listings the page does not show as published. A new listing is published by the id of its `listings.create` answer.
+- It stops at the first failed write and names the steps that were done. Running it again continues, because records are matched by title.
+- Only what the page shows decides whether an update is needed: product `kind`, `pricePerBlockEuros`, `unit`, `billingPeriod`; listing `titleOverride`, `region`, `commissionMode`, `commissionValue`. Every other field you give is sent when the record is written for another reason, but a change in it alone is not detected; the dry run says so.
+- Not observed: that the `listings.create` answer carries the new listing id (the kit assumes it like the `products.create` answer; without an id it stops with `NO_ID_IN_ANSWER` and a rerun continues, publishing the listing it finds by title), the commission label of a fixed commission, and a price with a block size other than 1.
 
 ### Library
 

@@ -22,6 +22,11 @@ const USAGE = `saas-kit <command>
 
   status | login | discover [--path /de/x]... | list [--router r] [--kind query|mutation] | probe
   query <router.name> [json]           GET; probe prints the answer code of a read-only GET for every catalogued procedure
+  catalogue                            list the account's products and listings from the signed-in products page (GET only)
+  apply <file> [--publish] [--confirm --legal-act]
+                                       create or update products and listings from a JSON array of {key, product, listing};
+                                       prints a dry-run diff unless both --confirm and --legal-act are given;
+                                       --publish also publishes listings that are not published yet
   mutation <router.name> [json] --confirm [--legal-act]
                                        POST; refused without --confirm, a void-input procedure takes no json;
                                        a legal act (see README) is refused without --legal-act as well
