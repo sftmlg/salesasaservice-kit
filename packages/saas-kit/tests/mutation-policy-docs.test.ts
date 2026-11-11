@@ -89,6 +89,20 @@ describe("documented mutation policy equals the typed source", () => {
     expect(reference).toMatch(/have an unknown input schema: their names are confirmed by a probe/);
   });
 
+  it("states the questionCatalogs mutation count of the catalogue and refuses every one of them over MCP (a count that differs from the catalogue, or one name left off the refusal, is the bug)", () => {
+    const entries = Object.entries(loadCatalogue().procedures).filter(([name]) =>
+      name.startsWith("questionCatalogs."),
+    );
+    const mutations = entries.filter(([, entry]) => entry.kind === "mutation").map(([name]) => name);
+    const queries = entries.filter(([, entry]) => entry.kind === "query").map(([name]) => name);
+    expect(mutations.length).toBeGreaterThan(0);
+    expect(mutations.filter((name) => !isLegalAct(name))).toEqual([]);
+    expect(reference).toContain(
+      `holds ${entries.length} catalogued names: ${mutations.length} mutations (the GET was refused) and ${queries.length} queries`,
+    );
+    expect(reference).toContain(`All ${mutations.length} mutations are refused over MCP`);
+  });
+
   it("attributes the VAT id verification statement to the platform's own page text instead of stating it as the kit's measurement (an unattributed claim reads as an observation of an account)", () => {
     const quote = "Mit USt-IdNr. läuft die Verifizierung automatisch, sonst per Ausweisdokument";
     const lines = reference.split("\n").filter((line) => /verif/i.test(line) && /VAT id|USt-IdNr/.test(line));

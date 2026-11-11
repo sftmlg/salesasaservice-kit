@@ -180,6 +180,8 @@ The answer code of the probe is evidence for that one decision and is not stored
 
 The catalogue loader rejects any other confirmation value. The twelve product and listing names were probed by a signed-in refresh: eleven are mutations (the GET was refused) and `questionCatalogs.getCatalogForProduct` is a query. The default crawl of `refresh` and `discover` starts at `/de` and `/de/business-partner/products-services`: the latter is the only page that references the product procedures, and the crawl follows the links it finds from there.
 
+The `questionCatalogs` router holds 10 catalogued names: 8 mutations (the GET was refused) and 2 queries, `questionCatalogs.getCatalogForProduct` and `questionCatalogs.getGenerationBudget`. All 8 mutations are refused over MCP, see [Everything else](#everything-else).
+
 `onboarding.createWorkspace` is not found by the crawl: no page of a signed-in account with a workspace loads the chunk that calls it. It is added by name and confirmed by the same probe, and carries a note in the catalogue.
 
 Regenerate the catalogue with `saas-kit refresh` and the two documentation files with `saas-kit docs`.
