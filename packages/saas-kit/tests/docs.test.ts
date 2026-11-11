@@ -38,16 +38,16 @@ describe("generated documentation", () => {
   });
 
   it("groups the catalogue by router with one row per procedure", () => {
-    const md = renderCatalogue({
+    const page = renderCatalogue({
       measured: "d",
       procedures: {
         "a.q": { kind: "query", observed: "OK" },
         "b.m": { kind: "mutation", observed: "PRECONDITION_FAILED" },
       },
     });
-    expect(md).toContain("## a");
-    expect(md).toContain("## b");
-    expect(md).toContain("| `b.m` | POST | `PRECONDITION_FAILED` |");
+    expect(page).toContain("## a");
+    expect(page).toContain("## b");
+    expect(page).toContain("| `b.m` | POST | `PRECONDITION_FAILED` |");
   });
 
   it("refuses a catalogue file with an unknown procedure kind (generated docs would silently map it to GET)", () => {

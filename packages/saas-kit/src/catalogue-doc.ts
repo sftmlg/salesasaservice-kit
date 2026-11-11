@@ -20,7 +20,7 @@ export function renderCatalogue(catalogue: Catalogue): string {
     `${Object.keys(catalogue.procedures).length} procedures confirmed by a read-only GET that did not answer \`NOT_FOUND\`.`,
     "",
   ];
-  for (const [router, entries] of [...routers].sort(([a], [b]) => a.localeCompare(b))) {
+  for (const [router, entries] of [...routers].sort(([left], [right]) => left.localeCompare(right))) {
     lines.push(
       `## ${router}`,
       "",

@@ -33,7 +33,7 @@ async function main(): Promise<number> {
     return 0;
   }
   if (command === "refresh") {
-    const paths = args.flatMap((a, i) => (args[i - 1] === "--path" ? [a] : []));
+    const paths = args.flatMap((arg, index) => (args[index - 1] === "--path" ? [arg] : []));
     const client = createClient(config);
     await loginWithConfig(client, config);
     const found = await discover(client, ["/de", ...paths]);

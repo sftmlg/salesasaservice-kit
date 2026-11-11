@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { SaasClient } from "../src/client.js";
 import { buildCatalogue, discover, extractChunks, extractProcedures } from "../src/discovery.js";
-import { fakeFetch, ok, trpcError } from "./helpers.js";
+import { fakeFetch, okReply, trpcError } from "./helpers.js";
 
 describe("procedure extraction", () => {
   it("classifies mutationOptions/useMutation as mutations and the rest as queries", () => {
@@ -34,7 +34,7 @@ describe("discovery crawl", () => {
       "/de/network",
     ]);
     expect(result.procedures).toEqual({ "offers.send": "mutation" });
-    expect(calls.filter((c) => c.url.endsWith("c.js"))).toHaveLength(1);
+    expect(calls.filter((call) => call.url.endsWith("c.js"))).toHaveLength(1);
   });
 
   it("records a redirect page and does not parse it (sign-in redirect must read as signed out)", async () => {
@@ -69,9 +69,9 @@ describe("catalogue building", () => {
   });
 
   it("probes with GET only, so discovery can never write", async () => {
-    const { fetch, calls } = fakeFetch(() => ok(1));
+    const { fetch, calls } = fakeFetch(() => okReply(1));
     await buildCatalogue(new SaasClient({ baseUrl: "https://x.test", fetch }), { "a.b": "mutation" });
-    expect(calls.every((c) => c.method === "GET")).toBe(true);
+    expect(calls.every((call) => call.method === "GET")).toBe(true);
   });
 });
 
@@ -83,6 +83,6 @@ describe("route extraction", () => {
     );
     expect(routes).toContain("/de/business-partner/offer-template");
     expect(routes).toContain("/de/network");
-    expect(routes.some((r) => r.includes("api") || r.includes("_next"))).toBe(false);
+    expect(routes.some((route) => route.includes("api") || route.includes("_next"))).toBe(false);
   });
 });

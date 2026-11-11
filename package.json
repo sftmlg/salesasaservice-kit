@@ -3,7 +3,7 @@
   "private": true,
   "packageManager": "pnpm@10.33.0",
   "scripts": {
-    "check": "pnpm -r typecheck && biome check . && pnpm -r test",
+    "check": "biome check . && pnpm -r typecheck && pnpm -r test && pnpm -r build",
     "format": "biome check --write ."
   },
   "devDependencies": {

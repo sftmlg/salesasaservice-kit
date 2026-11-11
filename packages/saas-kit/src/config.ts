@@ -14,7 +14,13 @@ export interface KitConfig {
 
 export const DEFAULT_BASE_URL = "https://www.salesasaservice.at";
 
-type Env = Readonly<Record<string, string | undefined>>;
+interface Env {
+  readonly SAAS_BASE_URL?: string | undefined;
+  readonly SAAS_SESSION_FILE?: string | undefined;
+  readonly SAAS_CREDENTIALS_FILE?: string | undefined;
+  readonly SAAS_EMAIL?: string | undefined;
+  readonly SAAS_PASSWORD?: string | undefined;
+}
 
 export function loadConfig(env: Env = process.env): KitConfig {
   return {

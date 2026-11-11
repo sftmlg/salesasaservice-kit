@@ -3,9 +3,9 @@ import { z } from "zod";
 import { SaasError } from "./errors.js";
 import { type ToolDeps, tools } from "./tools.js";
 
-async function run<T>(fn: () => Promise<T>) {
+async function run<T>(task: () => Promise<T>) {
   try {
-    const value = await fn();
+    const value = await task();
     return { content: [{ type: "text" as const, text: JSON.stringify(value ?? null, null, 2) }] };
   } catch (error) {
     const code = error instanceof SaasError ? error.code : undefined;

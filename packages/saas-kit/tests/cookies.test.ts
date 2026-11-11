@@ -6,12 +6,12 @@ import { SaasClient } from "../src/client.js";
 import { applySetCookies, cookieHeader } from "../src/cookies.js";
 import { ConfigError } from "../src/errors.js";
 import { FileSessionStore } from "../src/session-store.js";
-import { fakeFetch, ok } from "./helpers.js";
+import { fakeFetch, okReply } from "./helpers.js";
 
 describe("cookie jar", () => {
   it("keeps '=' inside the value (signed session tokens end in %3D or contain '=')", () => {
     const jar = applySetCookies({}, ["tok=abc.def=ghi==; Path=/; HttpOnly"]);
-    expect(jar.tok).toBe("abc.def=ghi==");
+    expect(jar).toEqual({ tok: "abc.def=ghi==" });
   });
 
   it("drops a cookie cleared with Max-Age=0 (sign-out must not keep sending the old session)", () => {
@@ -57,12 +57,12 @@ describe("cookies through the client", () => {
       if (req.url.endsWith("/sign-in/email"))
         return { body: "{}", setCookie: ["__Secure-better-auth.session_token=tok; Path=/"] };
       if (req.url.endsWith("/get-session")) return JSON.stringify({ user: { email: "a@b.c" }, session: {} });
-      return ok(1);
+      return okReply(1);
     });
     const client = new SaasClient({ baseUrl: "https://x.test", fetch });
     await client.signIn({ email: "a@b.c", password: "pw" });
     await client.query("subscriptions.getStatus");
-    expect(calls.at(-1)?.headers.cookie).toBe("__Secure-better-auth.session_token=tok");
+    expect(calls.at(-1)?.headers.get("cookie")).toBe("__Secure-better-auth.session_token=tok");
   });
 
   it("sends no cookie on sign-in itself (a stale session would be echoed back into the credentials call)", async () => {
@@ -71,14 +71,14 @@ describe("cookies through the client", () => {
     );
     const client = new SaasClient({ baseUrl: "https://x.test", fetch });
     await client.signIn({ email: "a", password: "b" });
-    expect(calls[0]?.headers.cookie).toBeUndefined();
+    expect(calls[0]?.headers.get("cookie")).toBeNull();
   });
 
   it("sends an Origin matching the site on POST (the platform's CSRF check refuses without it)", async () => {
-    const { fetch, calls } = fakeFetch(() => ok(null));
+    const { fetch, calls } = fakeFetch(() => okReply(null));
     const client = new SaasClient({ baseUrl: "https://x.test/", fetch });
     await client.mutate("a.b", {}, { confirm: true });
-    expect(calls[0]?.headers.origin).toBe("https://x.test");
+    expect(calls[0]?.headers.get("origin")).toBe("https://x.test");
     expect(calls[0]?.url).toBe("https://x.test/api/trpc/a.b?batch=1");
   });
 });

@@ -21,9 +21,9 @@ const CHUNK_RE = /\/_next\/static\/[^"'\\\s)]+\.js/g;
 
 export function extractProcedures(source: string): Record<string, ProcedureKind> {
   const found: Record<string, ProcedureKind> = {};
-  for (const m of source.matchAll(PROC_RE)) {
-    const kind: ProcedureKind = /mutation/i.test(m[3] ?? "") ? "mutation" : "query";
-    const key = `${m[1]}.${m[2]}`;
+  for (const match of source.matchAll(PROC_RE)) {
+    const kind: ProcedureKind = /mutation/i.test(match[3] ?? "") ? "mutation" : "query";
+    const key = `${match[1]}.${match[2]}`;
     if (!found[key]) found[key] = kind;
   }
   return found;
@@ -31,10 +31,10 @@ export function extractProcedures(source: string): Record<string, ProcedureKind>
 
 export function extractRoutes(source: string): string[] {
   const localized = [...source.matchAll(ROUTE_RE)].map(
-    (m) => (m[1] ?? "").replace(/\/$/, "") || (m[1] ?? ""),
+    (match) => (match[1] ?? "").replace(/\/$/, "") || (match[1] ?? ""),
   );
   const unprefixed = [...source.matchAll(APP_ROUTE_RE)]
-    .map((m) => m[1] ?? "")
+    .map((match) => match[1] ?? "")
     .filter((route) => !/^\/(api|_next|de|en)(\/|$)/.test(route))
     .map((route) => `/de${route.replace(/\/$/, "")}`);
   return [...localized, ...unprefixed];
@@ -51,34 +51,52 @@ export interface DiscoveryResult {
   pages: Record<string, string>;
 }
 
+interface CrawlState {
+  procedures: Record<string, ProcedureKind>;
+  routes: Set<string>;
+  seenChunks: Set<string>;
+  pages: Record<string, string>;
+}
+
+async function crawlPage(client: SaasClient, path: string, state: CrawlState): Promise<void> {
+  const page = await client.http(path, { accept: "text/html" });
+  state.pages[path] = page.location ? `${page.status} -> ${page.location}` : String(page.status);
+  if (page.status !== 200) return;
+  mergeSource(page.text, state.procedures, state.routes);
+  for (const chunk of extractChunks(page.text)) {
+    if (state.seenChunks.has(chunk)) continue;
+    state.seenChunks.add(chunk);
+    const script = await client.http(chunk, { accept: "*/*" });
+    if (script.status === 200) mergeSource(script.text, state.procedures, state.routes);
+  }
+}
+
 export async function discover(
   client: SaasClient,
   startPaths: readonly string[] = ["/de"],
   rounds = 3,
 ): Promise<DiscoveryResult> {
-  const procedures: Record<string, ProcedureKind> = {};
-  const routes = new Set<string>(startPaths);
+  const state: CrawlState = {
+    procedures: {},
+    routes: new Set<string>(startPaths),
+    seenChunks: new Set<string>(),
+    pages: {},
+  };
   const seenPages = new Set<string>();
-  const seenChunks = new Set<string>();
-  const pages: Record<string, string> = {};
   for (let round = 0; round < rounds; round++) {
-    const todo = [...routes].filter((p) => !seenPages.has(p) && !p.includes("["));
+    const todo = [...state.routes].filter((route) => !seenPages.has(route) && !route.includes("["));
     if (todo.length === 0) break;
     for (const path of todo) {
       seenPages.add(path);
-      const page = await client.http(path, { accept: "text/html" });
-      pages[path] = page.location ? `${page.status} -> ${page.location}` : String(page.status);
-      if (page.status !== 200) continue;
-      mergeSource(page.text, procedures, routes);
-      for (const chunk of extractChunks(page.text)) {
-        if (seenChunks.has(chunk)) continue;
-        seenChunks.add(chunk);
-        const js = await client.http(chunk, { accept: "*/*" });
-        if (js.status === 200) mergeSource(js.text, procedures, routes);
-      }
+      await crawlPage(client, path, state);
     }
   }
-  return { procedures, routes: [...routes].sort(), chunks: seenChunks.size, pages };
+  return {
+    procedures: state.procedures,
+    routes: [...state.routes].sort(),
+    chunks: state.seenChunks.size,
+    pages: state.pages,
+  };
 }
 
 function mergeSource(source: string, procedures: Record<string, ProcedureKind>, routes: Set<string>): void {
@@ -98,7 +116,9 @@ export async function buildCatalogue(
 ): Promise<{ catalogue: Catalogue; notFound: string[] }> {
   const procedures: Record<string, ProcedureEntry> = {};
   const notFound: string[] = [];
-  for (const [name, kind] of Object.entries(discovered).sort(([a], [b]) => a.localeCompare(b))) {
+  for (const [name, kind] of Object.entries(discovered).sort(([left], [right]) =>
+    left.localeCompare(right),
+  )) {
     const observed = await probeProcedure(client, name);
     if (observed === "NOT_FOUND") notFound.push(name);
     else procedures[name] = { kind, observed };

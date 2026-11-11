@@ -8,10 +8,10 @@ export function applySetCookies(
   const next = { ...jar };
   for (const line of setCookieLines) {
     const [pair = "", ...attrs] = line.split(";");
-    const eq = pair.indexOf("=");
-    if (eq <= 0) continue;
-    const name = pair.slice(0, eq).trim();
-    const value = pair.slice(eq + 1).trim();
+    const separator = pair.indexOf("=");
+    if (separator <= 0) continue;
+    const name = pair.slice(0, separator).trim();
+    const value = pair.slice(separator + 1).trim();
     if (value === "" || isExpired(attrs, now)) delete next[name];
     else next[name] = value;
   }
@@ -25,8 +25,8 @@ function isExpired(attrs: readonly string[], now: number): boolean {
     if (maxAge) return Number(maxAge[1]) <= 0;
     const expires = /^expires=(.+)$/i.exec(attr);
     if (expires) {
-      const at = Date.parse(expires[1] ?? "");
-      if (!Number.isNaN(at) && at <= now) return true;
+      const expiresAt = Date.parse(expires[1] ?? "");
+      if (!Number.isNaN(expiresAt) && expiresAt <= now) return true;
     }
   }
   return false;

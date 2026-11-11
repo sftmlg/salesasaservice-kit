@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { SaasClient } from "../src/client.js";
 import { assertConfirmed } from "../src/confirm.js";
 import { ConfirmationRequiredError } from "../src/errors.js";
-import { fakeFetch, ok } from "./helpers.js";
+import { fakeFetch, okReply } from "./helpers.js";
 
 describe("confirm guard", () => {
   it.each([false, undefined, null, "true", 1, "yes", {}])(
@@ -17,7 +17,7 @@ describe("confirm guard", () => {
   });
 
   it("sends no request at all when the mutation is unconfirmed (guard must sit before the network)", async () => {
-    const { fetch, calls } = fakeFetch(() => ok(null));
+    const { fetch, calls } = fakeFetch(() => okReply(null));
     const client = new SaasClient({ baseUrl: "https://x.test", fetch });
     await expect(client.mutate("listings.publish", { id: 1 }, { confirm: false })).rejects.toBeInstanceOf(
       ConfirmationRequiredError,
@@ -26,7 +26,7 @@ describe("confirm guard", () => {
   });
 
   it("a confirmed void-input mutation posts the body {} (a {0:null} body is rejected by such procedures)", async () => {
-    const { fetch, calls } = fakeFetch(() => ok({ started: true }));
+    const { fetch, calls } = fakeFetch(() => okReply({ started: true }));
     const client = new SaasClient({ baseUrl: "https://x.test", fetch });
     await client.mutate("verification.startWorkspaceVerification", undefined, { confirm: true });
     expect(calls[0]?.method).toBe("POST");
@@ -34,7 +34,7 @@ describe("confirm guard", () => {
   });
 
   it("does not require confirm for queries (reads stay frictionless)", async () => {
-    const { fetch, calls } = fakeFetch(() => ok("x"));
+    const { fetch, calls } = fakeFetch(() => okReply("x"));
     const client = new SaasClient({ baseUrl: "https://x.test", fetch });
     await expect(client.query("subscriptions.getStatus")).resolves.toBe("x");
     expect(calls[0]?.method).toBe("GET");

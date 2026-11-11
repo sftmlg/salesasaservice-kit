@@ -8,7 +8,7 @@ import {
   UnknownProcedureError,
 } from "../src/errors.js";
 import { errorCodeOf, mutationRequest, queryPath, unwrapEnvelope } from "../src/trpc.js";
-import { ok, trpcError } from "./helpers.js";
+import { okReply, trpcError } from "./helpers.js";
 
 describe("request envelope", () => {
   it("wraps query input under batch index 0 (a bare input is silently ignored by the server)", () => {
@@ -51,7 +51,7 @@ describe("request envelope", () => {
 
 describe("response envelope", () => {
   it("returns result.data from a batch array", () => {
-    expect(unwrapEnvelope(200, ok({ a: 1 }))).toEqual({ a: 1 });
+    expect(unwrapEnvelope(200, okReply({ a: 1 }))).toEqual({ a: 1 });
   });
 
   it("also accepts an unbatched object envelope (otherwise item.error is read from the array and missed)", () => {
@@ -76,7 +76,7 @@ describe("response envelope", () => {
 });
 
 describe("error mapping", () => {
-  const cases: [string, number, new (...a: never[]) => SaasError][] = [
+  const cases: [string, number, new (...args: never[]) => SaasError][] = [
     ["UNAUTHORIZED", 401, NotSignedInError],
     ["PRECONDITION_FAILED", 412, OnboardingIncompleteError],
     ["NOT_FOUND", 404, UnknownProcedureError],
@@ -88,8 +88,8 @@ describe("error mapping", () => {
       let caught: unknown;
       try {
         unwrapEnvelope(status, trpcError(code, status));
-      } catch (e) {
-        caught = e;
+      } catch (error) {
+        caught = error;
       }
       expect(caught).toBeInstanceOf(cls);
       expect((caught as SaasError).code).toBe(code);
@@ -104,7 +104,7 @@ describe("error mapping", () => {
   });
 
   it("probe classification distinguishes OK, tRPC code and bare HTTP failure (a 502 page must not read as NOT_FOUND)", () => {
-    expect(errorCodeOf(200, ok(1))).toBe("OK");
+    expect(errorCodeOf(200, okReply(1))).toBe("OK");
     expect(errorCodeOf(412, trpcError("PRECONDITION_FAILED", 412))).toBe("PRECONDITION_FAILED");
     expect(errorCodeOf(502, "<html>bad gateway</html>")).toBe("HTTP_502");
   });

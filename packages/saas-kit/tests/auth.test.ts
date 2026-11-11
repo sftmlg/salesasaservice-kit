@@ -59,7 +59,7 @@ describe("auth flow", () => {
       acceptTerms: true,
     });
     expect(JSON.parse(calls[0]?.body ?? "{}")).toMatchObject({ acceptTerms: true, email: "a@b.c" });
-    expect(calls[0]?.headers.cookie).toBeUndefined();
+    expect(calls[0]?.headers.get("cookie")).toBeNull();
   });
 
   it("refuses a verification link on a foreign origin (the session cookie must not be sent to a third party)", async () => {

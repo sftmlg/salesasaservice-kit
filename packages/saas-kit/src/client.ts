@@ -55,17 +55,15 @@ export class SaasClient {
     if (!path.startsWith("/")) {
       throw new SaasError(`path "${path}" must start with "/" to stay on ${this.baseUrl}`, "BAD_PATH");
     }
-    const headers: Record<string, string> = {
+    const cookie = init.auth === false ? "" : cookieHeader(this.store.load());
+    const headers = {
       "user-agent": USER_AGENT,
       accept: init.accept ?? "application/json",
       origin: this.baseUrl,
       referer: `${this.baseUrl}/de`,
+      ...(init.body === undefined ? {} : { "content-type": "application/json" }),
+      ...(cookie ? { cookie } : {}),
     };
-    if (init.body !== undefined) headers["content-type"] = "application/json";
-    if (init.auth !== false) {
-      const cookie = cookieHeader(this.store.load());
-      if (cookie) headers.cookie = cookie;
-    }
     const requestInit: RequestInit = { method: init.method ?? "GET", headers, redirect: "manual" };
     if (init.body !== undefined) requestInit.body = init.body;
     const res = await this.doFetch(`${this.baseUrl}${path}`, requestInit);
