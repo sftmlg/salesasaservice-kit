@@ -1,7 +1,4 @@
 export const MCP_ALLOWED_MUTATIONS = [
-  "profile.updateInfo",
-  "profile.updateAddress",
-  "profile.updateUnlimitedPartners",
   "profile.startLogoUpload",
   "profile.completeLogoUpload",
   "profile.cancelLogoUpload",
