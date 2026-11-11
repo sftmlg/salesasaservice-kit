@@ -61,28 +61,26 @@ Everything comes from environment variables. No secret is read from the reposito
 }
 ```
 
-| Tool              | Effect                                                                                                                                                               |
-| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `session_status`  | whether a session exists, for whom, until when                                                                                                                       |
-| `login`           | sign in with the configured credentials and store the session                                                                                                        |
-| `discover`        | crawl the signed-in app and list procedures and routes (read-only)                                                                                                   |
-| `list_procedures` | the bundled catalogue, filterable by router and kind                                                                                                                 |
-| `query`           | call a tRPC query (HTTP `GET`, cannot write)                                                                                                                         |
-| `mutation`        | call a tRPC mutation; **refused unless `confirm` is `true`**, which is for after the account holder approved the exact input; **legal acts are always refused here** |
+| Tool              | Effect                                                                                                                                                                                                                                                           |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `session_status`  | whether a session exists, for whom, until when                                                                                                                                                                                                                   |
+| `login`           | sign in with the configured credentials and store the session                                                                                                                                                                                                    |
+| `discover`        | crawl the signed-in app and list procedures and routes (read-only)                                                                                                                                                                                               |
+| `list_procedures` | the bundled catalogue, filterable by router and kind                                                                                                                                                                                                             |
+| `query`           | call a tRPC query (HTTP `GET`, cannot write)                                                                                                                                                                                                                     |
+| `mutation`        | call an allowlisted tRPC mutation (see [MCP allowlist](docs/api-reference.md#mcp-allowlist)); **refused unless `confirm` is `true`**, which is for after the account holder approved the exact input; **every other or unknown mutation is always refused here** |
 
 Account creation is deliberately not a tool: it accepts the platform's terms on behalf of a person. It exists in the client library as `signUp`, which requires `acceptTerms: true` and the explicit option `legalAct: true` (`client.signUp(input, { legalAct: true })`); only call it after that person decided to accept the terms.
 
-### Legal acts
+### Mutation policy
 
-`confirm=true` is set by whoever calls the tool, and an agent reads text that the platform or a counterparty controls, so that text can steer an agent into a legal act in the account holder's name. Ten procedures are therefore gated a second time (`LEGAL_ACT_PROCEDURES`, `packages/saas-kit/src/legal-acts.ts`):
+`confirm=true` is set by whoever calls the tool, and an agent reads text that the platform or a counterparty controls, so that text can steer an agent into a write in the account holder's name. Over MCP only the allowlisted, reviewed, reversible working mutations are accepted (the list is `MCP_ALLOWED_MUTATIONS` in `packages/saas-kit/src/legal-acts.ts`, printed in [docs/api-reference.md](docs/api-reference.md#mcp-allowlist)). Every other mutation, including an unknown name and everything that publishes, accepts, rejects, signs, sends, pays, subscribes, consents, removes users or submits, is refused over MCP with `LEGAL_ACT_REFUSED`.
 
-`contracts.signWorkspaceContract`, `opportunities.acceptRequest`, `opportunities.acceptClose`, `opportunities.rejectClose`, `commission.confirmBusinessDetails`, `commission.requestPayout`, `commission.updateBankDetails`, `subscriptions.createCheckout`, `offers.send`, `onboarding.createWorkspace`.
-
-- `client.mutate` refuses them unless the caller passes `legalAct: true` besides `confirm: true`.
-- The MCP server never passes it and refuses them with `LEGAL_ACT_REFUSED`.
+- `client.mutate` refuses a non-allowlisted mutation unless the caller passes `legalAct: true` besides `confirm: true`.
+- The MCP server never passes it.
 - The CLI accepts them only as `saas-kit mutation <router.name> [json] --confirm --legal-act`.
 
-Details: [docs/api-reference.md](docs/api-reference.md#legal-acts).
+Details: [docs/api-reference.md](docs/api-reference.md#mutation-policy).
 
 ### Library
 
@@ -92,8 +90,8 @@ import { SaasClient, FileSessionStore } from "@software-moling/salesasaservice-k
 const client = new SaasClient({ store: new FileSessionStore(process.env.SAAS_SESSION_FILE ?? "") });
 await client.signIn({ email, password });
 const status = await client.query("subscriptions.getStatus");
-await client.mutate("listings.publish", input, { confirm: true });
-await client.mutate("offers.send", input, { confirm: true, legalAct: true }); // a legal act, see below
+await client.mutate("listings.update", input, { confirm: true }); // on the allowlist
+await client.mutate("listings.publish", input, { confirm: true, legalAct: true }); // not on the allowlist, see Mutation policy
 ```
 
 ### Development
@@ -102,7 +100,7 @@ await client.mutate("offers.send", input, { confirm: true, legalAct: true }); //
 
 ## 3. Documentation
 
-- [docs/api-reference.md](docs/api-reference.md): overview, authentication flow, request and error envelope, onboarding gate
+- [docs/api-reference.md](docs/api-reference.md): overview, authentication flow, request and error envelope, onboarding gate, mutation policy
 - [docs/procedure-catalogue.md](docs/procedure-catalogue.md): procedures grouped by router, with method and how each was confirmed
 - [docs/openapi.json](docs/openapi.json): OpenAPI 3.1 description
 
