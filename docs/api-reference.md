@@ -89,7 +89,7 @@ After verification, the workspace queries below answer with their own results. B
 
 ## Input schemas
 
-The platform does not publish input schemas. A schema is documented here only after a call with that input has been observed against the live platform; everything else is left open. Zod's validation errors name missing fields, which is how most shapes below were found.
+The platform does not publish input schemas. A schema is documented here only after it was observed against the live platform, either as a call with that input that succeeded or, where stated, from the validation errors of an invalid input; everything else is left open. Zod's validation errors name missing fields, which is how most shapes below were found.
 
 ### Mutations
 
@@ -103,6 +103,45 @@ The four onboarding mutations below were called against the live platform with e
 | `profile.updateInfo`                      | see below                                                                                                   | `{"success":true}`                                                                                           |
 
 `profile.updateInfo` fields (observed live): `companiesRegisterCourt`, `companiesRegisterNumber`, `companiesRegisterStatus` (`registered` or `not_registered`), `contactEmail`, `contactPhone`, `displayName`, `formationStatus` (`established` or `in_formation`), `gisaNumber`, `hasNaturalPersonUnlimitedPartner` (boolean or `null`), `inLiquidation` (boolean or `null`), `legalForm` (`gmbh`, `flexkapg`, `ag`, `og`, `kg`, `gmbh_co_kg`, `sole_proprietor`, `gesbr` or `other`), `legalName`, `otherLegalForm`, `proprietorName`, `vatId`, `website`, `websiteConfirmed`. Text fields that do not apply take empty strings; `null` is rejected.
+
+### Product and listing mutations
+
+These shapes were measured from the validation errors that invalid input produces. No call with a valid input was sent, so nothing was written, and the answers of a successful call are not documented. The errors name fields and enumerated values; which fields are optional was not recorded. `products.create`, `products.update`, `listings.create`, `listings.update` and `listingDefaults.save` are refused over MCP (see [Everything else](#everything-else)); `offerTemplates.create` is refused too: an offer template is what sales agents send to end customers, and the catalogue holds no update, cancel or delete for it.
+
+`products.create` and `products.update` take the same fields; `products.update` adds `id`:
+
+| Field                                                     | Value                                                                                                                                                                                                                                                                                                                                                   |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `kind`                                                    | `goods` or `service`                                                                                                                                                                                                                                                                                                                                    |
+| `approvalMode`                                            | `manual` or `automatic`                                                                                                                                                                                                                                                                                                                                 |
+| `category`                                                | `software_it`, `consulting_professional_services`, `marketing_sales`, `people_recruiting`, `finance_legal`, `operations_production`, `logistics_mobility`, `education_training`, `energy_sustainability`, `other`, or `""`                                                                                                                              |
+| `title`, `subtitle`, `shortDescription`, `description`    | strings                                                                                                                                                                                                                                                                                                                                                 |
+| `offerTemplateId`                                         | uuid                                                                                                                                                                                                                                                                                                                                                    |
+| `requirements`                                            | array of objects with `type` `"question_catalog"`                                                                                                                                                                                                                                                                                                       |
+| `targetIndustries`                                        | array of `all_b2b_industries`, `automotive_mobility`, `construction_real_estate`, `education`, `energy_utilities`, `financial_services_insurance`, `healthcare_life_sciences`, `retail_ecommerce`, `hospitality_tourism`, `manufacturing`, `public_nonprofit`, `professional_services`, `technology_telecommunications`, `transport_logistics`, `other` |
+| `tags`                                                    | array                                                                                                                                                                                                                                                                                                                                                   |
+| `unit`                                                    | `piece`, `hour`, `minute`, `day`, `user`, `license`, or `""`                                                                                                                                                                                                                                                                                            |
+| `blockSize`, `pricePerBlockEuros`, `minQuantity`, `terms` | strings                                                                                                                                                                                                                                                                                                                                                 |
+| `billingPeriod`                                           | `one_time`, `per_month`, or `""`                                                                                                                                                                                                                                                                                                                        |
+| `imageIds`                                                | array                                                                                                                                                                                                                                                                                                                                                   |
+
+`listings.create` and `listings.update` take the same fields; `listings.update` adds `id`:
+
+| Field                                         | Value                |
+| --------------------------------------------- | -------------------- |
+| `productId`                                   | uuid                 |
+| `titleOverride`, `descriptionOverride`        | string or `null`     |
+| `targetIndustriesOverride`                    | array or `null`      |
+| `region`, `targetCustomer`, `engagementTerms` | strings              |
+| `commissionMode`                              | `percent` or `fixed` |
+| `commissionValue`                             | string               |
+| `commissionTiers`                             | array                |
+
+`listingDefaults.save` takes `region`, `targetCustomer`, `engagementTerms`, `commissionMode` and `commissionValue`, with the same value types as the listing fields.
+
+`offerTemplates.create` takes `name` (string); further fields are unknown.
+
+The helper procedures `products.extractFromText`, `products.extractPricing`, `products.generateShortDescription`, `products.inspectWebsite`, `products.suggestClassification`, `products.startImageUpload`, `products.completeImageUpload` and `questionCatalogs.getCatalogForProduct` have an unknown input schema: their names are confirmed by a probe (see below), but no input was observed.
 
 ### Queries
 
@@ -139,6 +178,10 @@ Procedure names are extracted from the client bundles. A name counts as confirme
 
 The answer code of the probe is evidence for that one decision and is not stored. `METHOD_NOT_SUPPORTED` is how a `GET` against a mutation is refused. `PRECONDITION_FAILED` is the onboarding state of the probing account on the day of the probe. `FORBIDDEN` is that account's role. `BAD_REQUEST` means the probe input did not validate. None of these describes the procedure itself, so they are not shipped; `saas-kit probe` prints them for the signed-in account as runtime output.
 
+The catalogue loader rejects any other confirmation value. The twelve product and listing names were probed by a signed-in refresh: eleven are mutations (the GET was refused) and `questionCatalogs.getCatalogForProduct` is a query. The default crawl of `refresh` and `discover` starts at `/de` and `/de/business-partner/products-services`: the latter is the only page that references the product procedures, and the crawl follows the links it finds from there.
+
+The `questionCatalogs` router holds 10 catalogued names: 8 mutations (the GET was refused) and 2 queries, `questionCatalogs.getCatalogForProduct` and `questionCatalogs.getGenerationBudget`. All 8 mutations are refused over MCP, see [Everything else](#everything-else).
+
 `onboarding.createWorkspace` is not found by the crawl: no page of a signed-in account with a workspace loads the chunk that calls it. It is added by name and confirmed by the same probe, and carries a note in the catalogue.
 
 Regenerate the catalogue with `saas-kit refresh` and the two documentation files with `saas-kit docs`.
@@ -152,26 +195,30 @@ Regenerate the catalogue with `saas-kit refresh` and the two documentation files
 
 ## Mutation policy
 
-`confirm=true` is set by whoever calls the tool, and an agent reads text that the platform or a counterparty controls (messages, names, offer text). That text can steer an agent into a write in the account holder's name, so `confirm` cannot prove that a person decided. The kit therefore accepts over MCP only an allowlist of reviewed, reversible working mutations, and treats every other mutation as needing a second opt-in.
+`confirm=true` is set by whoever calls the tool, and an agent reads text that the platform or a counterparty controls (messages, names, offer text). That text can steer an agent into a write in the account holder's name, so `confirm` cannot prove that a person decided. The kit therefore accepts over MCP only an allowlist of reviewed working mutations (record edits and read marks), and treats every other mutation as needing a second opt-in.
 
 ### MCP allowlist
 
-These 17 mutations are accepted over MCP, each with `confirm=true`. Each one creates or edits a working record of the account (logo, listing defaults, activities, tasks, inbox read marks, companies, contacts), and a further edit corrects it. None deletes anything, and none publishes, sends, signs, pays or consents:
+These 14 mutations are accepted over MCP, each with `confirm=true`. None deletes anything, and none publishes, sends, signs, pays or consents. A write lasts: created records stay in the account, a completed logo upload has no undo and read marks have no undo. The groups differ:
 
-- `profile.startLogoUpload`, `profile.completeLogoUpload`, `profile.cancelLogoUpload`
-- `listings.update`, `listingDefaults.save`
-- `offerTemplates.create`
-- `activities.create`, `activities.update`
-- `activities.createTask`, `activities.updateTask`, `activities.updateTaskStatus`
-- `inbox.acknowledge`, `inbox.acknowledgeProductProposalFailure`
-- `companies.create`, `companies.update`
-- `contacts.create`, `contacts.update`
+- Record edits (`activities.create`, `activities.update`, `activities.createTask`, `activities.updateTask`, `activities.updateTaskStatus`, `companies.create`, `companies.update`, `contacts.create`, `contacts.update`): an update overwrites the content of a record. A record made by one of the four create mutations stays in the account, because no delete is reachable over MCP. The activity and task updates are in the catalogue; no `companies.*` or `contacts.*` correction path is observed in it.
+- Logo upload (`profile.startLogoUpload`, `profile.completeLogoUpload`, `profile.cancelLogoUpload`): the cancel undoes a staged upload. A completed upload has no catalogued undo over MCP, because the logo delete is refused.
+- Read marks (`inbox.acknowledge`, `inbox.acknowledgeProductProposalFailure`): they mark an inbox item as read, with no catalogued undo.
 
 The list is one typed constant, `MCP_ALLOWED_MUTATIONS` in `packages/saas-kit/src/legal-acts.ts`, and a test fails if this section differs from it. Names are matched exactly: a case variant or a name with whitespace is not on the list. The companies and contacts mutations are allowlisted by name but are not in the bundled catalogue.
 
 ### Everything else
 
 Every other mutation, including an unknown name, is refused over MCP with `LEGAL_ACT_REFUSED` and a message that names the reason. That covers the account's legal statements (`profile.updateInfo`, `profile.updateAddress`, `profile.updateUnlimitedPartners`), everything that publishes (`listings.publish`, `listings.unpublish`, `listings.commit`), deletes (`listings.deleteDraft`, `products.delete`, `productProposals.delete`, `activities.delete`, `profile.deleteLogo`), acknowledges a financial item (`inbox.acknowledgeFinancial`), accepts or rejects (`opportunities.*`), sends (`offers.*`), signs (`contracts.*`), pays or changes bank details (`commission.*`), subscribes (`subscriptions.*`), verifies or onboards (`verification.*`, `onboarding.*`), consents (`cookieConsents.record`), submits (`questionCatalogs.*`, `salesAgentWaitlistEntries.createEntry`) and removes users (`workspaceUsers.remove`), and any catalogued mutation not listed above.
+
+The product procedures follow the same rule, per name:
+
+- `products.create`, `products.update`, `listings.create` and `productProposals.accept` put or keep an entry in front of sales agents (a listing shows as "coming soon" before the contract is signed), so they are statements in the account holder's name.
+- `listings.update` and `listingDefaults.save` set the commission terms and the listing text that sales agents may already act on. Whether an edit reaches a listing that is already published was never observed, so a later edit is not known to correct anything. They are refused over MCP and need `--confirm --legal-act` on the CLI.
+- `offerTemplates.create` creates the template that sales agents send to end customers, and the catalogue holds no update, cancel or delete for it, so a created template could not be corrected. It is refused.
+- `products.inspectWebsite` makes the platform fetch a web address that the caller names, so an agent steered by platform text could direct it; it is refused.
+- `products.extractFromText`, `products.extractPricing`, `products.generateShortDescription` and `products.suggestClassification` probably only compute a result from the text they are given, but whether they also store it, bill for it or send the text to a third party was not observed. They are refused until that is observed.
+- `products.startImageUpload` and `products.completeImageUpload` stage a file like the logo upload does, but no `cancel` counterpart is catalogued, so a staged upload could not be undone by a further edit. They are refused.
 
 - `profile.updateInfo`, `profile.updateAddress` and `profile.updateUnlimitedPartners` state the company's legal data: legal name, legal form, register number, registered address, unlimited partners and the VAT id. The platform uses them for its self-billing, and a later edit does not undo invoices already issued, so a steered agent must not be able to change them. The registered address counts because the supplier's address is a mandatory invoice particular.
 - `client.mutate` refuses them unless the caller passes `legalAct: true` besides `confirm: true`.

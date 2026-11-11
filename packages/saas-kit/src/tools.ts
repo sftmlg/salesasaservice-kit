@@ -1,6 +1,6 @@
 import type { SaasClient } from "./client.js";
 import type { KitConfig } from "./config.js";
-import { type Catalogue, discover, probeProcedure } from "./discovery.js";
+import { type Catalogue, crawlStartPaths, discover, probeProcedure } from "./discovery.js";
 import { loginWithConfig } from "./kit.js";
 
 export interface ToolDeps {
@@ -28,7 +28,7 @@ export const tools = {
   },
 
   async discover({ client }: ToolDeps, args: { paths?: string[] | undefined }) {
-    const result = await discover(client, ["/de", ...(args.paths ?? [])]);
+    const result = await discover(client, crawlStartPaths(args.paths));
     return {
       procedures: result.procedures,
       routes: result.routes,

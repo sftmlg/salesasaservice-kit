@@ -42,7 +42,7 @@ const PUBLISHING_FAMILIES = [
 ];
 
 describe("mutation allowlist", () => {
-  it("lists exactly the 17 reviewed working mutations (a silently added name would open that write to every agent)", () => {
+  it("lists exactly the 14 reviewed working mutations (a silently added name would open that write to every agent)", () => {
     expect([...MCP_ALLOWED_MUTATIONS].sort()).toEqual(
       [
         "activities.create",
@@ -56,9 +56,6 @@ describe("mutation allowlist", () => {
         "contacts.update",
         "inbox.acknowledge",
         "inbox.acknowledgeProductProposalFailure",
-        "listingDefaults.save",
-        "listings.update",
-        "offerTemplates.create",
         "profile.cancelLogoUpload",
         "profile.completeLogoUpload",
         "profile.startLogoUpload",
@@ -115,6 +112,63 @@ describe("mutation allowlist", () => {
     },
   );
 
+  it.each([
+    "products.create",
+    "products.update",
+    "listings.create",
+    "productProposals.accept",
+    "products.startImageUpload",
+    "products.completeImageUpload",
+    "products.extractFromText",
+    "products.extractPricing",
+    "products.generateShortDescription",
+    "products.inspectWebsite",
+    "products.suggestClassification",
+    "offerTemplates.create",
+  ])(
+    "keeps %s a legal act (it puts an entry in front of sales agents in the account holder's name (an offer template is what sales agents send to end customers and the catalogue holds no update, cancel or delete for it), or its behaviour is not observed and an unobserved write stays refused)",
+    async (name) => {
+      expect(isMcpAllowedMutation(name)).toBe(false);
+      const { mcp, calls } = await connectServer();
+      const result = await mcp.callTool({
+        name: "mutation",
+        arguments: { procedure: name, confirm: true, legalAct: true },
+      });
+      expect(result.isError).toBe(true);
+      expect(JSON.stringify(result.content)).toContain("LEGAL_ACT_REFUSED");
+      expect(calls).toHaveLength(0);
+    },
+  );
+
+  it.each(["listings.update", "listingDefaults.save"])(
+    "keeps %s a legal act over MCP (it sets commission terms and listing text that sales agents may already act on, and an edit reaching a published listing was never observed, so a further edit is not known to correct it)",
+    async (name) => {
+      expect(isMcpAllowedMutation(name)).toBe(false);
+      expect(isLegalAct(name)).toBe(true);
+      const { mcp, calls } = await connectServer();
+      const result = await mcp.callTool({
+        name: "mutation",
+        arguments: { procedure: name, confirm: true, legalAct: true },
+      });
+      expect(result.isError).toBe(true);
+      expect(JSON.stringify(result.content)).toContain("LEGAL_ACT_REFUSED");
+      expect(calls).toHaveLength(0);
+    },
+  );
+
+  it.each(["listings.update", "listingDefaults.save"])(
+    "posts %s from the CLI only with --confirm --legal-act (the account holder must still be able to edit commission terms by hand)",
+    async (name) => {
+      const { deps, calls } = setup();
+      await expect(runLiveCommand("mutation", deps, [name, "--confirm"])).rejects.toBeInstanceOf(
+        LegalActRefusedError,
+      );
+      expect(calls).toHaveLength(0);
+      await runLiveCommand("mutation", deps, [name, "--confirm", "--legal-act"]);
+      expect(calls).toHaveLength(1);
+    },
+  );
+
   it("allows no name that deletes or acknowledges a financial item (an allowlist described as reversible must hold no delete)", () => {
     expect(MCP_ALLOWED_MUTATIONS.filter((name) => /delete|remove|financial/i.test(name))).toEqual([]);
   });
@@ -147,7 +201,7 @@ describe("mutation allowlist", () => {
     expect(calls).toHaveLength(0);
   });
 
-  it.each(["Listings.update", "LISTINGS.UPDATE", "listings.Update", " listings.update", "listings.update "])(
+  it.each(["Contacts.update", "CONTACTS.UPDATE", "contacts.Update", " contacts.update", "contacts.update "])(
     "refuses the variant %j over MCP (a case or whitespace variant must not match an allowlist entry)",
     async (variant) => {
       const { mcp, calls } = await connectServer();
@@ -259,8 +313,8 @@ describe("legal-act guard", () => {
 
   it("does not demand legalAct for an allowlisted mutation (the extra flag must not become mandatory for working mutations)", async () => {
     const { client, deps, calls } = setup();
-    await client.mutate("listings.update", {}, { confirm: true });
-    await runLiveCommand("mutation", deps, ["listings.update", "--confirm"]);
+    await client.mutate("contacts.update", {}, { confirm: true });
+    await runLiveCommand("mutation", deps, ["contacts.update", "--confirm"]);
     expect(calls).toHaveLength(2);
   });
 });

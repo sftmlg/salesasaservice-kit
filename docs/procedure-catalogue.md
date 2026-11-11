@@ -2,7 +2,7 @@
 
 Generated from `packages/saas-kit/data/procedures.json` (measured 2026-11-11). Do not edit by hand; run `saas-kit docs`.
 
-78 procedures confirmed by a read-only GET that did not answer `NOT_FOUND`. The catalogue holds only what is true for every account; what a GET answers for one account on one day is runtime output of `saas-kit probe`, explained under "How the catalogue was confirmed" in [api-reference.md](api-reference.md).
+97 procedures confirmed by a read-only GET that did not answer `NOT_FOUND`. The catalogue holds only what is true for every account; what a GET answers for one account on one day is runtime output of `saas-kit probe`, explained under "How the catalogue was confirmed" in [api-reference.md](api-reference.md).
 
 ## activities
 
@@ -67,6 +67,7 @@ Generated from `packages/saas-kit/data/procedures.json` (measured 2026-11-11). D
 | Procedure | Method | Confirmed by | Note |
 | --- | --- | --- | --- |
 | `listings.commit` | POST | a GET is refused (405), so it is a mutation |  |
+| `listings.create` | POST | a GET is refused (405), so it is a mutation |  |
 | `listings.deleteDraft` | POST | a GET is refused (405), so it is a mutation |  |
 | `listings.publish` | POST | a GET is refused (405), so it is a mutation |  |
 | `listings.unpublish` | POST | a GET is refused (405), so it is a mutation |  |
@@ -120,13 +121,23 @@ Generated from `packages/saas-kit/data/procedures.json` (measured 2026-11-11). D
 
 | Procedure | Method | Confirmed by | Note |
 | --- | --- | --- | --- |
+| `productProposals.accept` | POST | a GET is refused (405), so it is a mutation |  |
 | `productProposals.delete` | POST | a GET is refused (405), so it is a mutation |  |
 
 ## products
 
 | Procedure | Method | Confirmed by | Note |
 | --- | --- | --- | --- |
+| `products.completeImageUpload` | POST | a GET is refused (405), so it is a mutation |  |
+| `products.create` | POST | a GET is refused (405), so it is a mutation |  |
 | `products.delete` | POST | a GET is refused (405), so it is a mutation |  |
+| `products.extractFromText` | POST | a GET is refused (405), so it is a mutation |  |
+| `products.extractPricing` | POST | a GET is refused (405), so it is a mutation |  |
+| `products.generateShortDescription` | POST | a GET is refused (405), so it is a mutation |  |
+| `products.inspectWebsite` | POST | a GET is refused (405), so it is a mutation |  |
+| `products.startImageUpload` | POST | a GET is refused (405), so it is a mutation |  |
+| `products.suggestClassification` | POST | a GET is refused (405), so it is a mutation |  |
+| `products.update` | POST | a GET is refused (405), so it is a mutation |  |
 
 ## profile
 
@@ -144,7 +155,15 @@ Generated from `packages/saas-kit/data/procedures.json` (measured 2026-11-11). D
 
 | Procedure | Method | Confirmed by | Note |
 | --- | --- | --- | --- |
+| `questionCatalogs.activateCatalog` | POST | a GET is refused (405), so it is a mutation |  |
+| `questionCatalogs.generateCatalog` | POST | a GET is refused (405), so it is a mutation |  |
+| `questionCatalogs.getCatalogForProduct` | GET | a GET is answered (anything but not found) |  |
+| `questionCatalogs.getGenerationBudget` | GET | a GET is answered (anything but not found) |  |
+| `questionCatalogs.invalidateQualifications` | POST | a GET is refused (405), so it is a mutation |  |
+| `questionCatalogs.regenerateQuestion` | POST | a GET is refused (405), so it is a mutation |  |
+| `questionCatalogs.replyToInterview` | POST | a GET is refused (405), so it is a mutation |  |
 | `questionCatalogs.startAttempt` | POST | a GET is refused (405), so it is a mutation |  |
+| `questionCatalogs.startInterview` | POST | a GET is refused (405), so it is a mutation |  |
 | `questionCatalogs.submitAttempt` | POST | a GET is refused (405), so it is a mutation |  |
 
 ## salesAgentWaitlistEntries

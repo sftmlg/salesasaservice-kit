@@ -1,5 +1,6 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+import { loadCatalogue } from "../src/catalogue-data.js";
 import { isLegalAct, MCP_ALLOWED_MUTATIONS } from "../src/legal-acts.js";
 
 const root = new URL("../../../", import.meta.url);
@@ -20,7 +21,9 @@ function backticked(text: string): string[] {
 
 describe("documented mutation policy equals the typed source", () => {
   it("the allowlist section of the API reference lists exactly MCP_ALLOWED_MUTATIONS (a name added to or dropped from the code but not the docs is the bug)", () => {
-    const documented = backticked(section(reference, "### MCP allowlist")).sort();
+    const documented = backticked(section(reference, "### MCP allowlist"))
+      .filter((name) => !name.endsWith("*"))
+      .sort();
     expect(documented.length).toBeGreaterThan(0);
     expect(documented).toEqual([...MCP_ALLOWED_MUTATIONS].sort());
   });
@@ -43,6 +46,66 @@ describe("documented mutation policy equals the typed source", () => {
     expect(reference).toContain("Neither is on the MCP allowlist");
   });
 
+  it("states the same allowlist count in the README and the API reference as MCP_ALLOWED_MUTATIONS holds (a count left behind after a name was added or dropped is the bug)", () => {
+    const count = String(MCP_ALLOWED_MUTATIONS.length);
+    expect(readme.match(/only the (\d+) allowlisted/)?.[1]).toBe(count);
+    expect(reference.match(/These (\d+) mutations are accepted over MCP/)?.[1]).toBe(count);
+  });
+
+  it("does not claim that a further edit corrects every allowlisted mutation while the inbox read marks have no catalogued undo (a blanket reversibility claim was the bug)", () => {
+    expect(reference).not.toMatch(/a further edit corrects it/);
+    expect(readme).not.toMatch(/a further edit corrects/);
+    for (const text of [section(reference, "### MCP allowlist"), readme]) {
+      expect(text).toMatch(/read marks/i);
+      expect(text).toMatch(/no catalogued undo/);
+    }
+  });
+
+  it("says a created record stays in the account and never claims it can be undone or removed over MCP (a later update was documented as correcting every record edit, including the create mutations)", () => {
+    const edits = section(reference, "### MCP allowlist")
+      .split("\n")
+      .find((line) => line.startsWith("- Record edits"));
+    const mutationPolicy = readme.split("\n").find((line) => line.startsWith("`confirm=true` is set by"));
+    expect(edits).toBeDefined();
+    expect(mutationPolicy).toBeDefined();
+    for (const text of [edits ?? "", mutationPolicy ?? ""]) {
+      expect(text).toMatch(/overwrites the content of a record/);
+      expect(text).toMatch(/stays in the account/);
+      expect(text).toMatch(/no delete is reachable over MCP/);
+      expect(text).toMatch(/no `companies\.\*` or `contacts\.\*` correction path is observed/);
+      expect(text).not.toMatch(
+        /corrects? the record|are corrected by|\bcan be (undone|removed|deleted|reverted)/,
+      );
+      expect(text).not.toMatch(
+        /\b(create\w*|created records?)\b[^.;]*\b(is|are|can be) (undone|removed|deleted|reverted|corrected)/i,
+      );
+    }
+  });
+
+  it("never describes the allowlist as reversible, undoable, harmless or safe in src, docs or README, and the MCP tool description and refusal message say a write lasts (the allowlist was called reversible while created records stay and read marks have no undo)", () => {
+    const srcDir = new URL("packages/saas-kit/src/", root);
+    const files = readdirSync(srcDir, { recursive: true, encoding: "utf8" })
+      .filter((file) => file.endsWith(".ts"))
+      .map((file) => [`src/${file}`, readFileSync(new URL(file, srcDir), "utf8")] as const);
+    const docs = [
+      ["docs/api-reference.md", reference],
+      ["README.md", readme],
+      ["AGENTS.md", readFileSync(new URL("AGENTS.md", root), "utf8")],
+      ["docs/openapi.json", readFileSync(new URL("docs/openapi.json", root), "utf8")],
+      ["docs/procedure-catalogue.md", readFileSync(new URL("docs/procedure-catalogue.md", root), "utf8")],
+    ] as const;
+    const banned = /\breversible\b|\bundoable\b|\bharmless\b|safe to call|\brevertible\b/i;
+    expect([...files, ...docs].filter(([, text]) => banned.test(text)).map(([name]) => name)).toEqual([]);
+    const server = files.find(([name]) => name === "src/server.ts")?.[1] ?? "";
+    const confirm = files.find(([name]) => name === "src/confirm.ts")?.[1] ?? "";
+    expect(server).toMatch(/A write lasts: created records stay in the account/);
+    expect(server).toMatch(/read marks have no undo/);
+    expect(confirm).toMatch(/created records stay in the account and read marks have no undo/);
+    expect(section(reference, "### MCP allowlist")).toMatch(
+      /A write lasts: created records stay in the account/,
+    );
+  });
+
   it("the README points to the allowlist section instead of carrying its own list (a second list would drift)", () => {
     expect(readme).toContain("docs/api-reference.md#mcp-allowlist");
     expect(
@@ -50,6 +113,41 @@ describe("documented mutation policy equals the typed source", () => {
         .split("\n")
         .filter((line) => MCP_ALLOWED_MUTATIONS.filter((name) => line.includes(`\`${name}\``)).length > 1),
     ).toEqual([]);
+  });
+
+  it("does not say the catalogue fails to confirm the product helper procedures as mutations while it holds them as probed mutations (a stale sentence from before the signed-in refresh)", () => {
+    const helpers = [
+      "products.extractFromText",
+      "products.extractPricing",
+      "products.generateShortDescription",
+      "products.inspectWebsite",
+      "products.suggestClassification",
+      "products.startImageUpload",
+      "products.completeImageUpload",
+    ];
+    const procedures = loadCatalogue().procedures;
+    expect(helpers.map((name) => procedures[name]?.kind)).toEqual(helpers.map(() => "mutation"));
+    expect(helpers.map((name) => procedures[name]?.confirmedBy)).toEqual(helpers.map(() => "get-refused"));
+    expect(reference).not.toMatch(/does not even confirm that they are mutations/);
+  });
+
+  it("says the input schema of the helper procedures is unknown instead of calling their names unprobed (the names were probed and confirmed, only the input was not observed)", () => {
+    expect(reference).not.toMatch(/unprobed/i);
+    expect(reference).toMatch(/have an unknown input schema: their names are confirmed by a probe/);
+  });
+
+  it("states the questionCatalogs mutation count of the catalogue and refuses every one of them over MCP (a count that differs from the catalogue, or one name left off the refusal, is the bug)", () => {
+    const entries = Object.entries(loadCatalogue().procedures).filter(([name]) =>
+      name.startsWith("questionCatalogs."),
+    );
+    const mutations = entries.filter(([, entry]) => entry.kind === "mutation").map(([name]) => name);
+    const queries = entries.filter(([, entry]) => entry.kind === "query").map(([name]) => name);
+    expect(mutations.length).toBeGreaterThan(0);
+    expect(mutations.filter((name) => !isLegalAct(name))).toEqual([]);
+    expect(reference).toContain(
+      `holds ${entries.length} catalogued names: ${mutations.length} mutations (the GET was refused) and ${queries.length} queries`,
+    );
+    expect(reference).toContain(`All ${mutations.length} mutations are refused over MCP`);
   });
 
   it("attributes the VAT id verification statement to the platform's own page text instead of stating it as the kit's measurement (an unattributed claim reads as an observation of an account)", () => {

@@ -7,7 +7,7 @@ import { CATALOGUE_FILE, loadCatalogue } from "./catalogue-data.js";
 import { renderCatalogue } from "./catalogue-doc.js";
 import { isLiveCommand, runLiveCommand } from "./cli-live.js";
 import { DEFAULT_BASE_URL, loadConfig } from "./config.js";
-import { buildCatalogue, discover, UNDISCOVERABLE } from "./discovery.js";
+import { buildCatalogue, crawlStartPaths, discover, UNDISCOVERABLE } from "./discovery.js";
 import { SaasError } from "./errors.js";
 import { createClient, ensureSession } from "./kit.js";
 import { buildOpenApi } from "./openapi.js";
@@ -51,7 +51,7 @@ async function main(): Promise<number> {
     const config = loadConfig();
     const client = createClient(config);
     await ensureSession(client, config);
-    const found = await discover(client, ["/de", ...(values.path ?? [])]);
+    const found = await discover(client, crawlStartPaths(values.path));
     const { catalogue, notFound } = await buildCatalogue(client, found.procedures, new Date(), [
       ...Object.keys(UNDISCOVERABLE),
       ...(values.procedure ?? []),

@@ -2,9 +2,12 @@ import { describe, expect, it } from "vitest";
 import { SaasClient } from "../src/client.js";
 import {
   buildCatalogue,
+  crawlStartPaths,
+  DEFAULT_CRAWL_PATHS,
   discover,
   extractChunks,
   extractProcedures,
+  isAppPage,
   UNDISCOVERABLE,
 } from "../src/discovery.js";
 import { fakeFetch, okReply, proc, trpcError } from "./helpers.js";
@@ -48,6 +51,24 @@ describe("discovery crawl", () => {
     const result = await discover(new SaasClient({ baseUrl: "https://x.test", fetch }), ["/de"]);
     expect(result.pages["/de"]).toBe("307 -> /de/login");
     expect(result.procedures).toEqual({});
+  });
+});
+
+describe("default crawl paths", () => {
+  it("contain the products page (products.create and the other names only that page references were missing from the catalogue)", () => {
+    expect(DEFAULT_CRAWL_PATHS).toContain("/de/business-partner/products-services");
+    expect(DEFAULT_CRAWL_PATHS).toContain("/de");
+  });
+
+  it("are all crawlable app pages (a default the scope check refuses would break every refresh)", () => {
+    expect(DEFAULT_CRAWL_PATHS.filter((path) => !isAppPage(path))).toEqual([]);
+  });
+
+  it("keep an extra path after the defaults and list a repeated path once (--path of a default page must not crawl it twice)", () => {
+    expect(crawlStartPaths(["/de/network", "/de/business-partner/products-services"])).toEqual([
+      ...DEFAULT_CRAWL_PATHS,
+      "/de/network",
+    ]);
   });
 });
 

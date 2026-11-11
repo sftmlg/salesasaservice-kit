@@ -25,6 +25,12 @@ const APP_ROUTE_RE = /(?:href|pathname|push|replace)[:(]\s*["'`](\/[a-z][a-z0-9\
 const CHUNK_RE = /\/_next\/static\/[^"'\\\s)]+\.js/g;
 const APP_PAGE_RE = /^\/(?:de|en)(?:\/[A-Za-z0-9_[\]-]+)*\/?$/;
 
+export const DEFAULT_CRAWL_PATHS: readonly string[] = ["/de", "/de/business-partner/products-services"];
+
+export function crawlStartPaths(extra: readonly string[] = []): string[] {
+  return [...new Set([...DEFAULT_CRAWL_PATHS, ...extra])];
+}
+
 export function isAppPage(path: string): boolean {
   return APP_PAGE_RE.test(path);
 }

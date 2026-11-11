@@ -146,6 +146,11 @@
       "kind": "mutation",
       "confirmedBy": "get-refused"
     },
+    "listings.create": {
+      "router": "listings",
+      "kind": "mutation",
+      "confirmedBy": "get-refused"
+    },
     "listings.deleteDraft": {
       "router": "listings",
       "kind": "mutation",
@@ -287,12 +292,62 @@
       "kind": "mutation",
       "confirmedBy": "get-refused"
     },
+    "productProposals.accept": {
+      "router": "productProposals",
+      "kind": "mutation",
+      "confirmedBy": "get-refused"
+    },
     "productProposals.delete": {
       "router": "productProposals",
       "kind": "mutation",
       "confirmedBy": "get-refused"
     },
+    "products.completeImageUpload": {
+      "router": "products",
+      "kind": "mutation",
+      "confirmedBy": "get-refused"
+    },
+    "products.create": {
+      "router": "products",
+      "kind": "mutation",
+      "confirmedBy": "get-refused"
+    },
     "products.delete": {
+      "router": "products",
+      "kind": "mutation",
+      "confirmedBy": "get-refused"
+    },
+    "products.extractFromText": {
+      "router": "products",
+      "kind": "mutation",
+      "confirmedBy": "get-refused"
+    },
+    "products.extractPricing": {
+      "router": "products",
+      "kind": "mutation",
+      "confirmedBy": "get-refused"
+    },
+    "products.generateShortDescription": {
+      "router": "products",
+      "kind": "mutation",
+      "confirmedBy": "get-refused"
+    },
+    "products.inspectWebsite": {
+      "router": "products",
+      "kind": "mutation",
+      "confirmedBy": "get-refused"
+    },
+    "products.startImageUpload": {
+      "router": "products",
+      "kind": "mutation",
+      "confirmedBy": "get-refused"
+    },
+    "products.suggestClassification": {
+      "router": "products",
+      "kind": "mutation",
+      "confirmedBy": "get-refused"
+    },
+    "products.update": {
       "router": "products",
       "kind": "mutation",
       "confirmedBy": "get-refused"
@@ -332,7 +387,47 @@
       "kind": "mutation",
       "confirmedBy": "get-refused"
     },
+    "questionCatalogs.activateCatalog": {
+      "router": "questionCatalogs",
+      "kind": "mutation",
+      "confirmedBy": "get-refused"
+    },
+    "questionCatalogs.generateCatalog": {
+      "router": "questionCatalogs",
+      "kind": "mutation",
+      "confirmedBy": "get-refused"
+    },
+    "questionCatalogs.getCatalogForProduct": {
+      "router": "questionCatalogs",
+      "kind": "query",
+      "confirmedBy": "get-answered"
+    },
+    "questionCatalogs.getGenerationBudget": {
+      "router": "questionCatalogs",
+      "kind": "query",
+      "confirmedBy": "get-answered"
+    },
+    "questionCatalogs.invalidateQualifications": {
+      "router": "questionCatalogs",
+      "kind": "mutation",
+      "confirmedBy": "get-refused"
+    },
+    "questionCatalogs.regenerateQuestion": {
+      "router": "questionCatalogs",
+      "kind": "mutation",
+      "confirmedBy": "get-refused"
+    },
+    "questionCatalogs.replyToInterview": {
+      "router": "questionCatalogs",
+      "kind": "mutation",
+      "confirmedBy": "get-refused"
+    },
     "questionCatalogs.startAttempt": {
+      "router": "questionCatalogs",
+      "kind": "mutation",
+      "confirmedBy": "get-refused"
+    },
+    "questionCatalogs.startInterview": {
       "router": "questionCatalogs",
       "kind": "mutation",
       "confirmedBy": "get-refused"

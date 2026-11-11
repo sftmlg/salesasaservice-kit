@@ -1586,6 +1586,58 @@
         }
       }
     },
+    "/api/trpc/listings.create": {
+      "post": {
+        "operationId": "listings_create",
+        "tags": [
+          "listings"
+        ],
+        "summary": "mutation listings.create",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/trpc/listings.deleteDraft": {
       "post": {
         "operationId": "listings_deleteDraft",
@@ -2965,6 +3017,58 @@
         }
       }
     },
+    "/api/trpc/productProposals.accept": {
+      "post": {
+        "operationId": "productProposals_accept",
+        "tags": [
+          "productProposals"
+        ],
+        "summary": "mutation productProposals.accept",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/trpc/productProposals.delete": {
       "post": {
         "operationId": "productProposals_delete",
@@ -3017,6 +3121,110 @@
         }
       }
     },
+    "/api/trpc/products.completeImageUpload": {
+      "post": {
+        "operationId": "products_completeImageUpload",
+        "tags": [
+          "products"
+        ],
+        "summary": "mutation products.completeImageUpload",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/products.create": {
+      "post": {
+        "operationId": "products_create",
+        "tags": [
+          "products"
+        ],
+        "summary": "mutation products.create",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/trpc/products.delete": {
       "post": {
         "operationId": "products_delete",
@@ -3024,6 +3232,370 @@
           "products"
         ],
         "summary": "mutation products.delete",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/products.extractFromText": {
+      "post": {
+        "operationId": "products_extractFromText",
+        "tags": [
+          "products"
+        ],
+        "summary": "mutation products.extractFromText",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/products.extractPricing": {
+      "post": {
+        "operationId": "products_extractPricing",
+        "tags": [
+          "products"
+        ],
+        "summary": "mutation products.extractPricing",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/products.generateShortDescription": {
+      "post": {
+        "operationId": "products_generateShortDescription",
+        "tags": [
+          "products"
+        ],
+        "summary": "mutation products.generateShortDescription",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/products.inspectWebsite": {
+      "post": {
+        "operationId": "products_inspectWebsite",
+        "tags": [
+          "products"
+        ],
+        "summary": "mutation products.inspectWebsite",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/products.startImageUpload": {
+      "post": {
+        "operationId": "products_startImageUpload",
+        "tags": [
+          "products"
+        ],
+        "summary": "mutation products.startImageUpload",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/products.suggestClassification": {
+      "post": {
+        "operationId": "products_suggestClassification",
+        "tags": [
+          "products"
+        ],
+        "summary": "mutation products.suggestClassification",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/products.update": {
+      "post": {
+        "operationId": "products_update",
+        "tags": [
+          "products"
+        ],
+        "summary": "mutation products.update",
         "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
@@ -3433,6 +4005,356 @@
         }
       }
     },
+    "/api/trpc/questionCatalogs.activateCatalog": {
+      "post": {
+        "operationId": "questionCatalogs_activateCatalog",
+        "tags": [
+          "questionCatalogs"
+        ],
+        "summary": "mutation questionCatalogs.activateCatalog",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/questionCatalogs.generateCatalog": {
+      "post": {
+        "operationId": "questionCatalogs_generateCatalog",
+        "tags": [
+          "questionCatalogs"
+        ],
+        "summary": "mutation questionCatalogs.generateCatalog",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/questionCatalogs.getCatalogForProduct": {
+      "get": {
+        "operationId": "questionCatalogs_getCatalogForProduct",
+        "tags": [
+          "questionCatalogs"
+        ],
+        "summary": "query questionCatalogs.getCatalogForProduct",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          },
+          {
+            "$ref": "#/components/parameters/input"
+          }
+        ]
+      }
+    },
+    "/api/trpc/questionCatalogs.getGenerationBudget": {
+      "get": {
+        "operationId": "questionCatalogs_getGenerationBudget",
+        "tags": [
+          "questionCatalogs"
+        ],
+        "summary": "query questionCatalogs.getGenerationBudget",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          },
+          {
+            "$ref": "#/components/parameters/input"
+          }
+        ]
+      }
+    },
+    "/api/trpc/questionCatalogs.invalidateQualifications": {
+      "post": {
+        "operationId": "questionCatalogs_invalidateQualifications",
+        "tags": [
+          "questionCatalogs"
+        ],
+        "summary": "mutation questionCatalogs.invalidateQualifications",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/questionCatalogs.regenerateQuestion": {
+      "post": {
+        "operationId": "questionCatalogs_regenerateQuestion",
+        "tags": [
+          "questionCatalogs"
+        ],
+        "summary": "mutation questionCatalogs.regenerateQuestion",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/questionCatalogs.replyToInterview": {
+      "post": {
+        "operationId": "questionCatalogs_replyToInterview",
+        "tags": [
+          "questionCatalogs"
+        ],
+        "summary": "mutation questionCatalogs.replyToInterview",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/trpc/questionCatalogs.startAttempt": {
       "post": {
         "operationId": "questionCatalogs_startAttempt",
@@ -3440,6 +4362,58 @@
           "questionCatalogs"
         ],
         "summary": "mutation questionCatalogs.startAttempt",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "tRPC batch result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResult"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "tRPC error envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/batch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/trpc/questionCatalogs.startInterview": {
+      "post": {
+        "operationId": "questionCatalogs_startInterview",
+        "tags": [
+          "questionCatalogs"
+        ],
+        "summary": "mutation questionCatalogs.startInterview",
         "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
