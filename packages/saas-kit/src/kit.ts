@@ -17,3 +17,7 @@ export async function loginWithConfig(client: SaasClient, config: KitConfig) {
   }
   return client.signIn(config.credentials);
 }
+
+export async function ensureSession(client: SaasClient, config: KitConfig) {
+  return (await client.getSession()) ?? loginWithConfig(client, config);
+}

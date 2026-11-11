@@ -6,7 +6,7 @@ import { CATALOGUE_FILE, loadCatalogue } from "./catalogue-data.js";
 import { renderCatalogue } from "./catalogue-doc.js";
 import { loadConfig } from "./config.js";
 import { buildCatalogue, discover } from "./discovery.js";
-import { createClient, loginWithConfig } from "./kit.js";
+import { createClient, ensureSession } from "./kit.js";
 import { buildOpenApi } from "./openapi.js";
 
 const USAGE = `saas-kit <command>
@@ -35,7 +35,7 @@ async function main(): Promise<number> {
   if (command === "refresh") {
     const paths = args.flatMap((arg, index) => (args[index - 1] === "--path" ? [arg] : []));
     const client = createClient(config);
-    await loginWithConfig(client, config);
+    await ensureSession(client, config);
     const found = await discover(client, ["/de", ...paths]);
     const { catalogue, notFound } = await buildCatalogue(client, found.procedures);
     write(fileURLToPath(CATALOGUE_FILE), `${JSON.stringify(catalogue, null, 2)}\n`);
