@@ -76,12 +76,28 @@ describe("apply input", () => {
     ["no key", file([{ product: { title: "A" }, listing: {} }])],
     ["an empty title", file([entry("a", "   ")])],
     ["a listing that carries productId", file([entry("a", "Alpha", {}, { productId: "x" })])],
+    ["a product that carries an id", file([entry("a", "Alpha", { id: "x" })])],
+    ["a product that carries a productId", file([entry("a", "Alpha", { productId: "x" })])],
+    ["a listing that carries an id", file([entry("a", "Alpha", {}, { id: "x" })])],
+    ["a key outside key, product and listing", file([{ ...entry("a", "Alpha"), id: "x" }])],
     ["a repeated key", file([entry("a", "Alpha"), entry("a", "Beta")])],
     ["a repeated title", file([entry("a", "Alpha"), entry("b", " Alpha ")])],
   ])("rejects %s before any request (bad input must not reach the platform)", async (_name, text) => {
     const { platform, client } = setup();
     await expect(runApply(client, text, LIVE)).rejects.toBeInstanceOf(ConfigError);
     expect(platform.requests).toEqual([]);
+  });
+
+  it("never lets an id in the file steer a write to another record (the dry run planned Alpha, the write updated Beta)", async () => {
+    const platform = new FakePlatform(
+      [product(1, "Alpha", { priceLabel: priceLabel("900", "piece", "one_time") }), product(2, "Beta")],
+      [listing(1, "Alpha", { commission: "5 %" }), listing(2, "Beta")],
+    );
+    const text = file([
+      entry("a", "Alpha", { id: platform.products[1]?.id }, { id: platform.listings[1]?.id }),
+    ]);
+    await expect(runApply(setup(platform).client, text, LIVE)).rejects.toBeInstanceOf(ConfigError);
+    expect(platform.mutations).toEqual([]);
   });
 
   it("keeps extra product fields untouched for the platform to validate (the kit does not know the full schema)", () => {

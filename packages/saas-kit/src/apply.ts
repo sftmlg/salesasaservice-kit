@@ -4,15 +4,16 @@ import { applyMode } from "./confirm.js";
 import { ConfigError, SaasError } from "./errors.js";
 import { fetchProductsPage, type ListingRow, type ProductRow, type ProductsPage } from "./products-page.js";
 
-const entrySchema = z.object({
+const withoutIds = (record: Record<string, unknown>) => !("id" in record) && !("productId" in record);
+
+const entrySchema = z.strictObject({
   key: z.string().min(1),
-  product: z.looseObject({ title: z.string().refine((value) => value.trim() !== "", "title is empty") }),
+  product: z
+    .looseObject({ title: z.string().refine((value) => value.trim() !== "", "title is empty") })
+    .refine(withoutIds, "product must not carry id or productId, the kit takes them from the platform"),
   listing: z
     .record(z.string(), z.unknown())
-    .refine(
-      (listing) => !("productId" in listing),
-      "listing must not carry productId, it comes from the product",
-    ),
+    .refine(withoutIds, "listing must not carry id or productId, the kit takes them from the platform"),
 });
 
 export type ApplyEntry = z.infer<typeof entrySchema>;
