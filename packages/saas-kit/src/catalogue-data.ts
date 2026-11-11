@@ -4,7 +4,16 @@ import type { Catalogue } from "./discovery.js";
 
 const catalogueSchema: z.ZodType<Catalogue> = z.object({
   measured: z.string(),
-  procedures: z.record(z.object({ kind: z.enum(["query", "mutation"]), observed: z.string() })),
+  procedures: z.record(
+    z
+      .object({
+        router: z.string(),
+        kind: z.enum(["query", "mutation"]),
+        confirmedBy: z.enum(["get-refused", "get-answered"]),
+        note: z.string().optional(),
+      })
+      .strict(),
+  ),
 });
 
 export const CATALOGUE_FILE = new URL("../data/procedures.json", import.meta.url);

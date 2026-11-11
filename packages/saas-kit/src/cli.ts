@@ -7,7 +7,7 @@ import { CATALOGUE_FILE, loadCatalogue } from "./catalogue-data.js";
 import { renderCatalogue } from "./catalogue-doc.js";
 import { isLiveCommand, runLiveCommand } from "./cli-live.js";
 import { DEFAULT_BASE_URL, loadConfig } from "./config.js";
-import { buildCatalogue, discover } from "./discovery.js";
+import { buildCatalogue, discover, UNDISCOVERABLE } from "./discovery.js";
 import { SaasError } from "./errors.js";
 import { createClient, ensureSession } from "./kit.js";
 import { buildOpenApi } from "./openapi.js";
@@ -50,12 +50,10 @@ async function main(): Promise<number> {
     const client = createClient(config);
     await ensureSession(client, config);
     const found = await discover(client, ["/de", ...(values.path ?? [])]);
-    const { catalogue, notFound } = await buildCatalogue(
-      client,
-      found.procedures,
-      new Date(),
-      values.procedure ?? [],
-    );
+    const { catalogue, notFound } = await buildCatalogue(client, found.procedures, new Date(), [
+      ...Object.keys(UNDISCOVERABLE),
+      ...(values.procedure ?? []),
+    ]);
     write(fileURLToPath(CATALOGUE_FILE), `${JSON.stringify(catalogue, null, 2)}\n`);
     console.log(JSON.stringify({ confirmed: Object.keys(catalogue.procedures).length, notFound }, null, 2));
     return 0;

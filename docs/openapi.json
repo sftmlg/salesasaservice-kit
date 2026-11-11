@@ -155,7 +155,7 @@
           "activities"
         ],
         "summary": "mutation activities.create",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -207,7 +207,7 @@
           "activities"
         ],
         "summary": "mutation activities.createTask",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -259,7 +259,7 @@
           "activities"
         ],
         "summary": "mutation activities.delete",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -311,7 +311,7 @@
           "activities"
         ],
         "summary": "query activities.list",
-        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -356,7 +356,7 @@
           "activities"
         ],
         "summary": "mutation activities.update",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -408,7 +408,7 @@
           "activities"
         ],
         "summary": "mutation activities.updateTask",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -460,7 +460,7 @@
           "activities"
         ],
         "summary": "mutation activities.updateTaskStatus",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -512,7 +512,7 @@
           "commission"
         ],
         "summary": "mutation commission.confirmBusinessDetails",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -564,7 +564,7 @@
           "commission"
         ],
         "summary": "query commission.getDashboard",
-        "description": "Observed server answer to a GET with null input: FORBIDDEN. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -609,7 +609,7 @@
           "commission"
         ],
         "summary": "query commission.getFinancialProfile",
-        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -654,7 +654,7 @@
           "commission"
         ],
         "summary": "query commission.getHistory",
-        "description": "Observed server answer to a GET with null input: FORBIDDEN. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -699,7 +699,7 @@
           "commission"
         ],
         "summary": "query commission.listInvoices",
-        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -744,7 +744,7 @@
           "commission"
         ],
         "summary": "query commission.listPayouts",
-        "description": "Observed server answer to a GET with null input: FORBIDDEN. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -789,7 +789,7 @@
           "commission"
         ],
         "summary": "query commission.listPositions",
-        "description": "Observed server answer to a GET with null input: FORBIDDEN. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -834,7 +834,7 @@
           "commission"
         ],
         "summary": "mutation commission.quotePayout",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -886,7 +886,7 @@
           "commission"
         ],
         "summary": "mutation commission.requestPayout",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -938,7 +938,7 @@
           "commission"
         ],
         "summary": "mutation commission.requestTaxProfileOverride",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -990,7 +990,7 @@
           "commission"
         ],
         "summary": "mutation commission.retryDocument",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -1042,7 +1042,7 @@
           "commission"
         ],
         "summary": "mutation commission.updateBankDetails",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -1094,7 +1094,7 @@
           "contracts"
         ],
         "summary": "mutation contracts.signWorkspaceContract",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -1146,7 +1146,7 @@
           "cookieConsents"
         ],
         "summary": "mutation cookieConsents.record",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -1198,7 +1198,7 @@
           "inbox"
         ],
         "summary": "mutation inbox.acknowledge",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -1250,7 +1250,7 @@
           "inbox"
         ],
         "summary": "mutation inbox.acknowledgeFinancial",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -1302,7 +1302,7 @@
           "inbox"
         ],
         "summary": "mutation inbox.acknowledgeProductProposalFailure",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -1354,7 +1354,7 @@
           "inbox"
         ],
         "summary": "query inbox.listActive",
-        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -1399,7 +1399,7 @@
           "inbox"
         ],
         "summary": "query inbox.listFinancial",
-        "description": "Observed server answer to a GET with null input: OK. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -1444,7 +1444,7 @@
           "inbox"
         ],
         "summary": "query inbox.listProductProposalFailures",
-        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -1489,7 +1489,7 @@
           "listingDefaults"
         ],
         "summary": "mutation listingDefaults.save",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -1541,7 +1541,7 @@
           "listings"
         ],
         "summary": "mutation listings.commit",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -1593,7 +1593,7 @@
           "listings"
         ],
         "summary": "mutation listings.deleteDraft",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -1645,7 +1645,7 @@
           "listings"
         ],
         "summary": "mutation listings.publish",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -1697,7 +1697,7 @@
           "listings"
         ],
         "summary": "mutation listings.unpublish",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -1749,7 +1749,7 @@
           "listings"
         ],
         "summary": "mutation listings.update",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -1801,7 +1801,7 @@
           "offers"
         ],
         "summary": "mutation offers.completeSignedUpload",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -1853,7 +1853,7 @@
           "offers"
         ],
         "summary": "query offers.getCertificateDownloadUrl",
-        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -1898,7 +1898,7 @@
           "offers"
         ],
         "summary": "query offers.getDownloadUrl",
-        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -1943,7 +1943,7 @@
           "offers"
         ],
         "summary": "query offers.getSendRecipients",
-        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -1988,7 +1988,7 @@
           "offers"
         ],
         "summary": "query offers.getSignedDownloadUrl",
-        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2033,7 +2033,7 @@
           "offers"
         ],
         "summary": "query offers.listByOpportunity",
-        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2078,7 +2078,7 @@
           "offers"
         ],
         "summary": "mutation offers.reissueLink",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2130,7 +2130,7 @@
           "offers"
         ],
         "summary": "mutation offers.revokeLink",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2182,7 +2182,7 @@
           "offers"
         ],
         "summary": "mutation offers.send",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2234,7 +2234,7 @@
           "offers"
         ],
         "summary": "mutation offers.startSignedUpload",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2286,7 +2286,7 @@
           "offerTemplates"
         ],
         "summary": "mutation offerTemplates.create",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2338,7 +2338,7 @@
           "onboarding"
         ],
         "summary": "mutation onboarding.createWorkspace",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Discovery cannot see it before a page loads the chunk that calls it (the onboarding screen of an account without a workspace). It is added by name and confirmed by the GET probe. Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2390,7 +2390,7 @@
           "opportunities"
         ],
         "summary": "mutation opportunities.acceptClose",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2442,7 +2442,7 @@
           "opportunities"
         ],
         "summary": "mutation opportunities.acceptRequest",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2494,7 +2494,7 @@
           "opportunities"
         ],
         "summary": "query opportunities.getRequestSnapshot",
-        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2539,7 +2539,7 @@
           "opportunities"
         ],
         "summary": "query opportunities.getSalesAgentDetail",
-        "description": "Observed server answer to a GET with null input: FORBIDDEN. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2584,7 +2584,7 @@
           "opportunities"
         ],
         "summary": "query opportunities.listMessages",
-        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2629,7 +2629,7 @@
           "opportunities"
         ],
         "summary": "query opportunities.listRequestHistory",
-        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2674,7 +2674,7 @@
           "opportunities"
         ],
         "summary": "mutation opportunities.rejectClose",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2726,7 +2726,7 @@
           "opportunities"
         ],
         "summary": "mutation opportunities.rejectRequest",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2778,7 +2778,7 @@
           "opportunities"
         ],
         "summary": "mutation opportunities.requestRevision",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2830,7 +2830,7 @@
           "opportunities"
         ],
         "summary": "query opportunities.searchStagingCompanies",
-        "description": "Observed server answer to a GET with null input: FORBIDDEN. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2875,7 +2875,7 @@
           "opportunities"
         ],
         "summary": "query opportunities.searchStagingContacts",
-        "description": "Observed server answer to a GET with null input: FORBIDDEN. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2920,7 +2920,7 @@
           "opportunities"
         ],
         "summary": "mutation opportunities.updateStaging",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -2972,7 +2972,7 @@
           "productProposals"
         ],
         "summary": "mutation productProposals.delete",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3024,7 +3024,7 @@
           "products"
         ],
         "summary": "mutation products.delete",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3076,7 +3076,7 @@
           "profile"
         ],
         "summary": "mutation profile.cancelLogoUpload",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3128,7 +3128,7 @@
           "profile"
         ],
         "summary": "mutation profile.completeLogoUpload",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3180,7 +3180,7 @@
           "profile"
         ],
         "summary": "mutation profile.deleteLogo",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3232,7 +3232,7 @@
           "profile"
         ],
         "summary": "mutation profile.startLogoUpload",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3284,7 +3284,7 @@
           "profile"
         ],
         "summary": "mutation profile.updateAddress",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3336,7 +3336,7 @@
           "profile"
         ],
         "summary": "mutation profile.updateInfo",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3388,7 +3388,7 @@
           "profile"
         ],
         "summary": "mutation profile.updateUnlimitedPartners",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3440,7 +3440,7 @@
           "questionCatalogs"
         ],
         "summary": "mutation questionCatalogs.startAttempt",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3492,7 +3492,7 @@
           "questionCatalogs"
         ],
         "summary": "mutation questionCatalogs.submitAttempt",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3544,7 +3544,7 @@
           "salesAgentWaitlistEntries"
         ],
         "summary": "mutation salesAgentWaitlistEntries.createEntry",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3596,7 +3596,7 @@
           "subscriptions"
         ],
         "summary": "mutation subscriptions.cancelAtPeriodEnd",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3648,7 +3648,7 @@
           "subscriptions"
         ],
         "summary": "mutation subscriptions.createCheckout",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3700,7 +3700,7 @@
           "subscriptions"
         ],
         "summary": "mutation subscriptions.createPortalSession",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3752,7 +3752,7 @@
           "subscriptions"
         ],
         "summary": "query subscriptions.getStatus",
-        "description": "Observed server answer to a GET with null input: BAD_REQUEST. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3797,7 +3797,7 @@
           "subscriptions"
         ],
         "summary": "mutation subscriptions.reactivate",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3849,7 +3849,7 @@
           "verification"
         ],
         "summary": "mutation verification.cancelIdentityDocumentVerification",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3901,7 +3901,7 @@
           "verification"
         ],
         "summary": "mutation verification.resumeIdentityDocumentVerification",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -3953,7 +3953,7 @@
           "verification"
         ],
         "summary": "mutation verification.startWorkspaceVerification",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []
@@ -4005,7 +4005,7 @@
           "workspaceUsers"
         ],
         "summary": "mutation workspaceUsers.remove",
-        "description": "Observed server answer to a GET with null input: METHOD_NOT_SUPPORTED. Input schema not published by the platform.",
+        "description": "Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.",
         "security": [
           {
             "sessionCookie": []

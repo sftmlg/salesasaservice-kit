@@ -6,6 +6,7 @@ import { describe, expect, it } from "vitest";
 import { loadCatalogue } from "../src/catalogue-data.js";
 import { renderCatalogue } from "../src/catalogue-doc.js";
 import { buildOpenApi } from "../src/openapi.js";
+import { proc } from "./helpers.js";
 
 const root = new URL("../../../docs/", import.meta.url);
 const catalogue = loadCatalogue();
@@ -27,8 +28,8 @@ describe("generated documentation", () => {
       {
         measured: "d",
         procedures: {
-          "a.q": { kind: "query", observed: "OK" },
-          "a.m": { kind: "mutation", observed: "METHOD_NOT_SUPPORTED" },
+          "a.q": proc("a", "query"),
+          "a.m": proc("a", "mutation"),
         },
       },
       "https://x.test",
@@ -41,25 +42,49 @@ describe("generated documentation", () => {
     const page = renderCatalogue({
       measured: "d",
       procedures: {
-        "a.q": { kind: "query", observed: "OK" },
-        "b.m": { kind: "mutation", observed: "PRECONDITION_FAILED" },
+        "a.q": proc("a", "query"),
+        "b.m": proc("b", "mutation"),
       },
     });
     expect(page).toContain("## a");
     expect(page).toContain("## b");
-    expect(page).toContain("| `b.m` | POST | `PRECONDITION_FAILED` |");
+    expect(page).toContain("| `b.m` | POST | a GET is refused (405), so it is a mutation |");
   });
 
   it("refuses a catalogue file with an unknown procedure kind (generated docs would silently map it to GET)", () => {
     const file = join(mkdtempSync(join(tmpdir(), "saas-")), "procedures.json");
     writeFileSync(
       file,
-      JSON.stringify({ measured: "d", procedures: { "a.b": { kind: "patch", observed: "OK" } } }),
+      JSON.stringify({
+        measured: "d",
+        procedures: { "a.b": { router: "a", kind: "patch", confirmedBy: "get-answered" } },
+      }),
     );
     expect(() => loadCatalogue(pathToFileURL(file))).toThrow();
   });
 
   it("does not leak any credential-looking or personal data into the bundled catalogue", () => {
     expect(JSON.stringify(catalogue)).not.toMatch(/@|password|token/i);
+  });
+});
+
+describe("catalogue file", () => {
+  it("refuses an entry that carries a probe answer (a per-account result would be shipped as a fact for every user)", () => {
+    const file = join(mkdtempSync(join(tmpdir(), "saas-")), "procedures.json");
+    writeFileSync(
+      file,
+      JSON.stringify({
+        measured: "d",
+        procedures: {
+          "a.b": {
+            router: "a",
+            kind: "mutation",
+            confirmedBy: "get-refused",
+            observed: "METHOD_NOT_SUPPORTED",
+          },
+        },
+      }),
+    );
+    expect(() => loadCatalogue(pathToFileURL(file))).toThrow();
   });
 });

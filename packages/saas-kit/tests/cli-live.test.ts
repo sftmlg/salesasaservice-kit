@@ -2,13 +2,13 @@ import { describe, expect, it } from "vitest";
 import { runLiveCommand } from "../src/cli-live.js";
 import { SaasClient } from "../src/client.js";
 import { ConfigError, ConfirmationRequiredError } from "../src/errors.js";
-import { fakeFetch, okReply, trpcError } from "./helpers.js";
+import { fakeFetch, okReply, proc, trpcError } from "./helpers.js";
 
 const catalogue = {
   measured: "2026-11-11",
   procedures: {
-    "a.read": { kind: "query" as const, observed: "OK" },
-    "a.write": { kind: "mutation" as const, observed: "METHOD_NOT_SUPPORTED" },
+    "a.read": proc("a", "query"),
+    "a.write": proc("x", "mutation"),
   },
 };
 

@@ -4,9 +4,13 @@ import { errorCodeOf, queryPath } from "./trpc.js";
 
 export type ProcedureKind = "query" | "mutation";
 
+export type Confirmation = "get-refused" | "get-answered";
+
 export interface ProcedureEntry {
+  router: string;
   kind: ProcedureKind;
-  observed: string;
+  confirmedBy: Confirmation;
+  note?: string | undefined;
 }
 
 export interface Catalogue {
@@ -116,6 +120,11 @@ function isProcedureAnswer(observed: string): boolean {
   return observed !== "UNAUTHORIZED" && !observed.startsWith("HTTP_");
 }
 
+export const UNDISCOVERABLE: Record<string, string> = {
+  "onboarding.createWorkspace":
+    "Discovery cannot see it before a page loads the chunk that calls it (the onboarding screen of an account without a workspace). It is added by name and confirmed by the GET probe.",
+};
+
 export function kindFromProbe(observed: string, discovered?: ProcedureKind): ProcedureKind {
   if (observed === METHOD_REFUSED) return "mutation";
   return discovered ?? "query";
@@ -143,7 +152,13 @@ export async function buildCatalogue(
     const observed = await probeProcedure(client, name);
     if (observed === "NOT_FOUND") notFound.push(name);
     else if (isProcedureAnswer(observed)) {
-      procedures[name] = { kind: kindFromProbe(observed, discovered[name]), observed };
+      const note = UNDISCOVERABLE[name];
+      procedures[name] = {
+        router: name.split(".")[0] ?? "",
+        kind: kindFromProbe(observed, discovered[name]),
+        confirmedBy: observed === METHOD_REFUSED ? "get-refused" : "get-answered",
+        ...(note ? { note } : {}),
+      };
     } else unprobed.push(`${name} (${observed})`);
   }
   if (unprobed.length > 0) {

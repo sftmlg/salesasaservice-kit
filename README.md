@@ -90,7 +90,7 @@ await client.mutate("listings.publish", input, { confirm: true });
 ## 3. Documentation
 
 - [docs/api-reference.md](docs/api-reference.md): overview, authentication flow, request and error envelope, onboarding gate
-- [docs/procedure-catalogue.md](docs/procedure-catalogue.md): procedures grouped by router, with method and observed state
+- [docs/procedure-catalogue.md](docs/procedure-catalogue.md): procedures grouped by router, with method and how each was confirmed
 - [docs/openapi.json](docs/openapi.json): OpenAPI 3.1 description
 
 All of it is an unofficial description derived from the web app; input schemas are not published by the platform and are left open.

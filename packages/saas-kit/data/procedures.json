@@ -2,316 +2,395 @@
   "measured": "2026-11-11",
   "procedures": {
     "activities.create": {
+      "router": "activities",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "activities.createTask": {
+      "router": "activities",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "activities.delete": {
+      "router": "activities",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "activities.list": {
+      "router": "activities",
       "kind": "query",
-      "observed": "BAD_REQUEST"
+      "confirmedBy": "get-answered"
     },
     "activities.update": {
+      "router": "activities",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "activities.updateTask": {
+      "router": "activities",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "activities.updateTaskStatus": {
+      "router": "activities",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "commission.confirmBusinessDetails": {
+      "router": "commission",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "commission.getDashboard": {
+      "router": "commission",
       "kind": "query",
-      "observed": "FORBIDDEN"
+      "confirmedBy": "get-answered"
     },
     "commission.getFinancialProfile": {
+      "router": "commission",
       "kind": "query",
-      "observed": "BAD_REQUEST"
+      "confirmedBy": "get-answered"
     },
     "commission.getHistory": {
+      "router": "commission",
       "kind": "query",
-      "observed": "FORBIDDEN"
+      "confirmedBy": "get-answered"
     },
     "commission.listInvoices": {
+      "router": "commission",
       "kind": "query",
-      "observed": "BAD_REQUEST"
+      "confirmedBy": "get-answered"
     },
     "commission.listPayouts": {
+      "router": "commission",
       "kind": "query",
-      "observed": "FORBIDDEN"
+      "confirmedBy": "get-answered"
     },
     "commission.listPositions": {
+      "router": "commission",
       "kind": "query",
-      "observed": "FORBIDDEN"
+      "confirmedBy": "get-answered"
     },
     "commission.quotePayout": {
+      "router": "commission",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "commission.requestPayout": {
+      "router": "commission",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "commission.requestTaxProfileOverride": {
+      "router": "commission",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "commission.retryDocument": {
+      "router": "commission",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "commission.updateBankDetails": {
+      "router": "commission",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "contracts.signWorkspaceContract": {
+      "router": "contracts",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "cookieConsents.record": {
+      "router": "cookieConsents",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "inbox.acknowledge": {
+      "router": "inbox",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "inbox.acknowledgeFinancial": {
+      "router": "inbox",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "inbox.acknowledgeProductProposalFailure": {
+      "router": "inbox",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "inbox.listActive": {
+      "router": "inbox",
       "kind": "query",
-      "observed": "BAD_REQUEST"
+      "confirmedBy": "get-answered"
     },
     "inbox.listFinancial": {
+      "router": "inbox",
       "kind": "query",
-      "observed": "OK"
+      "confirmedBy": "get-answered"
     },
     "inbox.listProductProposalFailures": {
+      "router": "inbox",
       "kind": "query",
-      "observed": "BAD_REQUEST"
+      "confirmedBy": "get-answered"
     },
     "listingDefaults.save": {
+      "router": "listingDefaults",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "listings.commit": {
+      "router": "listings",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "listings.deleteDraft": {
+      "router": "listings",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "listings.publish": {
+      "router": "listings",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "listings.unpublish": {
+      "router": "listings",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "listings.update": {
+      "router": "listings",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "offers.completeSignedUpload": {
+      "router": "offers",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "offers.getCertificateDownloadUrl": {
+      "router": "offers",
       "kind": "query",
-      "observed": "BAD_REQUEST"
+      "confirmedBy": "get-answered"
     },
     "offers.getDownloadUrl": {
+      "router": "offers",
       "kind": "query",
-      "observed": "BAD_REQUEST"
+      "confirmedBy": "get-answered"
     },
     "offers.getSendRecipients": {
+      "router": "offers",
       "kind": "query",
-      "observed": "BAD_REQUEST"
+      "confirmedBy": "get-answered"
     },
     "offers.getSignedDownloadUrl": {
+      "router": "offers",
       "kind": "query",
-      "observed": "BAD_REQUEST"
+      "confirmedBy": "get-answered"
     },
     "offers.listByOpportunity": {
+      "router": "offers",
       "kind": "query",
-      "observed": "BAD_REQUEST"
+      "confirmedBy": "get-answered"
     },
     "offers.reissueLink": {
+      "router": "offers",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "offers.revokeLink": {
+      "router": "offers",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "offers.send": {
+      "router": "offers",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "offers.startSignedUpload": {
+      "router": "offers",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "offerTemplates.create": {
+      "router": "offerTemplates",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "onboarding.createWorkspace": {
+      "router": "onboarding",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused",
+      "note": "Discovery cannot see it before a page loads the chunk that calls it (the onboarding screen of an account without a workspace). It is added by name and confirmed by the GET probe."
     },
     "opportunities.acceptClose": {
+      "router": "opportunities",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "opportunities.acceptRequest": {
+      "router": "opportunities",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "opportunities.getRequestSnapshot": {
+      "router": "opportunities",
       "kind": "query",
-      "observed": "BAD_REQUEST"
+      "confirmedBy": "get-answered"
     },
     "opportunities.getSalesAgentDetail": {
+      "router": "opportunities",
       "kind": "query",
-      "observed": "FORBIDDEN"
+      "confirmedBy": "get-answered"
     },
     "opportunities.listMessages": {
+      "router": "opportunities",
       "kind": "query",
-      "observed": "BAD_REQUEST"
+      "confirmedBy": "get-answered"
     },
     "opportunities.listRequestHistory": {
+      "router": "opportunities",
       "kind": "query",
-      "observed": "BAD_REQUEST"
+      "confirmedBy": "get-answered"
     },
     "opportunities.rejectClose": {
+      "router": "opportunities",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "opportunities.rejectRequest": {
+      "router": "opportunities",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "opportunities.requestRevision": {
+      "router": "opportunities",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "opportunities.searchStagingCompanies": {
+      "router": "opportunities",
       "kind": "query",
-      "observed": "FORBIDDEN"
+      "confirmedBy": "get-answered"
     },
     "opportunities.searchStagingContacts": {
+      "router": "opportunities",
       "kind": "query",
-      "observed": "FORBIDDEN"
+      "confirmedBy": "get-answered"
     },
     "opportunities.updateStaging": {
+      "router": "opportunities",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "productProposals.delete": {
+      "router": "productProposals",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "products.delete": {
+      "router": "products",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "profile.cancelLogoUpload": {
+      "router": "profile",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "profile.completeLogoUpload": {
+      "router": "profile",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "profile.deleteLogo": {
+      "router": "profile",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "profile.startLogoUpload": {
+      "router": "profile",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "profile.updateAddress": {
+      "router": "profile",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "profile.updateInfo": {
+      "router": "profile",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "profile.updateUnlimitedPartners": {
+      "router": "profile",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "questionCatalogs.startAttempt": {
+      "router": "questionCatalogs",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "questionCatalogs.submitAttempt": {
+      "router": "questionCatalogs",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "salesAgentWaitlistEntries.createEntry": {
+      "router": "salesAgentWaitlistEntries",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "subscriptions.cancelAtPeriodEnd": {
+      "router": "subscriptions",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "subscriptions.createCheckout": {
+      "router": "subscriptions",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "subscriptions.createPortalSession": {
+      "router": "subscriptions",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "subscriptions.getStatus": {
+      "router": "subscriptions",
       "kind": "query",
-      "observed": "BAD_REQUEST"
+      "confirmedBy": "get-answered"
     },
     "subscriptions.reactivate": {
+      "router": "subscriptions",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "verification.cancelIdentityDocumentVerification": {
+      "router": "verification",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "verification.resumeIdentityDocumentVerification": {
+      "router": "verification",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "verification.startWorkspaceVerification": {
+      "router": "verification",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     },
     "workspaceUsers.remove": {
+      "router": "workspaceUsers",
       "kind": "mutation",
-      "observed": "METHOD_NOT_SUPPORTED"
+      "confirmedBy": "get-refused"
     }
   }
 }

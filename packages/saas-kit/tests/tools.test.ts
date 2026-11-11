@@ -2,14 +2,14 @@ import { describe, expect, it } from "vitest";
 import { SaasClient } from "../src/client.js";
 import { ConfirmationRequiredError, NotSignedInError } from "../src/errors.js";
 import { tools } from "../src/tools.js";
-import { fakeFetch, okReply } from "./helpers.js";
+import { fakeFetch, okReply, proc } from "./helpers.js";
 
 const catalogue = {
   measured: "2026-11-10",
   procedures: {
-    "listings.publish": { kind: "mutation" as const, observed: "METHOD_NOT_SUPPORTED" },
-    "listings.list": { kind: "query" as const, observed: "PRECONDITION_FAILED" },
-    "offers.send": { kind: "mutation" as const, observed: "METHOD_NOT_SUPPORTED" },
+    "listings.publish": proc("x", "mutation"),
+    "listings.list": proc("x", "query"),
+    "offers.send": proc("x", "mutation"),
   },
 };
 

@@ -35,7 +35,7 @@ export function buildServer(deps: ToolDeps): McpServer {
   );
   server.tool(
     "list_procedures",
-    "List the bundled catalogue of confirmed procedures with their method and observed state.",
+    "List the bundled catalogue of confirmed procedures with their router, method and how each was confirmed.",
     { router: z.string().optional(), kind: z.enum(["query", "mutation"]).optional() },
     (args) => run(() => tools.listProcedures(deps, args)),
   );

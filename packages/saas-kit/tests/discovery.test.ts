@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { SaasClient } from "../src/client.js";
-import { buildCatalogue, discover, extractChunks, extractProcedures } from "../src/discovery.js";
-import { fakeFetch, okReply, trpcError } from "./helpers.js";
+import {
+  buildCatalogue,
+  discover,
+  extractChunks,
+  extractProcedures,
+  UNDISCOVERABLE,
+} from "../src/discovery.js";
+import { fakeFetch, okReply, proc, trpcError } from "./helpers.js";
 
 describe("procedure extraction", () => {
   it("classifies mutationOptions/useMutation as mutations and the rest as queries", () => {
@@ -62,8 +68,8 @@ describe("catalogue building", () => {
     expect(catalogue).toEqual({
       measured: "2026-11-11",
       procedures: {
-        "offers.send": { kind: "mutation", observed: "METHOD_NOT_SUPPORTED" },
-        "profile.get": { kind: "query", observed: "PRECONDITION_FAILED" },
+        "offers.send": proc("offers", "mutation"),
+        "profile.get": proc("profile", "query"),
       },
     });
   });
@@ -81,8 +87,8 @@ describe("catalogue building", () => {
       ["a.write", "a.read", "a.typo"],
     );
     expect(catalogue.procedures).toEqual({
-      "a.read": { kind: "query", observed: "OK" },
-      "a.write": { kind: "mutation", observed: "METHOD_NOT_SUPPORTED" },
+      "a.read": proc("a", "query"),
+      "a.write": proc("a", "mutation"),
     });
     expect(notFound).toEqual(["a.typo"]);
   });
@@ -113,6 +119,40 @@ describe("catalogue building", () => {
       "a.b": "query",
     });
     expect(catalogue.procedures["a.b"]?.kind).toBe("mutation");
+  });
+
+  it("stores no probe answer in the catalogue (PRECONDITION_FAILED is one account's state on one day, not a property of the procedure)", async () => {
+    const { fetch } = fakeFetch((req) =>
+      req.url.includes("a.gated")
+        ? { status: 412, body: trpcError("PRECONDITION_FAILED", 412) }
+        : { status: 405, body: trpcError("METHOD_NOT_SUPPORTED", 405) },
+    );
+    const { catalogue } = await buildCatalogue(new SaasClient({ baseUrl: "https://x.test", fetch }), {
+      "a.gated": "query",
+      "a.write": "mutation",
+    });
+    expect(JSON.stringify(catalogue)).not.toMatch(/PRECONDITION_FAILED|METHOD_NOT_SUPPORTED|observed/);
+    expect(catalogue.procedures["a.gated"]).toEqual({
+      router: "a",
+      kind: "query",
+      confirmedBy: "get-answered",
+    });
+    expect(catalogue.procedures["a.write"]?.confirmedBy).toBe("get-refused");
+  });
+
+  it("carries the discovery note on a name the crawl cannot see (onboarding.createWorkspace would read as a normal discovered procedure)", async () => {
+    const { fetch } = fakeFetch(() => ({ status: 405, body: trpcError("METHOD_NOT_SUPPORTED", 405) }));
+    const { catalogue } = await buildCatalogue(
+      new SaasClient({ baseUrl: "https://x.test", fetch }),
+      { "a.b": "query" },
+      new Date(),
+      Object.keys(UNDISCOVERABLE),
+    );
+    expect(catalogue.procedures["onboarding.createWorkspace"]).toMatchObject({
+      kind: "mutation",
+      note: expect.stringContaining("Discovery cannot see it"),
+    });
+    expect(catalogue.procedures["a.b"]?.note).toBeUndefined();
   });
 
   it("probes with GET only, so discovery can never write", async () => {

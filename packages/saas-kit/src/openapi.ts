@@ -4,12 +4,12 @@ const batchRef = { $ref: "#/components/parameters/batch" };
 
 export function buildOpenApi(catalogue: Catalogue, baseUrl: string): Record<string, unknown> {
   const paths: Record<string, unknown> = {};
-  for (const [name, { kind, observed }] of Object.entries(catalogue.procedures)) {
+  for (const [name, { kind, router, note }] of Object.entries(catalogue.procedures)) {
     const operation = {
       operationId: name.replace(".", "_"),
-      tags: [name.split(".")[0]],
+      tags: [router],
       summary: `${kind} ${name}`,
-      description: `Observed server answer to a GET with null input: ${observed}. Input schema not published by the platform.`,
+      description: `${note ? `${note} ` : ""}Input schema: see docs/api-reference.md where observed, otherwise not published by the platform.`,
       security: [{ sessionCookie: [] }],
       responses: {
         200: {

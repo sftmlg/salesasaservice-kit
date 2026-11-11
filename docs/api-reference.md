@@ -83,7 +83,13 @@ The platform does not publish input schemas, so none are described. A schema is 
 
 ## How the catalogue was confirmed
 
-Procedure names are extracted from the client bundles. A name counts as confirmed when a read-only `GET` with `null` input does not answer `NOT_FOUND`. The extraction also yields minifier noise, which this probe filters out. The catalogue lists the answer observed for each name (see the table meanings in [procedure-catalogue.md](procedure-catalogue.md)). Regenerate it with `saas-kit refresh` and the two documentation files with `saas-kit docs`.
+Procedure names are extracted from the client bundles. A name counts as confirmed when a read-only `GET` does not answer `NOT_FOUND`. The extraction also yields minifier noise, which this probe filters out. The catalogue stores only what holds for every account: router, kind and the confirmation method, which is `get-refused` (the `GET` was answered with `METHOD_NOT_SUPPORTED`, so the name is a mutation) or `get-answered` (any other answer except `NOT_FOUND`, so the name exists, and it is a query unless the bundle showed a mutation).
+
+The answer code of the probe is evidence for that one decision and is not stored. `METHOD_NOT_SUPPORTED` is how a `GET` against a mutation is refused. `PRECONDITION_FAILED` is the onboarding state of the probing account on the day of the probe. `FORBIDDEN` is that account's role. `BAD_REQUEST` means the probe input did not validate. None of these describes the procedure itself, so they are not shipped; `saas-kit probe` prints them for the signed-in account as runtime output.
+
+`onboarding.createWorkspace` is not found by the crawl: no page of a signed-in account with a workspace loads the chunk that calls it. It is added by name and confirmed by the same probe, and carries a note in the catalogue.
+
+Regenerate the catalogue with `saas-kit refresh` and the two documentation files with `saas-kit docs`.
 
 ## Using the interface safely
 

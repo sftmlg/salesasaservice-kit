@@ -1,4 +1,5 @@
 import type { FetchLike } from "../src/client.js";
+import type { ProcedureEntry } from "../src/discovery.js";
 
 export interface Recorded {
   url: string;
@@ -40,3 +41,9 @@ export function fakeFetch(reply: (req: Recorded) => FakeReply | string): {
 export const okReply = (data: unknown) => JSON.stringify([{ result: { data } }]);
 export const trpcError = (code: string, httpStatus: number, message = code) =>
   JSON.stringify([{ error: { message, code: -32000, data: { code, httpStatus } } }]);
+
+export const proc = (router: string, kind: "query" | "mutation"): ProcedureEntry => ({
+  router,
+  kind,
+  confirmedBy: kind === "mutation" ? "get-refused" : "get-answered",
+});
